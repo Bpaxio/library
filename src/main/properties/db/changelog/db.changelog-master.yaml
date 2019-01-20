@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: main_0
+      author: bpaxio
+      changes:
+      - sqlFile:
+          encoding: utf8
+          endDelimiter: \nGO
+          path: main.sql
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
