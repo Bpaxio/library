@@ -1,8 +1,10 @@
 package ru.otus.bbpax.repository;
 
+import ru.otus.bbpax.entity.Author;
+
 /**
  * @author Vlad Rakhlinskii
  * Created on 14.01.2019.
  */
-public interface AuthorRepo {
+public interface AuthorRepo extends JdbcRepository<Author, Long> {
 }
