@@ -36,7 +36,7 @@ CREATE TABLE public.book
 (
   id bigint NOT NULL DEFAULT nextval('public.book_seq'),
   name character varying(255),
-  publication_date date,
+  publication_date integer,
   publishing_office character varying(255),
   price numeric(19,2),
   genre_id bigint,

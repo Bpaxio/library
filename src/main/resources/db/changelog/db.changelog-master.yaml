@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: main_0
-      author: bpaxio
+      author: Bpaxio
       changes:
       - sqlFile:
           encoding: utf8
