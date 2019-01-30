@@ -1,3 +1,6 @@
 /build/
-/.idea/
 /target/
+
+/.idea/
+*.iml
+ *.log
