@@ -44,7 +44,6 @@ public class BookService {
 
     public BookView getBookById(Long id) {
         Optional<Book> result = repo.findById(id);
-        result.ifPresent(this::fillRelatedElements);
         return BookView.fromEntity(
                 result.orElseThrow(() -> new NotFoundException("Book", id))
         );
@@ -53,20 +52,11 @@ public class BookService {
     public List<BookView> getAll() {
         return repo.getAll()
                 .stream()
-                .map(this::fillRelatedElements)
                 .map(BookView::fromEntity)
                 .collect(Collectors.toList());
     }
 
     public void deleteById(Long id) {
         repo.deleteById(id);
-    }
-
-    private Book fillRelatedElements(Book book) {
-        authorRepo.findById(book.getId())
-                .ifPresent(book::setAuthor);
-        genreRepo.findById(book.getId())
-                .ifPresent(book::setGenre);
-        return book;
     }
 }

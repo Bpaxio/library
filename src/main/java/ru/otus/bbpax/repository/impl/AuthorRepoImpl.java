@@ -31,13 +31,18 @@ public class AuthorRepoImpl implements AuthorRepo {
 
     @Override
     public Optional<Author> findById(Long id) {
-        return Optional.ofNullable(
-                jdbc.queryForObject(
-                        "select * from author where id = :id",
-                        Collections.singletonMap("id", id),
-                        mapper
-                )
-        );
+        try {
+            return Optional.ofNullable(
+                    jdbc.queryForObject(
+                            "select * from author where id = :id",
+                            Collections.singletonMap("id", id),
+                            mapper
+                    )
+            );
+        } catch (EmptyResultDataAccessException e) {
+            log.debug("No author was found. {}", e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override

@@ -6,7 +6,7 @@ databaseChangeLog:
       - sqlFile:
           encoding: utf8
           endDelimiter: \nGO
-          path: main.sql
+          path: scheme.sql
           relativeToChangelogFile: true
           splitStatements: true
           stripComments: true

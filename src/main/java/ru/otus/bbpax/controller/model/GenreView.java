@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.otus.bbpax.entity.Genre;
 
+import java.util.Objects;
+
 /**
  * @author Vlad Rakhlinskii
  * Created on 10.01.2019.
@@ -17,10 +19,12 @@ public class GenreView implements EntityView<Genre> {
     private String name;
 
     public static GenreView fromEntity(Genre genre) {
-        return new GenreView(
-                genre.getId(),
-                genre.getName()
-        );
+        return Objects.isNull(genre)
+                ? null
+                : new GenreView(
+                        genre.getId(),
+                        genre.getName()
+                );
     }
 
     @Override
