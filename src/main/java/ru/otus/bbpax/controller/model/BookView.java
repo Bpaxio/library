@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Vlad Rakhlinskii
@@ -31,14 +32,16 @@ public class BookView implements EntityView<Book> {
     private String authorFullName;
 
     public static BookView fromEntity(Book book) {
-        return new BookView(
-                book.getId(),
-                book.getName(),
-                book.getPublicationDate(),
-                book.getPublishingOffice(),
-                book.getPrice(),
-                book.getGenre().getName(),
-                book.getAuthor().getName() + " " + book.getAuthor().getSurname()
+        return Objects.isNull(book)
+                ? null
+                : new BookView(
+                        book.getId(),
+                        book.getName(),
+                        book.getPublicationDate(),
+                        book.getPublishingOffice(),
+                        book.getPrice(),
+                        book.getGenre().getName(),
+                        book.getAuthor().getName() + " " + book.getAuthor().getSurname()
         );
     }
 

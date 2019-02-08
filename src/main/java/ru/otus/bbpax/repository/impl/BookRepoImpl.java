@@ -28,7 +28,9 @@ public class BookRepoImpl implements BookRepo {
     public Optional<Book> findById(Long id) {
         return Optional.ofNullable(
                 jdbc.queryForObject(
-                        "select * from book where id = :id",
+                        "select book.name, publication_date, publishing_office, price, author_id, a.name as author_name, a.surname as author_surname, a.country as author_country, genre_id, g.name as genre_name"
+                                + "from book, author as a, genre as g"
+                                + "where author_id = a.id and genre_id = g.id and id = :id",
                         Collections.singletonMap("id", id),
                         mapper
                 )
@@ -37,14 +39,19 @@ public class BookRepoImpl implements BookRepo {
 
     @Override
     public List<Book> getAll() {
-        return jdbc.query("select * from book", mapper);
+        return jdbc.query(
+                "select book.name, publication_date, publishing_office, price, author_id, a.name as author_name, a.surname as author_surname, a.country as author_country, genre_id, g.name as genre_name"
+                        + "from book, author as a, genre as g"
+                        + "where author_id = a.id and genre_id = g.id",
+                mapper
+        );
     }
 
     @Override
     public void create(Book entity) {
         jdbc.update(
-                "insert into book (name, publication_date, price, author_id, genre_id) "
-                        + "values (:name, :publication_date, :price, :author_id, :genre_id)",
+                "insert into book (name, publication_date, publishing_office, price, author_id, genre_id) "
+                        + "values (:name, :publication_date, :publishing_office, :price, :author_id, :genre_id)",
                 mapper.mapSource(entity)
         );
     }
@@ -53,7 +60,7 @@ public class BookRepoImpl implements BookRepo {
     public void update(Book entity) {
         jdbc.update(
                 "update book set name = :name, publication_date = :publication_date, "
-                        + "price = :price, author_id = :author_id, genre_id = :genre_id  "
+                        + "price = :price, publishing_office = :publishing_office, author_id = :author_id, genre_id = :genre_id  "
                         + "where id = :id",
                 mapper.mapSource(entity)
         );

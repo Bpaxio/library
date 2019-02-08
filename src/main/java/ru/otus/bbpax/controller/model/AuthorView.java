@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.otus.bbpax.entity.Author;
 
+import java.util.Objects;
+
 /**
  * @author Vlad Rakhlinskii
  * Created on 10.01.2019.
@@ -19,11 +21,13 @@ public class AuthorView implements EntityView<Author> {
     private String country;
 
     public static AuthorView fromEntity(Author author) {
-        return new AuthorView(
-                author.getId(),
-                author.getName(),
-                author.getSurname(),
-                author.getCountry()
+        return Objects.isNull(author)
+                ? null
+                : new AuthorView(
+                    author.getId(),
+                    author.getName(),
+                    author.getSurname(),
+                    author.getCountry()
         );
     }
 

@@ -29,13 +29,16 @@ public class BookMapper implements RowMapper<Book>, SourceMapper<Book> {
         Integer publicationDate = rs.getInt("publication_date");
         String publishingOffice = rs.getString("publishing_office");
         BigDecimal price = new BigDecimal(rs.getString("price"));
-        Long genreId = rs.getLong("genre_id");
-        Long authorId = rs.getLong("author_id");
 
-        Genre genre = new Genre();
-        genre.setId(genreId);
-        Author author = new Author();
-        author.setId(authorId);
+        Long genreId = rs.getLong("genre_id");
+        String genreName = rs.getString("genre_name");
+        Genre genre = new Genre(genreId, genreName);
+
+        Long authorId = rs.getLong("author_id");
+        String authorName = rs.getString("author_name");
+        String authorSurname = rs.getString("author_surname");
+        String authorCountry = rs.getString("author_country");
+        Author author = new Author(authorId, authorName, authorSurname, authorCountry);
         return new Book(id, name, publicationDate, publishingOffice, price, genre, author);
     }
 
