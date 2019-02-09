@@ -1,19 +1,16 @@
 package ru.otus.bbpax.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.bbpax.entity.Genre;
-import ru.otus.bbpax.repository.impl.GenreRepoImpl;
 import ru.otus.bbpax.repository.mapper.GenreMapper;
 
 import java.util.List;
@@ -26,7 +23,8 @@ import static org.junit.Assert.assertTrue;
 
 @Slf4j
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {RepoConfig.class, GenreRepoImpl.class})
+@DataJpaTest
+@ContextConfiguration(classes = {RepoConfig.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ActiveProfiles("test")
 public class GenreRepoTest {
@@ -36,18 +34,6 @@ public class GenreRepoTest {
 
     @Autowired
     private NamedParameterJdbcOperations jdbc;
-
-    @Autowired
-    private EmbeddedDatabase database;
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        database.shutdown();
-    }
 
     @Test
     public void testCreate() throws Exception {
