@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import ru.otus.bbpax.entity.Genre;
 import ru.otus.bbpax.repository.GenreRepo;
 import ru.otus.bbpax.repository.mapper.GenreMapper;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +37,7 @@ public class GenreRepoImpl implements GenreRepo {
                     )
             );
         } catch (EmptyResultDataAccessException e) {
-            log.debug("No author was found. {}", e.getMessage());
+            log.debug("No genre was found. {}", e.getMessage());
             return Optional.empty();
         }
     }

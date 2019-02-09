@@ -10,7 +10,6 @@ import ru.otus.bbpax.service.BookService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j

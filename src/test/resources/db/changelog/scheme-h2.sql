@@ -9,28 +9,14 @@ CREATE TABLE public.author
   surname character varying(255),
   country character varying(255),
   CONSTRAINT author_pkey PRIMARY KEY (id)
-)
-WITH (
-OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-ALTER TABLE public.author
-  OWNER to postgres;
+);
 
 CREATE TABLE public.genre
 (
   id bigint NOT NULL DEFAULT nextval('public.genre_seq'),
   name character varying(255),
   CONSTRAINT genre_pkey PRIMARY KEY (id)
-)
-WITH (
-OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-ALTER TABLE public.genre
-  OWNER to postgres;
+);
 
 CREATE TABLE public.book
 (
@@ -43,18 +29,11 @@ CREATE TABLE public.book
   author_id bigint,
   CONSTRAINT book_pkey PRIMARY KEY (id),
   CONSTRAINT fk_author FOREIGN KEY (author_id)
-  REFERENCES public.author (id) MATCH SIMPLE
+  REFERENCES public.author (id)
   ON UPDATE NO ACTION
   ON DELETE NO ACTION,
   CONSTRAINT fk_genre FOREIGN KEY (genre_id)
-  REFERENCES public.genre (id) MATCH SIMPLE
+  REFERENCES public.genre (id)
   ON UPDATE NO ACTION
   ON DELETE NO ACTION
-)
-WITH (
-OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-ALTER TABLE public.book
-  OWNER to postgres;
+);
