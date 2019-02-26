@@ -16,7 +16,5 @@ public interface Repo<E, ID> {
 
     void update(E entity);
 
-    // TODO: 2019-01-29 Запрос не вернул результатов.; nested exception is org.postgresql.util.PSQLException: Запрос не вернул результатов.
-    //Details of the error have been omitted
     void deleteById(ID id);
 }

@@ -14,10 +14,12 @@ import ru.otus.bbpax.entity.Author;
 import ru.otus.bbpax.repository.impl.AuthorRepoImpl;
 
 import javax.persistence.TypedQuery;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -118,6 +120,49 @@ public class AuthorRepoTest {
         assertTrue(author.isPresent());
         testEquals(expected, author.get());
         assertNotEquals(notExpected, author.get());
+    }
+
+    @Test
+    public void testGetAll() throws Exception {
+        Long initCount = countQuery.getSingleResult();
+
+        List<Author> all = repo.getAll();
+        assertEquals(initCount.intValue(), all.size());
+
+        assertEquals(allQuery.getResultList(), all);
+    }
+
+    @Test
+    public void testDeleteById() throws Exception {
+        Long initCount = countQuery.getSingleResult();
+        Author author = manager.find(Author.class, 100003L);
+        assertNotNull(author);
+        repo.deleteById(100003L);
+        assertEquals(initCount - 1, countQuery.getSingleResult().longValue());
+    }
+
+    @Test
+    public void testFindByFullName() throws Exception {
+        Author expected = new Author(
+                100003L,
+                "TestName",
+                "TestSurname",
+                "TestCountry"
+        );
+        Author notExpected = new Author(
+                100002L,
+                "Author2",
+                "Doe2",
+                "GB"
+        );
+
+        Optional<Author> author = repo.findByFullName(expected.getName(), expected.getSurname());
+        assertTrue(author.isPresent());
+        testEquals(expected, author.get());
+        assertNotEquals(notExpected, author.get());
+
+        author = repo.findByFullName("Not existed", "Unbelievable");
+        assertFalse(author.isPresent());
     }
 
     private void testEquals(Author expected, Author actual) {

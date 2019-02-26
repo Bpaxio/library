@@ -7,7 +7,8 @@ values (100000, 'AuthorTest', 'DoeTest', 'CountryTest'),
 insert into genre (id, name)
 values (100000, 'Novel'),
        (100001, 'Drama'),
-       (100002, 'Science fiction');
+       (100002, 'Science fiction'),
+       (100003, 'TestGenre');
 
 insert into book (id, name, publication_date, publishing_office, price, genre_id, author_id)
 values (100000, 'Novel of Author1', 1999, 'testOffice', 999.99, 100000, 100001),

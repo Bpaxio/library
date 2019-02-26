@@ -40,7 +40,6 @@ public class BookRepoImpl implements BookRepo {
     @Override
     @Transactional
     public void create(Book entity) {
-        //todo wrong!
         em.persist(entity);
     }
 

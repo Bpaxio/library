@@ -3,6 +3,7 @@ package ru.otus.bbpax.repository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -15,11 +16,13 @@ import ru.otus.bbpax.entity.Genre;
 import ru.otus.bbpax.repository.impl.GenreRepoImpl;
 
 import javax.persistence.TypedQuery;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -107,6 +110,43 @@ public class GenreRepoTest {
         assertTrue(genre.isPresent());
         testEquals(expected, genre.get());
         assertNotEquals(notExpected, genre.get());
+    }
+
+    @Test
+    public void testGetAll() throws Exception {
+        Long initCount = countQuery.getSingleResult();
+
+        List<Genre> all = repo.getAll();
+        assertEquals(initCount.intValue(), all.size());
+
+        assertEquals(allQuery.getResultList(), all);
+    }
+
+    @Test
+    public void testDeleteById() throws Exception {
+        Long initCount = countQuery.getSingleResult();
+        Genre genre = manager.find(Genre.class, 100003L);
+        assertNotNull(genre);
+        repo.deleteById(100003L);
+        assertEquals(initCount - 1, countQuery.getSingleResult().longValue());
+    }
+
+    @Test
+    public void testFindByName() throws Exception {
+        Genre expected = new Genre(
+                100001L, "Drama"
+        );
+        Genre notExpected = new Genre(
+                100002L, "Science fiction"
+        );
+
+        Optional<Genre> genre = repo.findByName(expected.getName());
+        assertTrue(genre.isPresent());
+        testEquals(expected, genre.get());
+        assertNotEquals(notExpected, genre.get());
+
+        genre = repo.findByName("Not existed");
+        Assertions.assertFalse(genre.isPresent());
     }
 
     private void testEquals(Genre expected, Genre actual) {

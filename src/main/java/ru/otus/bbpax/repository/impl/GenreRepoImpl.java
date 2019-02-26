@@ -56,7 +56,7 @@ public class GenreRepoImpl implements GenreRepo {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        TypedQuery<Genre> query = em.createQuery("delete from Genre g where g.id = :id", Genre.class);
+        Query query = em.createQuery("delete from Genre g where g.id = :id");
         query.setParameter("id", id);
         int rowCount = query.executeUpdate();
         log.info("{} rows were deleted", rowCount);

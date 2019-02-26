@@ -17,11 +17,13 @@ import ru.otus.bbpax.repository.impl.BookRepoImpl;
 
 import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -148,6 +150,25 @@ public class BookRepoTest {
         assertTrue(book.isPresent());
         testEquals(expected, book.get());
         assertNotEquals(notExpected, book.get());
+    }
+
+    @Test
+    public void testGetAll() throws Exception {
+        Long initCount = countQuery.getSingleResult();
+
+        List<Book> all = repo.getAll();
+        assertEquals(initCount.intValue(), all.size());
+
+        assertEquals(allQuery.getResultList(), all);
+    }
+
+    @Test
+    public void testDeleteById() throws Exception {
+        Long initCount = countQuery.getSingleResult();
+        Book book = manager.find(Book.class, 100003L);
+        assertNotNull(book);
+        repo.deleteById(100003L);
+        assertEquals(initCount - 1, countQuery.getSingleResult().longValue());
     }
 
     private void testEquals(Book expected, Book actual) {
