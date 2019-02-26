@@ -7,11 +7,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.bbpax.entity.Author;
-import ru.otus.bbpax.repository.impl.AuthorRepoImpl;
 
 import javax.persistence.TypedQuery;
 import java.util.List;
@@ -27,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @Slf4j
 @DataJpaTest
 @RunWith(SpringRunner.class)
-@Import(AuthorRepoImpl.class)
 @ActiveProfiles("test")
 public class AuthorRepoTest {
 
@@ -58,7 +55,7 @@ public class AuthorRepoTest {
                 "ТестСтрана"
         );
 
-        repo.create(expected);
+        repo.save(expected);
 
 
         assertEquals(initCount + 1, allQuery.getResultList().size());
@@ -84,7 +81,7 @@ public class AuthorRepoTest {
                 "ТестФамилияNEW",
                 "ТестСтранаNEW"
         );
-        repo.update(is);
+        repo.save(is);
 
         Long actualCount = Integer.toUnsignedLong(allQuery.getResultList().size());
         assertEquals(initCount, actualCount);
@@ -126,7 +123,7 @@ public class AuthorRepoTest {
     public void testGetAll() throws Exception {
         Long initCount = countQuery.getSingleResult();
 
-        List<Author> all = repo.getAll();
+        List<Author> all = repo.findAll();
         assertEquals(initCount.intValue(), all.size());
 
         assertEquals(allQuery.getResultList(), all);

@@ -35,11 +35,11 @@ public class BookService {
         genreRepo.findByName(bookBone.getGenre().getName())
                 .ifPresent(bookBone::setGenre);
 
-        repo.create(bookBone);
+        repo.save(bookBone);
     }
 
     public void update(BookView book) {
-        repo.update(book.toEntity());
+        repo.save(book.toEntity());
     }
 
     public BookView getBookById(Long id) {
@@ -50,7 +50,7 @@ public class BookService {
     }
 
     public List<BookView> getAll() {
-        return repo.getAll()
+        return repo.findAll()
                 .stream()
                 .map(BookView::fromEntity)
                 .collect(Collectors.toList());

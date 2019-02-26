@@ -1,10 +1,9 @@
 package ru.otus.bbpax.repository.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.bbpax.entity.Genre;
-import ru.otus.bbpax.repository.GenreRepo;
+import ru.otus.bbpax.repository.Repo;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -19,10 +18,10 @@ import java.util.Optional;
  * Created on 10.01.2019.
  */
 @Slf4j
-@Repository
+//@Repository
 @Transactional(readOnly = true)
 @SuppressWarnings("JpaQlInspection")
-public class GenreRepoImpl implements GenreRepo {
+public class GenreRepoImpl implements Repo<Genre, Long> {
 
     @PersistenceContext
     private EntityManager em;
@@ -62,7 +61,7 @@ public class GenreRepoImpl implements GenreRepo {
         log.info("{} rows were deleted", rowCount);
     }
 
-    @Override
+//    @Override
     public Optional<Genre> findByName(String name) {
         TypedQuery<Genre> query = em.createQuery("select g from Genre g where g.name = :name", Genre.class);
         query.setParameter("name", name);

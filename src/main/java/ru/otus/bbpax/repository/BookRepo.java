@@ -1,10 +1,16 @@
 package ru.otus.bbpax.repository;
 
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 import ru.otus.bbpax.entity.Book;
+
+import java.util.List;
 
 /**
  * @author Vlad Rakhlinskii
  * Created on 14.01.2019.
  */
-public interface BookRepo extends Repo<Book, Long> {
+@Repository
+public interface BookRepo extends PagingAndSortingRepository<Book, Long> {
+    List<Book> findAll();
 }

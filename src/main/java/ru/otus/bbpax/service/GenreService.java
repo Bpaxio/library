@@ -18,11 +18,11 @@ public class GenreService {
     private final GenreRepo repo;
 
     public void create(GenreView genre) {
-        repo.create(genre.toEntity());
+        repo.save(genre.toEntity());
     }
 
     public void update(GenreView genre) {
-        repo.update(genre.toEntity());
+        repo.save(genre.toEntity());
     }
 
     public GenreView getGenreById(Long id) {
@@ -32,7 +32,7 @@ public class GenreService {
     }
 
     public List<GenreView> getAll() {
-        return repo.getAll()
+        return repo.findAll()
                 .stream()
                 .map(GenreView::fromEntity)
                 .collect(Collectors.toList());

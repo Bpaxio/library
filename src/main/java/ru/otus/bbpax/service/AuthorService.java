@@ -18,11 +18,11 @@ public class AuthorService {
     private final AuthorRepo repo;
 
     public void create(AuthorView author) {
-        repo.create(author.toEntity());
+        repo.save(author.toEntity());
     }
 
     public void update(AuthorView author) {
-        repo.update(author.toEntity());
+        repo.save(author.toEntity());
     }
 
     public AuthorView getAuthorById(Long id) {
@@ -32,7 +32,7 @@ public class AuthorService {
     }
 
     public List<AuthorView> getAll() {
-        return repo.getAll()
+        return repo.findAll()
                 .stream()
                 .map(AuthorView::fromEntity)
                 .collect(Collectors.toList());

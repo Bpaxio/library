@@ -1,10 +1,9 @@
 package ru.otus.bbpax.repository.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.bbpax.entity.Author;
-import ru.otus.bbpax.repository.AuthorRepo;
+import ru.otus.bbpax.repository.Repo;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -19,10 +18,10 @@ import java.util.Optional;
  * Created on 10.01.2019.
  */
 @Slf4j
-@Repository
-@Transactional(readOnly = true)
+//@Repository
+//@Transactional(readOnly = true)
 @SuppressWarnings("JpaQlInspection")
-public class AuthorRepoImpl implements AuthorRepo {
+public class AuthorRepoImpl implements Repo<Author, Long> {
 
     @PersistenceContext
     private EntityManager em;
@@ -64,7 +63,7 @@ public class AuthorRepoImpl implements AuthorRepo {
         log.info("{} rows were deleted", rowCount);
     }
 
-    @Override
+//    @Override
     public Optional<Author> findByFullName(String name, String surname) {
         TypedQuery<Author> query = em.createQuery("select a from Author a where a.name = :name and a.surname = :surname", Author.class);
         query.setParameter("name", name);

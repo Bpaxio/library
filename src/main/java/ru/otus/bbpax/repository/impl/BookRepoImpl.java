@@ -1,10 +1,10 @@
 package ru.otus.bbpax.repository.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.bbpax.entity.Book;
-import ru.otus.bbpax.repository.BookRepo;
+import ru.otus.bbpax.repository.Repo;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -18,10 +18,11 @@ import java.util.Optional;
  * Created on 10.01.2019.
  */
 @Slf4j
-@Repository
+@NoRepositoryBean
+//@Repository
 @Transactional(readOnly = true)
 @SuppressWarnings("JpaQlInspection")
-public class BookRepoImpl implements BookRepo {
+public class BookRepoImpl implements Repo<Book, Long> {
 
     @PersistenceContext
     private EntityManager em;
