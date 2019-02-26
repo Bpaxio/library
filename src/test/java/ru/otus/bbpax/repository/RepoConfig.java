@@ -7,9 +7,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import ru.otus.bbpax.repository.impl.AuthorRepoImpl;
-import ru.otus.bbpax.repository.impl.BookRepoImpl;
-import ru.otus.bbpax.repository.impl.GenreRepoImpl;
 
 import javax.sql.DataSource;
 
@@ -29,20 +26,5 @@ public class RepoConfig {
     @Bean
     public NamedParameterJdbcOperations jdbcOperations(DataSource database) {
         return new NamedParameterJdbcTemplate(database);
-    }
-
-    @Bean
-    public AuthorRepo authorRepo(NamedParameterJdbcOperations jdbc) {
-        return new AuthorRepoImpl(jdbc);
-    }
-
-    @Bean
-    public GenreRepo genreRepo(NamedParameterJdbcOperations jdbc) {
-        return new GenreRepoImpl(jdbc);
-    }
-
-    @Bean
-    public BookRepo bookRepo(NamedParameterJdbcOperations jdbc) {
-        return new BookRepoImpl(jdbc);
     }
 }

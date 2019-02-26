@@ -3,14 +3,9 @@ package ru.otus.bbpax.controller.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.otus.bbpax.entity.Author;
 import ru.otus.bbpax.entity.Book;
-import ru.otus.bbpax.entity.Genre;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -30,6 +25,15 @@ public class BookView implements EntityView<Book> {
 
     private String genreName;
     private String authorFullName;
+
+    public BookView(String name, Integer publicationDate, String publishingOffice, BigDecimal price, String genreName, String authorFullName) {
+        this.name = name;
+        this.publicationDate = publicationDate;
+        this.publishingOffice = publishingOffice;
+        this.price = price;
+        this.genreName = genreName;
+        this.authorFullName = authorFullName;
+    }
 
     public static BookView fromEntity(Book book) {
         return Objects.isNull(book)

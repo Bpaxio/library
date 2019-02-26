@@ -6,32 +6,29 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.bbpax.entity.Author;
 import ru.otus.bbpax.entity.Book;
 import ru.otus.bbpax.entity.Genre;
-import ru.otus.bbpax.repository.mapper.AuthorMapper;
-import ru.otus.bbpax.repository.mapper.BookMapper;
-import ru.otus.bbpax.repository.mapper.GenreMapper;
+import ru.otus.bbpax.repository.impl.BookRepoImpl;
 
+import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @Slf4j
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@ContextConfiguration(classes = {RepoConfig.class})
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@Import(BookRepoImpl.class)
 @ActiveProfiles("test")
 public class BookRepoTest {
 
@@ -39,38 +36,39 @@ public class BookRepoTest {
     private BookRepo repo;
 
     @Autowired
-    private NamedParameterJdbcOperations jdbc;
+    private TestEntityManager manager;
+
+    private TypedQuery<Book> allQuery;
+    private TypedQuery<Long> countQuery;
 
     private Author author;
     private Genre genre;
 
     @Before
-    public void setUp() {
+    @SuppressWarnings("JpaQlInspection")
+    public void setUp() throws Exception {
+        allQuery = manager.getEntityManager()
+                .createQuery("select b from Book b", Book.class);
+        countQuery = manager.getEntityManager()
+                .createQuery("select count(b) from Book b", Long.class);
+
         genre = new Genre(
-                1L,
-                "ТестИмя"
-        );
-        jdbc.update(
-                "insert into genre (name) values (:name)",
-                new GenreMapper().mapSource(genre)
+                100000L,
+                "Novel"
         );
 
         author = new Author(
-                1L,
-                "ТестИмя",
-                "ТестФамилия",
-                "ТестСтрана"
-        );
-        jdbc.update(
-                "insert into author (name, surname, country) values (:name, :surname, :country)",
-                new AuthorMapper().mapSource(author)
+                100000L,
+                "AuthorTest",
+                "DoeTest",
+                "CountryTest"
         );
     }
 
     @Test
     public void testCreate() throws Exception {
+        Long initCount = countQuery.getSingleResult();
         Book expected = new Book(
-                1L,
                 "ТестИмя",
                 2019,
                 "ТестИздательство",
@@ -80,60 +78,28 @@ public class BookRepoTest {
         );
         repo.create(expected);
 
-        List<Book> books = jdbc.query("select book.id, book.name, publication_date, publishing_office, price, author_id, a.name as author_name, a.surname as author_surname, a.country as author_country, genre_id, g.name as genre_name"
-                                + " from book"
-                                + " join author as a on author_id = a.id"
-                                + " join genre as g on genre_id = g.id",
-                new BookMapper());
-        assertEquals(1, books.size());
-        Book saved = books.get(0);
+        assertEquals(initCount + 1, allQuery.getResultList().size());
+
+        Book saved = manager.find(Book.class, 1L);
         assertEquals(expected, saved);
-    }
 
-    @Test
-    public void testCreateWithAnyId() throws Exception {
-        Book wrong = new Book(
-                100500L,
-                "ТестИмя",
-                2019,
-                "ТестИздательство",
-                BigDecimal.valueOf(1599.99),
-                genre,
-                author
-        );
-        repo.create(wrong);
-
-        List<Book> books = jdbc.query("select book.id, book.name, publication_date, publishing_office, price, author_id, a.name as author_name, a.surname as author_surname, a.country as author_country, genre_id, g.name as genre_name"
-                                + " from book"
-                                + " join author as a on author_id = a.id"
-                                + " join genre as g on genre_id = g.id",
-                new BookMapper());
-        assertEquals(1, books.size());
-        Book saved = books.get(0);
-
-        assertNotEquals(wrong, saved);
-        assertNotEquals(wrong.getId(), saved.getId());
-        assertEquals(wrong.getName(), saved.getName());
-        assertEquals(wrong.getPrice(), saved.getPrice());
-        assertEquals(wrong.getPublicationDate(), saved.getPublicationDate());
-        assertEquals(wrong.getPublishingOffice(), saved.getPublishingOffice());
-        assertEquals(wrong.getGenre().getId(), saved.getGenre().getId());
-        assertEquals(wrong.getAuthor().getId(), saved.getAuthor().getId());
+        assertNull(manager.find(Author.class, 2L));
     }
 
     @Test
     public void testUpdate() throws Exception {
+        Long initCount = countQuery.getSingleResult();
         Book was = new Book(
-                1L,
-                "ТестИмя",
-                2019,
-                "ТестИздательство",
-                BigDecimal.valueOf(1599.99),
+                100002L,
+                "Novel of TestAuthor",
+                1998,
+                "testOffice",
+                BigDecimal.valueOf(899.99),
                 genre,
                 author
         );
         Book is = new Book(
-                1L,
+                100002L,
                 "ТестИмяNEW",
                 2019,
                 "ТестИздательствоNEW",
@@ -141,33 +107,25 @@ public class BookRepoTest {
                 genre,
                 author
         );
-        jdbc.update(
-                "insert into book (name, publication_date, publishing_office, price, author_id, genre_id)"
-                        + " values (:name, :publication_date, :publishing_office, :price, :author_id, :genre_id)",
-                new BookMapper().mapSource(was)
-        );
-
         repo.update(is);
 
-        List<Book> books = jdbc.query("select book.id, book.name, publication_date, publishing_office, price, author_id, a.name as author_name, a.surname as author_surname, a.country as author_country, genre_id, g.name as genre_name"
-                                + " from book"
-                                + " join author as a on author_id = a.id"
-                                + " join genre as g on genre_id = g.id",
-                new BookMapper());
-        assertEquals(1, books.size());
-        Book saved = books.get(0);
+        Long actualCount = Integer.toUnsignedLong(allQuery.getResultList().size());
+        assertEquals(initCount, actualCount);
+
+        Book saved = manager.find(Book.class, 100002L);
+
         assertNotEquals(was, saved);
-        assertEquals(is, saved);
+        testEquals(is, saved);
     }
 
     @Test
     public void testFindById() throws Exception {
         Book expected = new Book(
-                1L,
-                "ТестИмя",
-                2019,
-                "ТестИздательство",
-                BigDecimal.valueOf(1599.99),
+                100002L,
+                "Novel of TestAuthor",
+                1998,
+                "testOffice",
+                BigDecimal.valueOf(899.99),
                 genre,
                 author
         );
@@ -180,33 +138,25 @@ public class BookRepoTest {
                 genre,
                 author
         );
-        jdbc.update(
-                "insert into book (name, publication_date, publishing_office, price, author_id, genre_id)"
-                        + " values (:name, :publication_date, :publishing_office, :price, :author_id, :genre_id)",
-                new BookMapper().mapSource(expected)
-        );
-        jdbc.update(
-                "insert into book (name, publication_date, publishing_office, price, author_id, genre_id)"
-                        + " values (:name, :publication_date, :publishing_office, :price, :author_id, :genre_id)",
-                new BookMapper().mapSource(notExpected)
-        );
-
         //test not found
 
         Optional<Book> book = repo.findById(0L);
         assertFalse(book.isPresent());
 
-        book = repo.findById(1L);
-
-        List<Book> books = jdbc.query("select book.id, book.name, publication_date, publishing_office, price, author_id, a.name as author_name, a.surname as author_surname, a.country as author_country, genre_id, g.name as genre_name"
-                                + " from book"
-                                + " join author as a on author_id = a.id"
-                                + " join genre as g on genre_id = g.id",
-                new BookMapper());
-        books.forEach(author1 -> log.info("is: {}", author1));
+        book = repo.findById(100002L);
 
         assertTrue(book.isPresent());
-        assertEquals(expected, book.get());
+        testEquals(expected, book.get());
         assertNotEquals(notExpected, book.get());
+    }
+
+    private void testEquals(Book expected, Book actual) {
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getName(), actual.getName());
+        assertEquals(expected.getPublishingOffice(), actual.getPublishingOffice());
+        assertEquals(expected.getPublicationDate(), actual.getPublicationDate());
+        assertEquals(expected.getPrice(), actual.getPrice());
+        assertEquals(expected.getAuthor().getId(), actual.getAuthor().getId());
+        assertEquals(expected.getGenre().getId(), actual.getGenre().getId());
     }
 }

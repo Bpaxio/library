@@ -7,7 +7,7 @@ import java.util.Optional;
  * @author Vlad Rakhlinskii
  * Created on 21.01.2019.
  */
-public interface JdbcRepository<E, ID> {
+public interface Repo<E, ID> {
     Optional<E> findById(ID id);
 
     List<E> getAll();

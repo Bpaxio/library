@@ -20,15 +20,14 @@ public class BookController {
 
     @ShellMethod(key = {"book --create", "book -c"}, value = "book creation")
     public void createBook(@ShellOption(help = "Book's name.") String name,
-                             @ShellOption(help = "Year of Book's publication.") Integer publicationDate,
+                           @ShellOption(help = "Year of Book's publication.") Integer publicationDate,
                            @ShellOption(help = "Office or Name of company where this book was published.") String publishingOffice,
-                             @ShellOption(help = "Book's price. Scale will be rounded to the value - 2") BigDecimal price,
-                             @ShellOption(help = "Book's genre.") String genre,
-                             @ShellOption(help = "Book's author.") String author) {
+                           @ShellOption(help = "Book's price. Scale will be rounded to the value - 2") BigDecimal price,
+                           @ShellOption(help = "Book's genre.") String genre,
+                           @ShellOption(help = "Book's author.") String author) {
         log.info("create book: '{}' published in {} y. as {}, created by {} and costs - {}.",
                 name, publicationDate, genre, author, price);
         BookView book = new BookView(
-                null,
                 name,
                 publicationDate,
                 publishingOffice,

@@ -1,14 +1,16 @@
 package ru.otus.bbpax.repository.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.bbpax.entity.Genre;
 import ru.otus.bbpax.repository.GenreRepo;
-import ru.otus.bbpax.repository.mapper.GenreMapper;
 
-import java.util.Collections;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,73 +20,57 @@ import java.util.Optional;
  */
 @Slf4j
 @Repository
+@Transactional(readOnly = true)
+@SuppressWarnings("JpaQlInspection")
 public class GenreRepoImpl implements GenreRepo {
-    private final NamedParameterJdbcOperations jdbc;
-    private final GenreMapper mapper;
 
-    public GenreRepoImpl(NamedParameterJdbcOperations jdbc) {
-        this.jdbc = jdbc;
-        mapper = new GenreMapper();
-    }
+    @PersistenceContext
+    private EntityManager em;
+
     @Override
     public Optional<Genre> findById(Long id) {
-        try {
-            return Optional.ofNullable(
-                    jdbc.queryForObject(
-                            "select * from genre where id = :id",
-                            Collections.singletonMap("id", id),
-                            mapper
-                    )
-            );
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("No genre was found. {}", e.getMessage());
-            return Optional.empty();
-        }
+        return Optional.ofNullable(em.find(Genre.class, id));
     }
 
     @Override
     public List<Genre> getAll() {
-        return jdbc.query("select * from genre", mapper);
+        TypedQuery<Genre> getAllQuery = em.createQuery("select g from Genre g", Genre.class);
+        return getAllQuery.getResultList();
     }
 
     @Override
+    @Transactional
     public void create(Genre entity) {
-        int created = jdbc.update(
-                "insert into genre (name) values (:name)",
-                mapper.mapSource(entity)
-        );
-        log.info("created {} rows", created);
+        em.persist(entity);
     }
 
     @Override
+    @Transactional
     public void update(Genre entity) {
-        int updated = jdbc.update(
-                "update genre set name = :name where id = :id",
-                mapper.mapSource(entity)
-        );
-        log.info("updated {} rows", updated);
+        Query query = em.createQuery("update Genre g set g.name = :name where g.id = :id");
+        query.setParameter("id", entity.getId());
+        query.setParameter("name", entity.getName());
+        query.executeUpdate();
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
-        jdbc.queryForObject(
-                "delete from genre where id = :id",
-                Collections.singletonMap("id", id),
-                mapper
-        );
+        TypedQuery<Genre> query = em.createQuery("delete from Genre g where g.id = :id", Genre.class);
+        query.setParameter("id", id);
+        int rowCount = query.executeUpdate();
+        log.info("{} rows were deleted", rowCount);
     }
 
     @Override
     public Optional<Genre> findByName(String name) {
+        TypedQuery<Genre> query = em.createQuery("select g from Genre g where g.name = :name", Genre.class);
+        query.setParameter("name", name);
         try {
-        return Optional.ofNullable(
-                jdbc.queryForObject(
-                        "select * from genre where name = :name",
-                        Collections.singletonMap("name", name),
-                        mapper
-                ));
-        } catch (EmptyResultDataAccessException e) {
-            log.warn("Genre '{}' wasn't found.", name);
+            Genre result = query.getSingleResult();
+            return Optional.of(result);
+        } catch (NoResultException e) {
+            log.debug("there is no genre with such name {}", name);
             return Optional.empty();
         }
     }
