@@ -85,7 +85,7 @@ public class BookRepoTest {
         Book saved = manager.find(Book.class, 1L);
         assertEquals(expected, saved);
 
-        assertNull(manager.find(Author.class, 2L));
+        assertNull(manager.find(Book.class, 2L));
     }
 
     @Test

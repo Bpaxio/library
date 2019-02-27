@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.otus.bbpax.entity.Author;
 import ru.otus.bbpax.entity.Genre;
 import ru.otus.bbpax.repository.impl.GenreRepoImpl;
 
@@ -66,7 +65,7 @@ public class GenreRepoTest {
         Genre saved = manager.find(Genre.class, 1L);
         assertEquals(expected, saved);
 
-        assertNull(manager.find(Author.class, 2L));
+        assertNull(manager.find(Genre.class, 2L));
     }
 
     @Test
