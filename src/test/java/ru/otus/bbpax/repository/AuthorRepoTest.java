@@ -120,7 +120,7 @@ public class AuthorRepoTest {
     }
 
     @Test
-    public void testGetAll() throws Exception {
+    public void testFindAll() throws Exception {
         Long initCount = countQuery.getSingleResult();
 
         List<Author> all = repo.findAll();

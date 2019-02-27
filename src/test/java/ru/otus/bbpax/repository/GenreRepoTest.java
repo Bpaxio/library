@@ -109,7 +109,7 @@ public class GenreRepoTest {
     }
 
     @Test
-    public void testGetAll() throws Exception {
+    public void testFindAll() throws Exception {
         Long initCount = countQuery.getSingleResult();
 
         List<Genre> all = repo.findAll();

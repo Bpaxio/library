@@ -7,14 +7,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.bbpax.entity.Author;
 import ru.otus.bbpax.entity.Book;
 import ru.otus.bbpax.entity.Comment;
 import ru.otus.bbpax.entity.Genre;
-import ru.otus.bbpax.repository.impl.CommentRepoImpl;
 
 import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
@@ -33,7 +31,6 @@ import static org.junit.Assert.assertTrue;
 @Slf4j
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@Import(CommentRepoImpl.class)
 @ActiveProfiles("test")
 public class CommentRepoTest {
 
@@ -88,7 +85,7 @@ public class CommentRepoTest {
                 "some text",
                 book
         );
-        repo.create(expected);
+        repo.save(expected);
 
         assertEquals(initCount + 1, allQuery.getResultList().size());
 
@@ -115,7 +112,7 @@ public class CommentRepoTest {
                 "some text",
                 book
         );
-        repo.update(is);
+        repo.save(is);
 
         Long actualCount = Integer.toUnsignedLong(allQuery.getResultList().size());
         assertEquals(initCount, actualCount);
@@ -196,7 +193,7 @@ public class CommentRepoTest {
     public void testGetAll() throws Exception {
         Long initCount = countQuery.getSingleResult();
 
-        List<Comment> all = repo.getAll();
+        List<Comment> all = repo.findAll();
         assertEquals(initCount.intValue(), all.size());
 
         assertEquals(allQuery.getResultList(), all);

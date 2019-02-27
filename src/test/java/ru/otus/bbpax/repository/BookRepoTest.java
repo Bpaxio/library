@@ -150,7 +150,7 @@ public class BookRepoTest {
     }
 
     @Test
-    public void testGetAll() throws Exception {
+    public void testFindAll() throws Exception {
         Long initCount = countQuery.getSingleResult();
 
         List<Book> all = repo.findAll();
