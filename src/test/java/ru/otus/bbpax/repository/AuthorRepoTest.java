@@ -1,31 +1,33 @@
 package ru.otus.bbpax.repository;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.bbpax.entity.Author;
-import ru.otus.bbpax.repository.mapper.AuthorMapper;
+import ru.otus.bbpax.repository.impl.AuthorRepoImpl;
 
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @Slf4j
-@RunWith(SpringRunner.class)
 @DataJpaTest
-@ContextConfiguration(classes = {RepoConfig.class})
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@RunWith(SpringRunner.class)
+@Import(AuthorRepoImpl.class)
 @ActiveProfiles("test")
 public class AuthorRepoTest {
 
@@ -33,98 +35,79 @@ public class AuthorRepoTest {
     private AuthorRepo repo;
 
     @Autowired
-    private NamedParameterJdbcOperations jdbc;
+    private TestEntityManager manager;
 
-    @Test
-    public void testCreate() throws Exception {
-        Author expected = new Author(
-                1L,
-                "ТестИмя",
-                "ТестФамилия",
-                "ТестСтрана"
-        );
-        repo.create(expected);
+    private TypedQuery<Author> allQuery;
+    private TypedQuery<Long> countQuery;
 
-        List<Author> authors = jdbc.query("select * from author",
-                new AuthorMapper());
-        authors.forEach(author1 -> log.info("is: {}", author1));
-        assertEquals(1, authors.size());
-        Author saved = authors.get(0);
-        assertEquals(expected, saved);
+    @Before
+    @SuppressWarnings("JpaQlInspection")
+    public void setUp() throws Exception {
+        allQuery = manager.getEntityManager()
+                .createQuery("select a from Author a", Author.class);
+        countQuery = manager.getEntityManager()
+                .createQuery("select count(a) from Author a", Long.class);
     }
 
     @Test
-    public void testCreateWithAnyId() throws Exception {
-        Author wrong = new Author(
-                100500L,
+    public void testCreate() throws Exception {
+        Long initCount = countQuery.getSingleResult();
+        Author expected = new Author(
                 "ТестИмя",
                 "ТестФамилия",
                 "ТестСтрана"
         );
-        repo.create(wrong);
 
-        List<Author> authors = jdbc.query("select * from author",
-                new AuthorMapper());
-        assertEquals(1, authors.size());
-        Author saved = authors.get(0);
+        repo.create(expected);
 
-        assertNotEquals(wrong, saved);
-        assertNotEquals(wrong.getId(), saved.getId());
-        assertEquals(wrong.getName(), saved.getName());
-        assertEquals(wrong.getSurname(), saved.getSurname());
-        assertEquals(wrong.getCountry(), saved.getCountry());
+
+        assertEquals(initCount + 1, allQuery.getResultList().size());
+
+        Author saved = manager.find(Author.class, 1L);
+        assertEquals(expected, saved);
+
+        assertNull(manager.find(Author.class, 2L));
     }
 
     @Test
     public void testUpdate() throws Exception {
+        Long initCount = countQuery.getSingleResult();
         Author was = new Author(
-                1L,
-                "ТестИмя",
-                "ТестФамилия",
-                "ТестСтрана"
+                100000L,
+                "AuthorTest",
+                "DoeTest",
+                "CountryTest"
         );
         Author is = new Author(
-                1L,
+                100000L,
                 "ТестИмяNEW",
                 "ТестФамилияNEW",
                 "ТестСтранаNEW"
         );
-        jdbc.update(
-                "insert into author (name, surname, country) values (:name, :surname, :country)",
-                new AuthorMapper().mapSource(was)
-        );
-
         repo.update(is);
 
-        List<Author> authors = jdbc.query("select * from author",
-                new AuthorMapper());
-        assertEquals(1, authors.size());
-        Author saved = authors.get(0);
+        Long actualCount = Integer.toUnsignedLong(allQuery.getResultList().size());
+        assertEquals(initCount, actualCount);
+
+        Author saved = manager.find(Author.class, 100000L);
         assertNotEquals(was, saved);
-        assertEquals(is, saved);
+
+        testEquals(is, saved);
     }
 
     @Test
     public void testFindById() throws Exception {
         Author expected = new Author(
-                1L,
-                "ТестИмя",
-                "ТестФамилия",
-                "ТестСтрана"
+                100003L,
+                "TestName",
+                "TestSurname",
+                "TestCountry"
         );
         Author notExpected = new Author(
-                2L,
-                "ТестИмя_wrong",
-                "ТестФамилия_wrong",
-                "ТестСтрана_wrong"
-        );
-        jdbc.update(
-                "insert into author (name, surname, country) values (:name, :surname, :country)",
-                new AuthorMapper().mapSource(expected)
-        );
-        jdbc.update(
-                "insert into author (name, surname, country) values (:name, :surname, :country)",
-                new AuthorMapper().mapSource(notExpected)
+                100002L,
+                "Author2",
+                "Doe2",
+                "GB"
         );
 
         //test not found
@@ -132,15 +115,61 @@ public class AuthorRepoTest {
         Optional<Author> author = repo.findById(0L);
         assertFalse(author.isPresent());
 
-        author = repo.findById(1L);
-
-        List<Author> authors = jdbc.query("select * from author",
-                new AuthorMapper());
-        authors.forEach(author1 -> log.info("is: {}", author1));
+        author = repo.findById(100003L);
 
         assertTrue(author.isPresent());
-        assertEquals(expected, author.get());
+        testEquals(expected, author.get());
         assertNotEquals(notExpected, author.get());
+    }
+
+    @Test
+    public void testGetAll() throws Exception {
+        Long initCount = countQuery.getSingleResult();
+
+        List<Author> all = repo.getAll();
+        assertEquals(initCount.intValue(), all.size());
+
+        assertEquals(allQuery.getResultList(), all);
+    }
+
+    @Test
+    public void testDeleteById() throws Exception {
+        Long initCount = countQuery.getSingleResult();
+        Author author = manager.find(Author.class, 100003L);
+        assertNotNull(author);
+        repo.deleteById(100003L);
+        assertEquals(initCount - 1, countQuery.getSingleResult().longValue());
+    }
+
+    @Test
+    public void testFindByFullName() throws Exception {
+        Author expected = new Author(
+                100003L,
+                "TestName",
+                "TestSurname",
+                "TestCountry"
+        );
+        Author notExpected = new Author(
+                100002L,
+                "Author2",
+                "Doe2",
+                "GB"
+        );
+
+        Optional<Author> author = repo.findByFullName(expected.getName(), expected.getSurname());
+        assertTrue(author.isPresent());
+        testEquals(expected, author.get());
+        assertNotEquals(notExpected, author.get());
+
+        author = repo.findByFullName("Not existed", "Unbelievable");
+        assertFalse(author.isPresent());
+    }
+
+    private void testEquals(Author expected, Author actual) {
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getCountry(), actual.getCountry());
+        assertEquals(expected.getName(), actual.getName());
+        assertEquals(expected.getSurname(), actual.getSurname());
     }
 
 }

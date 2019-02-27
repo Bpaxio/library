@@ -1,6 +1,7 @@
 package ru.otus.bbpax.controller.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class TestVariables {
 
@@ -15,4 +16,9 @@ public class TestVariables {
     public static final int BOOK_PUBLICATION_YEAR = 1993;
     public static final String BOOK_PUBLISHING_OFFICE = "testPubOffice";
     public static final BigDecimal BOOK_PRICE = BigDecimal.TEN;
+
+    public static final long COMMENT_ID = 193L;
+    public static final String COMMENT_USERNAME = "commentator";
+    public static final LocalDateTime COMMENT_CREATED = LocalDateTime.now();
+    public static final String COMMENT_MESSAGE = "testComment";
 }

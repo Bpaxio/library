@@ -6,6 +6,14 @@ spring:
     username: postgres
     password: aszx12qw
     url: jdbc:postgresql://localhost:5432/library
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+
+#Disable feature detection by this undocumented parameter.
+#Check the org.hibernate.engine.jdbc.internal.JdbcServiceImpl.configure method for more details.
+    properties.hibernate.temp.use_jdbc_metadata_defaults: false
 
 #  banner:
 #    charset: UTF-8

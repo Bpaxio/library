@@ -1,17 +1,17 @@
 package ru.otus.bbpax.repository.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.bbpax.entity.Author;
 import ru.otus.bbpax.repository.AuthorRepo;
-import ru.otus.bbpax.repository.mapper.AuthorMapper;
 
-import java.util.Collections;
-import java.util.HashMap;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -20,77 +20,60 @@ import java.util.Optional;
  */
 @Slf4j
 @Repository
+@Transactional(readOnly = true)
+@SuppressWarnings("JpaQlInspection")
 public class AuthorRepoImpl implements AuthorRepo {
-    private final NamedParameterJdbcOperations jdbc;
-    private final AuthorMapper mapper;
 
-    public AuthorRepoImpl(NamedParameterJdbcOperations jdbc) {
-        this.jdbc = jdbc;
-        mapper = new AuthorMapper();
-    }
+    @PersistenceContext
+    private EntityManager em;
 
     @Override
     public Optional<Author> findById(Long id) {
-        try {
-            return Optional.ofNullable(
-                    jdbc.queryForObject(
-                            "select * from author where id = :id",
-                            Collections.singletonMap("id", id),
-                            mapper
-                    )
-            );
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("No author was found. {}", e.getMessage());
-            return Optional.empty();
-        }
+        return Optional.ofNullable(em.find(Author.class, id));
     }
 
     @Override
     public List<Author> getAll() {
-        return jdbc.query("select * from author", mapper);
+        TypedQuery<Author> getAllQuery = em.createQuery("select a from Author a", Author.class);
+        return getAllQuery.getResultList();
     }
 
     @Override
+    @Transactional
     public void create(Author entity) {
-        int created = jdbc.update(
-                "insert into author (name, surname, country) values (:name, :surname, :country)",
-                mapper.mapSource(entity)
-        );
-        log.info("created {} rows", created);
+        em.persist(entity);
     }
 
     @Override
+    @Transactional
     public void update(Author entity) {
-        int updated = jdbc.update(
-                "update author set name = :name, surname = :surname, country = :country  where id = :id",
-                mapper.mapSource(entity)
-        );
-        log.info("updated {} rows", updated);
+        Query query = em.createQuery("update Author a set a.name = :name, a.surname = :surname, a.country = :country where a.id = :id");
+        query.setParameter("id", entity.getId());
+        query.setParameter("name", entity.getName());
+        query.setParameter("surname", entity.getSurname());
+        query.setParameter("country", entity.getCountry());
+        query.executeUpdate();
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
-        jdbc.queryForObject(
-                "delete from author where id = :id",
-                Collections.singletonMap("id", id),
-                mapper
-        );
+        Query query = em.createQuery("delete from Author a where a.id = :id");
+        query.setParameter("id", id);
+        int rowCount = query.executeUpdate();
+        log.info("{} rows were deleted", rowCount);
     }
 
     @Override
     public Optional<Author> findByFullName(String name, String surname) {
-        Map<String, String> map = new HashMap<>();
-        map.put("name", name);
-        map.put("surname", surname);
+        TypedQuery<Author> query = em.createQuery("select a from Author a where a.name = :name and a.surname = :surname", Author.class);
+        query.setParameter("name", name);
+        query.setParameter("surname", surname);
         try {
-            return Optional.ofNullable(
-                    jdbc.queryForObject(
-                            "select * from author where name = :name and surname = :surname",
-                            map,
-                            mapper
-                    ));
-        } catch (EmptyResultDataAccessException e) {
-            log.warn("Author '{} {}' wasn't found.", name, surname);
+            Author result = query.getSingleResult();
+            return Optional.of(result);
+        } catch (NoResultException e) {
+            log.debug("there is no author with such name & surname [ {}; {} ]", name, surname);
             return Optional.empty();
         }
     }

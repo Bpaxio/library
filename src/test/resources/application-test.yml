@@ -7,3 +7,7 @@ spring:
     driver-class-name: org.h2.Driver
     username: test
     password: qwewq
+    data: /db/changelog/data.sql
+  jpa:
+    hibernate:
+      ddl-auto: create-drop

@@ -1,14 +1,15 @@
 package ru.otus.bbpax.repository.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.bbpax.entity.Book;
 import ru.otus.bbpax.repository.BookRepo;
-import ru.otus.bbpax.repository.mapper.BookMapper;
 
-import java.util.Collections;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,70 +19,54 @@ import java.util.Optional;
  */
 @Slf4j
 @Repository
+@Transactional(readOnly = true)
+@SuppressWarnings("JpaQlInspection")
 public class BookRepoImpl implements BookRepo {
-    private final NamedParameterJdbcOperations jdbc;
-    private final BookMapper mapper;
 
-    public BookRepoImpl(NamedParameterJdbcOperations jdbc) {
-        this.jdbc = jdbc;
-        mapper = new BookMapper();
-    }
+    @PersistenceContext
+    private EntityManager em;
+
     @Override
     public Optional<Book> findById(Long id) {
-        try {
-            return Optional.ofNullable(
-                    jdbc.queryForObject(
-                            "select book.id, book.name, publication_date, publishing_office, price, author_id, a.name as author_name, a.surname as author_surname, a.country as author_country, genre_id, g.name as genre_name"
-                                    + " from book"
-                                    + " join author as a on author_id = a.id"
-                                    + " join genre as g on genre_id = g.id"
-                                    + " where book.id = :id",
-                            Collections.singletonMap("id", id),
-                            mapper
-                    )
-            );
-        } catch (EmptyResultDataAccessException e) {
-            log.debug("No author was found. {}", e.getMessage());
-            return Optional.empty();
-        }
+        return Optional.ofNullable(em.find(Book.class, id));
     }
 
     @Override
     public List<Book> getAll() {
-        return jdbc.query(
-                "select book.id, book.name, publication_date, publishing_office, price, author_id, a.name as author_name, a.surname as author_surname, a.country as author_country, genre_id, g.name as genre_name"
-                        + " from book"
-                        + " join author as a on author_id = a.id"
-                        + " join genre as g on genre_id = g.id",
-                mapper
-        );
+        TypedQuery<Book> getAllQuery = em.createQuery("select b from Book b", Book.class);
+        return getAllQuery.getResultList();
     }
 
     @Override
+    @Transactional
     public void create(Book entity) {
-        jdbc.update(
-                "insert into book (name, publication_date, publishing_office, price, author_id, genre_id) "
-                        + "values (:name, :publication_date, :publishing_office, :price, :author_id, :genre_id)",
-                mapper.mapSource(entity)
-        );
+        em.persist(entity);
     }
 
     @Override
+    @Transactional
     public void update(Book entity) {
-        jdbc.update(
-                "update book set name = :name, publication_date = :publication_date, "
-                        + "price = :price, publishing_office = :publishing_office, author_id = :author_id, genre_id = :genre_id  "
-                        + "where id = :id",
-                mapper.mapSource(entity)
-        );
+        Query query = em.createQuery("update Book b set b.name = :name, " +
+                "b.publishingOffice = :publishingOffice, b.price = :price, " +
+                "b.publicationDate = :publicationDate, " +
+                "b.author = :author, b.genre = :genre " +
+                "where b.id = :id");
+        query.setParameter("id", entity.getId());
+        query.setParameter("name", entity.getName());
+        query.setParameter("publishingOffice", entity.getPublishingOffice());
+        query.setParameter("price", entity.getPrice());
+        query.setParameter("publicationDate", entity.getPublicationDate());
+        query.setParameter("author", entity.getAuthor());
+        query.setParameter("genre", entity.getGenre());
+        query.executeUpdate();
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
-        jdbc.queryForObject(
-                "delete from book where id = :id",
-                Collections.singletonMap("id", id),
-                mapper
-        );
+        Query query = em.createQuery("delete from Book b where b.id = :id");
+        query.setParameter("id", id);
+        int rowCount = query.executeUpdate();
+        log.info("{} rows were deleted", rowCount);
     }
 }
