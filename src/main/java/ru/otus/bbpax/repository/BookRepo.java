@@ -1,10 +1,12 @@
 package ru.otus.bbpax.repository;
 
+import org.springframework.stereotype.Repository;
 import ru.otus.bbpax.entity.Book;
 
 /**
  * @author Vlad Rakhlinskii
  * Created on 14.01.2019.
  */
-public interface BookRepo extends Repo<Book, Long> {
+@Repository
+public interface BookRepo extends CommonRepo<Book, Long> {
 }

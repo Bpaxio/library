@@ -8,11 +8,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.bbpax.entity.Genre;
-import ru.otus.bbpax.repository.impl.GenreRepoImpl;
 
 import javax.persistence.TypedQuery;
 import java.util.List;
@@ -28,7 +26,6 @@ import static org.junit.Assert.assertTrue;
 @Slf4j
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@Import(GenreRepoImpl.class)
 @ActiveProfiles("test")
 public class GenreRepoTest {
 
@@ -57,7 +54,7 @@ public class GenreRepoTest {
                 "ТестИмя"
         );
 
-        repo.create(expected);
+        repo.save(expected);
 
 
         assertEquals(initCount + 1, allQuery.getResultList().size());
@@ -79,7 +76,7 @@ public class GenreRepoTest {
                 100000L,
                 "ТестИмяNEW"
         );
-        repo.update(is);
+        repo.save(is);
 
         Long actualCount = Integer.toUnsignedLong(allQuery.getResultList().size());
         assertEquals(initCount, actualCount);
@@ -112,10 +109,10 @@ public class GenreRepoTest {
     }
 
     @Test
-    public void testGetAll() throws Exception {
+    public void testFindAll() throws Exception {
         Long initCount = countQuery.getSingleResult();
 
-        List<Genre> all = repo.getAll();
+        List<Genre> all = repo.findAll();
         assertEquals(initCount.intValue(), all.size());
 
         assertEquals(allQuery.getResultList(), all);

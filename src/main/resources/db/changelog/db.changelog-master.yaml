@@ -21,3 +21,47 @@ databaseChangeLog:
           relativeToChangelogFile: true
           splitStatements: true
           stripComments: true
+  - changeSet:
+      id: fill_data_0
+      author: Bpaxio
+      changes:
+      - sqlFile:
+          ncoding: utf8
+          endDelimiter: \nGO
+          path: data-genre.sql
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+  - changeSet:
+      id: fill_data_1
+      author: Bpaxio
+      changes:
+      - sqlFile:
+          ncoding: utf8
+          endDelimiter: \nGO
+          path: data-author.sql
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+  - changeSet:
+      id: fill_data_2
+      author: Bpaxio
+      changes:
+      - sqlFile:
+          ncoding: utf8
+          endDelimiter: \nGO
+          path: data-book.sql
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true
+  - changeSet:
+      id: fill_data_3
+      author: Bpaxio
+      changes:
+      - sqlFile:
+          ncoding: utf8
+          endDelimiter: \nGO
+          path: data-comment.sql
+          relativeToChangelogFile: true
+          splitStatements: true
+          stripComments: true

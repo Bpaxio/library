@@ -3,8 +3,8 @@ package ru.otus.bbpax.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.bbpax.controller.model.BookView;
-import ru.otus.bbpax.entity.Author;
 import ru.otus.bbpax.entity.Book;
 import ru.otus.bbpax.repository.AuthorRepo;
 import ru.otus.bbpax.repository.BookRepo;
@@ -18,11 +18,13 @@ import java.util.stream.Collectors;
 @Slf4j
 @AllArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class BookService {
     private final BookRepo repo;
     private final AuthorRepo authorRepo;
     private final GenreRepo genreRepo;
 
+    @Transactional
     public void create(BookView book) {
         Book bookBone = book.toEntity();
 
@@ -35,12 +37,14 @@ public class BookService {
         genreRepo.findByName(bookBone.getGenre().getName())
                 .ifPresent(bookBone::setGenre);
 
-        repo.create(bookBone);
+        repo.save(bookBone);
     }
 
+    @Transactional
     public void update(BookView book) {
-        repo.update(book.toEntity());
+        repo.save(book.toEntity());
     }
+
 
     public BookView getBookById(Long id) {
         Optional<Book> result = repo.findById(id);
@@ -50,12 +54,13 @@ public class BookService {
     }
 
     public List<BookView> getAll() {
-        return repo.getAll()
+        return repo.findAll()
                 .stream()
                 .map(BookView::fromEntity)
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteById(Long id) {
         repo.deleteById(id);
     }
