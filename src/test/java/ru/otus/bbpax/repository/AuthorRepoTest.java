@@ -1,54 +1,51 @@
 package ru.otus.bbpax.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.bbpax.entity.Author;
+import ru.otus.bbpax.entity.Book;
+import ru.otus.bbpax.entity.Genre;
 
-import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
-@DataJpaTest
-@RunWith(SpringRunner.class)
+@DataMongoTest
+@ExtendWith(SpringExtension.class)
+@TestPropertySource(value = "classpath:application-test.yml")
+@Import(value = MongoBeeConfig.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @ActiveProfiles("test")
 public class AuthorRepoTest {
 
     @Autowired
     private AuthorRepo repo;
 
-    @Autowired
-    private TestEntityManager manager;
-
-    private TypedQuery<Author> allQuery;
-    private TypedQuery<Long> countQuery;
-
-    @Before
-    @SuppressWarnings("JpaQlInspection")
-    public void setUp() throws Exception {
-        allQuery = manager.getEntityManager()
-                .createQuery("select a from Author a", Author.class);
-        countQuery = manager.getEntityManager()
-                .createQuery("select count(a) from Author a", Long.class);
+    @BeforeEach
+    public void setUp(@Autowired MongoTemplate template) throws Exception {
+        log.info("all: \ncount-{}:{};\n{};\n{};", template.findAll(Genre.class), template.findAll(Author.class), template.findAll(Book.class));
+//        log.info("all by book: \n{};", bookRepo.findAll());
     }
 
     @Test
-    public void testCreate() throws Exception {
-        Long initCount = countQuery.getSingleResult();
+    public void testCreate(@Autowired MongoTemplate template) throws Exception {
+        long initCount = template.getCollection(template.getCollectionName(Author.class)).count();
         Author expected = new Author(
                 "ТестИмя",
                 "ТестФамилия",
@@ -58,50 +55,50 @@ public class AuthorRepoTest {
         repo.save(expected);
 
 
-        assertEquals(initCount + 1, allQuery.getResultList().size());
+        assertEquals(initCount + 1, template.getCollection(template.getCollectionName(Author.class)).count());
 
-        Author saved = manager.find(Author.class, 1L);
+        Author saved = template.findById(expected.getId(), Author.class);
         assertEquals(expected, saved);
 
-        assertNull(manager.find(Author.class, 2L));
+//        assertNull(manager.find(Author.class, 2L));
     }
 
     @Test
-    public void testUpdate() throws Exception {
-        Long initCount = countQuery.getSingleResult();
+    public void testUpdate(@Autowired MongoTemplate template) throws Exception {
+        long initCount = template.getCollection(template.getCollectionName(Author.class)).count();
         Author was = new Author(
-                100000L,
+                "1c77bb3f57cfe05a39abc17a",
                 "AuthorTest",
                 "DoeTest",
                 "CountryTest"
         );
         Author is = new Author(
-                100000L,
+                "1c77bb3f57cfe05a39abc17a",
                 "ТестИмяNEW",
                 "ТестФамилияNEW",
                 "ТестСтранаNEW"
         );
         repo.save(is);
 
-        Long actualCount = Integer.toUnsignedLong(allQuery.getResultList().size());
+        long actualCount = template.getCollection(template.getCollectionName(Author.class)).count();
         assertEquals(initCount, actualCount);
 
-        Author saved = manager.find(Author.class, 100000L);
+        Author saved = template.findById(was.getId(), Author.class);
         assertNotEquals(was, saved);
 
         testEquals(is, saved);
     }
 
     @Test
-    public void testFindById() throws Exception {
+    public void testFindById(@Autowired MongoTemplate template) throws Exception {
         Author expected = new Author(
-                100003L,
+                "4c77bb3f57cfe05a39abc17a",
                 "TestName",
                 "TestSurname",
                 "TestCountry"
         );
         Author notExpected = new Author(
-                100002L,
+                "3c77bb3f57cfe05a39abc17a",
                 "Author2",
                 "Doe2",
                 "GB"
@@ -109,10 +106,10 @@ public class AuthorRepoTest {
 
         //test not found
 
-        Optional<Author> author = repo.findById(0L);
+        Optional<Author> author = repo.findById("2212c77bb3f57cfe05a39abc17a");
         assertFalse(author.isPresent());
 
-        author = repo.findById(100003L);
+        author = repo.findById("4c77bb3f57cfe05a39abc17a");
 
         assertTrue(author.isPresent());
         testEquals(expected, author.get());
@@ -120,45 +117,45 @@ public class AuthorRepoTest {
     }
 
     @Test
-    public void testFindAll() throws Exception {
-        Long initCount = countQuery.getSingleResult();
+    public void testFindAll(@Autowired MongoTemplate template) throws Exception {
+        long initCount = template.getCollection(template.getCollectionName(Author.class)).count();
 
         List<Author> all = repo.findAll();
-        assertEquals(initCount.intValue(), all.size());
+        assertEquals(initCount, all.size());
 
-        assertEquals(allQuery.getResultList(), all);
+        assertEquals(template.findAll(Author.class), all);
     }
 
     @Test
-    public void testDeleteById() throws Exception {
-        Long initCount = countQuery.getSingleResult();
-        Author author = manager.find(Author.class, 100003L);
+    public void testDeleteById(@Autowired MongoTemplate template) throws Exception {
+        long initCount = template.getCollection(template.getCollectionName(Author.class)).count();
+        Author author = template.findById("4c77bb3f57cfe05a39abc17a", Author.class);
         assertNotNull(author);
-        repo.deleteById(100003L);
-        assertEquals(initCount - 1, countQuery.getSingleResult().longValue());
+        repo.deleteById("4c77bb3f57cfe05a39abc17a");
+        assertEquals(initCount - 1, template.getCollection(template.getCollectionName(Author.class)).count());
     }
 
     @Test
-    public void testFindByFullName() throws Exception {
+    public void testFindByNameAndSurname(@Autowired MongoTemplate template) throws Exception {
         Author expected = new Author(
-                100003L,
+                "4c77bb3f57cfe05a39abc17a",
                 "TestName",
                 "TestSurname",
                 "TestCountry"
         );
         Author notExpected = new Author(
-                100002L,
+                "3c77bb3f57cfe05a39abc17a",
                 "Author2",
                 "Doe2",
                 "GB"
         );
 
-        Optional<Author> author = repo.findByFullName(expected.getName(), expected.getSurname());
+        Optional<Author> author = repo.findByNameAndSurname(expected.getName(), expected.getSurname());
         assertTrue(author.isPresent());
         testEquals(expected, author.get());
         assertNotEquals(notExpected, author.get());
 
-        author = repo.findByFullName("Not existed", "Unbelievable");
+        author = repo.findByNameAndSurname("Not existed", "Unbelievable");
         assertFalse(author.isPresent());
     }
 

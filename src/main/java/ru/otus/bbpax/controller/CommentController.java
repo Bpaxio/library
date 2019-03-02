@@ -31,10 +31,10 @@ public class CommentController {
         username = name;
         return "Hi, " + name;
     }
-    // comment -c 3 'fuck them all!!!! I hate this book!!!'
+
     @ShellMethod(key = {"comment -c", "comment --create"}, value = "Add new comment to a book")
     @ShellMethodAvailability(value = "writeCommentAvailability")
-    public void createComment(@ShellOption(help = "Book's id.") Long bookId,
+    public void createComment(@ShellOption(help = "Book's id.") String bookId,
                               @ShellOption(help = "Your comment.") String text) {
         service.create(username, text, bookId);
 
@@ -42,18 +42,18 @@ public class CommentController {
 
     @ShellMethod(key = {"comment -e", "comment --edit"}, value = "Update an existing comment")
     @ShellMethodAvailability(value = "writeCommentAvailability")
-    public void editComment(@ShellOption(help = "Comment's id.") Long id,
+    public void editComment(@ShellOption(help = "Comment's id.") String id,
                             @ShellOption(help = "Your new comment.") String text) {
         service.update(id, text);
     }
 
     @ShellMethod(key = {"comment -l -b", "comment --list -b"}, value = "Show all comments to specified book")
-    public List<CommentView> getComments(@ShellOption(help = "Book's id.") Long bookId) {
+    public List<CommentView> getBookComments(@ShellOption(help = "Book's id.") String bookId) {
         return service.getCommentsFor(bookId);
     }
 
     @ShellMethod(key = {"comment -l -u", "comment --list -u"}, value = "Show all comments to all books were added by specified user")
-    public List<CommentView> getComments(
+    public List<CommentView> getCommentsByUser(
             @ShellOption(help = "Username of comments' author.") String username) {
         return service.getCommentsBy(username);
     }

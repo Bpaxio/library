@@ -1,24 +1,11 @@
 spring:
-  liquibase:
-        change-log: classpath:db/changelog/db.changelog-master.yaml
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: aszx12qw
-    url: jdbc:postgresql://localhost:5432/library
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
-
-#Disable feature detection by this undocumented parameter.
-#Check the org.hibernate.engine.jdbc.internal.JdbcServiceImpl.configure method for more details.
-    properties.hibernate.temp.use_jdbc_metadata_defaults: false
-
-#  banner:
-#    charset: UTF-8
-#    image:
-##      location: banner/Bug.jpg
-#      width: 50
-#      height: 50
-#      margin: 25
+  data:
+    mongodb:
+      username: librarist
+      password: 123qwe
+      database: library
+      port: 27017
+      host: localhost
+logging:
+  level:
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG

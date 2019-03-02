@@ -41,7 +41,7 @@ public class BookController {
     }
 
     @ShellMethod(key = {"book --update", "book -u"}, value = "update book with id")
-    public void updateBook(@ShellOption(help = "Book's id.") Long id,
+    public void updateBook(@ShellOption(help = "Book's id.") String id,
                            @ShellOption(help = "Book's name.") String name,
                            @ShellOption(help = "Year of Book's publication.") Integer publicationDate,
                            @ShellOption(help = "Office or Name of company where this book was published.") String publishingOffice,
@@ -60,7 +60,7 @@ public class BookController {
     }
 
     @ShellMethod(key = {"book --get", "book -g"}, value = "Get Book with id")
-    public BookView getBook(@ShellOption(help = "Book's id.") Long id) {
+    public BookView getBook(@ShellOption(help = "Book's id.") String id) {
         return service.getBookById(id);
     }
 
@@ -70,7 +70,7 @@ public class BookController {
     }
 
     @ShellMethod(key = {"book --delete", "book -d"}, value = "Delete Book by id")
-    public void deleteBookById(@ShellOption(help = "Book's id.") Long id) {
+    public void deleteBookById(@ShellOption(help = "Book's id.") String id) {
         service.deleteById(id);
     }
 }

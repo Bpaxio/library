@@ -4,48 +4,39 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 import java.util.List;
+
+import static ru.otus.bbpax.entity.EntityTypes.GENRE;
 
 /**
  * @author Vlad Rakhlinskii
  * Created on 10.01.2019.
  */
-@Entity
-@Table
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = "books")
+@Document(collection = "genres")
+@TypeAlias(GENRE)
 public class Genre {
     @Id
-    @SequenceGenerator(name = "genre_seq_gen",
-            sequenceName = "genre_seq",
-            allocationSize = 1
-    )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "genre_seq_gen")
-    private Long id;
+    private String id;
 
-    @Column
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "genre")
+    @DBRef(db = "library", lazy = true)
     List<Book> books;
 
     public Genre(String name) {
         this.name = name;
     }
 
-    public Genre(Long id, String name) {
+    public Genre(String id, String name) {
         this.id = id;
         this.name = name;
     }

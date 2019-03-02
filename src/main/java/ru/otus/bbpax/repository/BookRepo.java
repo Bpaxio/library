@@ -1,5 +1,6 @@
 package ru.otus.bbpax.repository;
 
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 import ru.otus.bbpax.entity.Book;
 
@@ -8,5 +9,5 @@ import ru.otus.bbpax.entity.Book;
  * Created on 14.01.2019.
  */
 @Repository
-public interface BookRepo extends CommonRepo<Book, Long> {
+public interface BookRepo extends MongoRepository<Book, String> {
 }

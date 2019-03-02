@@ -15,7 +15,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthorView implements EntityView<Author> {
-    private Long id;
+    private String id;
     private String name;
     private String surname;
     private String country;

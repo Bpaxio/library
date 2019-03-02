@@ -1,8 +1,6 @@
 package ru.otus.bbpax.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -27,7 +25,7 @@ public class AuthorController {
     }
 
     @ShellMethod(key = {"author --update", "author -u"}, value = "update author with id")
-    public void updateAuthor(@ShellOption(help = "Author's id.") Long id,
+    public void updateAuthor(@ShellOption(help = "Author's id.") String id,
                              @ShellOption(help = "Author's name.", defaultValue = NULL) String name,
                              @ShellOption(help = "Author's surname.", defaultValue = NULL)  String surname,
                              @ShellOption(help = "Country, where the author was born.", defaultValue = NULL) String country) {
@@ -35,7 +33,7 @@ public class AuthorController {
     }
 
     @ShellMethod(key = {"author --get", "author -g"}, value = "get Author with id")
-    public AuthorView getAuthor(@ShellOption(help = "Author's id.") Long id) {
+    public AuthorView getAuthor(@ShellOption(help = "Author's id.") String id) {
         return service.getAuthorById(id);
     }
 
@@ -45,7 +43,7 @@ public class AuthorController {
     }
 
     @ShellMethod(key = {"author --delete", "author -d"}, value = "delete Author by id")
-    public void deleteAuthorById(@ShellOption(help = "Author's id.") Long id) {
+    public void deleteAuthorById(@ShellOption(help = "Author's id.") String id) {
         service.deleteById(id);
     }
 }

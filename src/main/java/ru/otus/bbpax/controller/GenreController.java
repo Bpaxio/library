@@ -27,13 +27,13 @@ public class GenreController {
     }
 
     @ShellMethod(key = {"genre --update", "genre -u"}, value = "Update genre with id")
-    public void updateGenre(@ShellOption(defaultValue = NULL, help = "Genre's id.") Long id,
+    public void updateGenre(@ShellOption(defaultValue = NULL, help = "Genre's id.") String id,
                              @ShellOption(help = "Genre's name.", defaultValue = NULL) String name) {
         service.update(new GenreView(id, name));
     }
 
     @ShellMethod(key = {"genre --get", "genre -g"}, value = "Get Genre with id")
-    public GenreView getGenre(@ShellOption(help = "Genre's id.") Long id) {
+    public GenreView getGenre(@ShellOption(help = "Genre's id.") String id) {
         return service.getGenreById(id);
     }
 
@@ -43,7 +43,7 @@ public class GenreController {
     }
 
     @ShellMethod(key = {"genre --delete", "genre -d"}, value = "Delete Genre by id")
-    public void deleteGenreById(@ShellOption(help = "Genre's id.") Long id) {
+    public void deleteGenreById(@ShellOption(help = "Genre's id.") String id) {
         service.deleteById(id);
     }
 }

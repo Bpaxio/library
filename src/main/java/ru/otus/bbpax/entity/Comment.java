@@ -4,46 +4,33 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import ru.otus.bbpax.configuration.LocalDateTimeConverter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import java.time.LocalDateTime;
 
-@Entity
+import static ru.otus.bbpax.entity.EntityTypes.COMMENT;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = "book")
+@Document(collection = "comments")
+@TypeAlias(COMMENT)
 public class Comment {
-    @Id
-    @SequenceGenerator(name = "comment_seq_gen",
-            sequenceName = "comment_seq",
-            allocationSize = 1
-    )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comment_seq_gen")
-    private Long id;
 
-    @Column(name = "author_username", nullable = false)
+    @Id
+    private String id;
+
     private String username;
 
-    @Column(nullable = false)
-    @Convert(converter = LocalDateTimeConverter.class)
     private LocalDateTime created;
 
-    @Column
     private String message;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
+    @DBRef(db = "library")
     private Book book;
 
     public Comment(String username, String message, Book book) {
