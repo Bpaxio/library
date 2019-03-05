@@ -1,85 +1,53 @@
 package ru.otus.bbpax.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-import ru.otus.bbpax.entity.Author;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.bbpax.entity.Book;
 import ru.otus.bbpax.entity.Comment;
-import ru.otus.bbpax.entity.Genre;
 
-import javax.persistence.TypedQuery;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
-@RunWith(SpringRunner.class)
-@DataJpaTest
+@DataMongoTest
+@ExtendWith(SpringExtension.class)
+@TestPropertySource(value = "classpath:application-test.yml")
+@Import(value = MongoBeeConfig.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @ActiveProfiles("test")
 public class CommentRepoTest {
 
     @Autowired
     private CommentRepo repo;
 
-    @Autowired
-    private TestEntityManager manager;
-
-    private TypedQuery<Comment> allQuery;
-    private TypedQuery<Long> countQuery;
-
-    private Author author;
-    private Genre genre;
     private Book book;
 
-    @Before
-    @SuppressWarnings("JpaQlInspection")
-    public void setUp() throws Exception {
-        allQuery = manager.getEntityManager()
-                .createQuery("select c from Comment c", Comment.class);
-        countQuery = manager.getEntityManager()
-                .createQuery("select count(c) from Comment c", Long.class);
-
-        genre = new Genre(
-                100000L,
-                "Novel"
-        );
-
-        author = new Author(
-                100000L,
-                "AuthorTest",
-                "DoeTest",
-                "CountryTest"
-        );
-        book = new Book(
-                100004L,
-                "Drama of TestAuthor",
-                1996,
-                "testOffice",
-                BigDecimal.valueOf(799.99),
-                genre,
-                author
-        );
+    @BeforeEach
+    public void setUp(@Autowired MongoTemplate template) throws Exception {
+        book = template.findById("1c77bb3f57cfe05a39abc17a", Book.class);
     }
 
     @Test
-    public void testCreate() throws Exception {
-        Long initCount = countQuery.getSingleResult();
+    public void testCreate(@Autowired MongoTemplate template) throws Exception {
+        long initCount = template.getCollection(template.getCollectionName(Comment.class)).count();
         Comment expected = new Comment(
                 "CreateUserName",
                 "some text",
@@ -87,26 +55,24 @@ public class CommentRepoTest {
         );
         repo.save(expected);
 
-        assertEquals(initCount + 1, allQuery.getResultList().size());
+        assertEquals(initCount + 1, template.getCollection(template.getCollectionName(Comment.class)).count());
 
-        Comment saved = manager.find(Comment.class, 1L);
+        Comment saved = template.findById(expected.getId(), Comment.class);
         assertEquals(expected, saved);
-
-        assertNull(manager.find(Comment.class, 2L));
     }
 
     @Test
-    public void testUpdate() throws Exception {
-        Long initCount = countQuery.getSingleResult();
+    public void testUpdate(@Autowired MongoTemplate template) throws Exception {
+        long initCount = template.getCollection(template.getCollectionName(Comment.class)).count();
         Comment was = new Comment(
-                100001L,
-                "TestCommentator1",
-                LocalDateTime.parse("2019-02-27T14:09:27.356", DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                "testComment",
+                "6c77bb3f57cfe05a39abc17a",
+                "TestCommentator0",
+                LocalDateTime.parse("2019-02-27T19:15:23.356", DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                "testComment6",
                 book
         );
         Comment is = new Comment(
-                100001L,
+                "6c77bb3f57cfe05a39abc17a",
                 "NewTestCommentator1",
                 LocalDateTime.parse("2019-02-28T14:09:27.356", DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                 "some text",
@@ -114,65 +80,65 @@ public class CommentRepoTest {
         );
         repo.save(is);
 
-        Long actualCount = Integer.toUnsignedLong(allQuery.getResultList().size());
+        long actualCount = template.getCollection(template.getCollectionName(Comment.class)).count();
         assertEquals(initCount, actualCount);
 
-        Comment saved = manager.find(Comment.class, 100001L);
-
+        Comment saved = template.findById(was.getId(), Comment.class);
         assertNotEquals(was, saved);
+
         testEquals(is, saved);
     }
 
     @Test
-    public void testUpdateMsgOnly() throws Exception {
-        Long initCount = countQuery.getSingleResult();
+    public void testUpdateMsgOnly(@Autowired MongoTemplate template) throws Exception {
+        long initCount = template.getCollection(template.getCollectionName(Comment.class)).count();
         Comment was = new Comment(
-                100001L,
-                "TestCommentator1",
-                LocalDateTime.parse("2019-02-27T14:09:27.356", DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                "testComment",
+                "6c77bb3f57cfe05a39abc17a",
+                "TestCommentator0",
+                LocalDateTime.parse("2019-02-27T19:15:23.356", DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                "testComment6",
                 book
         );
         Comment is = new Comment(
-                100001L,
-                "TestCommentator1",
-                LocalDateTime.parse("2019-02-27T14:09:27.356", DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                "some text",
+                "6c77bb3f57cfe05a39abc17a",
+                "TestCommentator0",
+                LocalDateTime.parse("2019-02-27T19:15:23.356", DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                "New message text",
                 book
         );
         repo.update(is.getId(), is.getMessage());
 
-        Long actualCount = Integer.toUnsignedLong(allQuery.getResultList().size());
+        long actualCount = template.getCollection(template.getCollectionName(Comment.class)).count();
         assertEquals(initCount, actualCount);
 
-        Comment saved = manager.find(Comment.class, 100001L);
-
+        Comment saved = template.findById(is.getId(), Comment.class);
         assertNotEquals(was, saved);
+
         testEquals(is, saved);
     }
 
     @Test
     public void testFindById() throws Exception {
         Comment expected = new Comment(
-                100002L,
+                "6c77bb3f57cfe05a39abc17a",
+                "TestCommentator0",
+                LocalDateTime.parse("2019-02-27T19:15:23.356", DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                "testComment6",
+                book
+        );
+        Comment notExpected = new Comment(
+                "3c77bb3f57cfe05a39abc17a",
                 "TestCommentator2",
                 LocalDateTime.parse("2019-02-27T14:09:23.376", DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                 "testComment3",
                 book
         );
-        Comment notExpected = new Comment(
-                100003L,
-                "TestCommentator2",
-                LocalDateTime.parse("2019-02-27T14:09:29.356", DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                "testComment4",
-                book
-        );
         //test not found
 
-        Optional<Comment> comment = repo.findById(0L);
+        Optional<Comment> comment = repo.findById("2212c77bb3f57cfe05a39abc17a");
         assertFalse(comment.isPresent());
 
-        comment = repo.findById(100002L);
+        comment = repo.findById("6c77bb3f57cfe05a39abc17a");
 
         assertTrue(comment.isPresent());
         testEquals(expected, comment.get());
@@ -181,7 +147,8 @@ public class CommentRepoTest {
 
     @Test
     public void testFindAllByBookId() throws Exception {
-        assertEquals(5, repo.findAllByBookId(100004L).size());
+        assertEquals(5, repo.findAllByBookId("3c77bb3f57cfe05a39abc17a").size());
+        assertEquals(1, repo.findAllByBookId("1c77bb3f57cfe05a39abc17a").size());
     }
 
     @Test
@@ -190,22 +157,23 @@ public class CommentRepoTest {
     }
 
     @Test
-    public void testGetAll() throws Exception {
-        Long initCount = countQuery.getSingleResult();
+    public void testGetAll(@Autowired MongoTemplate template) throws Exception {
+        long initCount = template.getCollection(template.getCollectionName(Comment.class)).count();
 
         List<Comment> all = repo.findAll();
-        assertEquals(initCount.intValue(), all.size());
 
-        assertEquals(allQuery.getResultList(), all);
+        assertEquals(initCount, all.size());
+        assertEquals(template.findAll(Comment.class), all);
     }
 
     @Test
-    public void testDeleteById() throws Exception {
-        Long initCount = countQuery.getSingleResult();
-        Comment comment = manager.find(Comment.class, 100003L);
+    public void testDeleteById(@Autowired MongoTemplate template) throws Exception {
+        long initCount = template.getCollection(template.getCollectionName(Comment.class)).count();
+        Comment comment = template.findById("4c77bb3f57cfe05a39abc17a", Comment.class);
         assertNotNull(comment);
-        repo.deleteById(100003L);
-        assertEquals(initCount - 1, countQuery.getSingleResult().longValue());
+        repo.deleteById("4c77bb3f57cfe05a39abc17a");
+        assertEquals(initCount - 1, template.getCollection(template.getCollectionName(Comment.class)).count());
+
     }
 
     private void testEquals(Comment expected, Comment actual) {

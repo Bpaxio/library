@@ -23,7 +23,7 @@ import static ru.otus.bbpax.entity.EntityTypes.BOOK;
 @AllArgsConstructor
 @Document(collection = "books")
 @TypeAlias(BOOK)
-public class Book {
+public class Book implements ListenableEntity {
 
     @Id
     @Field("_id")

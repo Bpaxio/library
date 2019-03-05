@@ -37,6 +37,7 @@ public class CommentService {
         repo.update(id, text);
     }
 
+    @Transactional
     public List<CommentView> getCommentsFor(String bookId) {
         return repo.findAllByBookId(bookId)
                 .stream()

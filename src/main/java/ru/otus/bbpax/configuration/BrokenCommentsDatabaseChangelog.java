@@ -1,8 +1,12 @@
 package ru.otus.bbpax.configuration;
 
-import com.github.mongobee.changeset.ChangeLog;
-import com.github.mongobee.changeset.ChangeSet;
+import com.mongodb.DBRef;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.BsonDateTime;
+import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import ru.otus.bbpax.entity.Author;
 import ru.otus.bbpax.entity.Book;
@@ -11,6 +15,7 @@ import ru.otus.bbpax.entity.Genre;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,20 +23,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static ru.otus.bbpax.entity.EntityTypes.AUTHOR;
+import static ru.otus.bbpax.entity.EntityTypes.COMMENT;
+import static ru.otus.bbpax.entity.EntityTypes.GENRE;
 
 @Slf4j
-@ChangeLog
-public class DatabaseChangelog {
+//@ChangeLog
+public class BrokenCommentsDatabaseChangelog {
     private final static Map<String, List<Comment>> bookComments;
     static {
         bookComments = new HashMap<>();
-        bookComments.put(
-                "2c77bb3f57cfe05a39abc17a", Collections.emptyList());
-        bookComments.put(
-                "4c77bb3f57cfe05a39abc17a", Collections.emptyList());
-        bookComments.put(
-                "5c77bb3f57cfe05a39abc17a", Collections.emptyList());
         bookComments.put(
                 "1c77bb3f57cfe05a39abc17a",
                 Collections.singletonList(
@@ -86,137 +89,164 @@ public class DatabaseChangelog {
         );
     }
 
-    @ChangeSet(order = "001", id = "addAuthors", author = "bpaxio")
-    public void addAuthors(MongoTemplate template) {
-        List<Author> authors = new ArrayList<>();
-        authors.add(new Author(
+//    @ChangeSet(order = "001", id = "addAuthors", author = "bpaxio")
+    public void addAuthors(MongoDatabase db) {
+        MongoCollection<Document> authors = db.getCollection("authors");
+        List<Document> docs = new ArrayList<>();
+        docs.add(authorDocumentWith(
                 "1c77bb3f57cfe05a39abc17a",
                 "AuthorTest",
                 "DoeTest",
                 "CountryTest"
         ));
-        authors.add(new Author(
+        docs.add(authorDocumentWith(
                 "2c77bb3f57cfe05a39abc17a",
                 "Author1",
                 "Doe1",
                 "USA"
         ));
-        authors.add(new Author(
+        docs.add(authorDocumentWith(
                 "3c77bb3f57cfe05a39abc17a",
                 "Author2",
                 "Doe2",
                 "GB"
         ));
-        authors.add(new Author(
+        docs.add(authorDocumentWith(
                 "4c77bb3f57cfe05a39abc17a",
                 "TestName",
                 "TestSurname",
                 "TestCountry"
         ));
-        template.insertAll(authors);
+        authors.insertMany(docs);
     }
 
-    @ChangeSet(order = "002", id = "addGenres", author = "bpaxio")
-    public void addGenres(MongoTemplate template) {
-        List<Genre> genres = new ArrayList<>();
-        genres.add(new Genre(
+//    @ChangeSet(order = "002", id = "addGenres", author = "bpaxio")
+    public void addGenres(MongoDatabase db) {
+        MongoCollection<Document> genres = db.getCollection("genres");
+        List<Document> docs = new ArrayList<>();
+        docs.add(genreDocumentWith(
                 "1c77bb3f57cfe05a39abc17a",
                 "Novel"
         ));
-        genres.add(new Genre(
+        docs.add(genreDocumentWith(
                 "2c77bb3f57cfe05a39abc17a",
                 "Drama"
         ));
-        genres.add(new Genre(
+        docs.add(genreDocumentWith(
                 "3c77bb3f57cfe05a39abc17a",
                 "Science fiction"
         ));
-        genres.add(new Genre(
+        docs.add(genreDocumentWith(
                 "4c77bb3f57cfe05a39abc17a",
                 "TestGenre"
         ));
-        template.insertAll(genres);
+        genres.insertMany(docs);
     }
 
-    @ChangeSet(order = "003", id = "addBooks", author = "bpaxio")
+//    @ChangeSet(order = "003", id = "addBooks", author = "bpaxio")
     public void addBooks(MongoTemplate template) {
         List<Book> books = new ArrayList<>();
         Genre novel = template.findById("1c77bb3f57cfe05a39abc17a", Genre.class);
         Genre drama = template.findById("2c77bb3f57cfe05a39abc17a", Genre.class);
         Author authorTest = template.findById("1c77bb3f57cfe05a39abc17a", Author.class);
 
-        Book book1 = new Book("1c77bb3f57cfe05a39abc17a",
+        books.add(new Book("1c77bb3f57cfe05a39abc17a",
                 "Novel of AuthorTest",
                 1999,
                 "testOffice",
                 BigDecimal.valueOf(999.99),
                 novel,
                 template.findById("3c77bb3f57cfe05a39abc17a", Author.class),
-                bookComments.get("1c77bb3f57cfe05a39abc17a"));
-        bookComments.get("1c77bb3f57cfe05a39abc17a").stream()
-                .filter(Objects::nonNull)
-                .forEach(comment -> comment.setBook(book1));
-        books.add(book1);
+                bookComments.get("1c77bb3f57cfe05a39abc17a")));
 
-        Book book2 = new Book("2c77bb3f57cfe05a39abc17a",
+        books.add(new Book("2c77bb3f57cfe05a39abc17a",
                 "Drama of AuthorTest",
                 2000,
                 "testOffice",
                 BigDecimal.valueOf(959.99),
                 drama,
                 authorTest,
-                bookComments.get("2c77bb3f57cfe05a39abc17a"));
-        bookComments.get("2c77bb3f57cfe05a39abc17a")
-                .stream()
-                .filter(Objects::nonNull)
-                .forEach(comment -> comment.setBook(book2));
-        books.add(book2);
+                bookComments.get("2c77bb3f57cfe05a39abc17a")));
 
-        Book book3 = new Book("3c77bb3f57cfe05a39abc17a",
+        books.add(new Book("3c77bb3f57cfe05a39abc17a",
                 "Again Novel of AuthorTest",
                 1998,
                 "testOffice",
                 BigDecimal.valueOf(899.99),
                 novel,
                 authorTest,
-                bookComments.get("3c77bb3f57cfe05a39abc17a"));
-        bookComments.get("3c77bb3f57cfe05a39abc17a").stream()
-                .filter(Objects::nonNull)
-                .forEach(comment -> comment.setBook(book3));
-        books.add(book3);
+                bookComments.get("3c77bb3f57cfe05a39abc17a")));
 
-        Book book4 = new Book("4c77bb3f57cfe05a39abc17a",
+        books.add(new Book("4c77bb3f57cfe05a39abc17a",
                 "Science fiction of AuthorTest",
                 1997,
                 "testOffice",
                 BigDecimal.valueOf(859.99),
                 drama,
                 authorTest,
-                bookComments.get("4c77bb3f57cfe05a39abc17a"));
-        bookComments.get("4c77bb3f57cfe05a39abc17a").stream()
-                .filter(Objects::nonNull)
-                .forEach(comment -> comment.setBook(book4));
-        books.add(book4);
+                bookComments.get("4c77bb3f57cfe05a39abc17a")));
 
-        Book book5 = new Book("5c77bb3f57cfe05a39abc17a",
+        books.add(new Book("5c77bb3f57cfe05a39abc17a",
                 "Drama of AuthorTest",
                 1996,
                 "testOffice",
                 BigDecimal.valueOf(799.99),
                 novel,
                 authorTest,
-                bookComments.get("5c77bb3f57cfe05a39abc17a"));
-        bookComments.get("5c77bb3f57cfe05a39abc17a")
-                .stream()
-                .filter(Objects::nonNull)
-                .forEach(comment -> comment.setBook(book5));
-        books.add(book5);
-
+                bookComments.get("5c77bb3f57cfe05a39abc17a")));
         template.insert(Book.class).all(books);
     }
 
-    @ChangeSet(order = "004", id = "addComments", author = "bpaxio")
-    public void addComments(MongoTemplate template) {
-        bookComments.values().forEach(template::insertAll);
+//    @ChangeSet(order = "004", id = "addComments", author = "bpaxio")
+    public void addComments(MongoDatabase db) {
+        MongoCollection<Document> comments = db.getCollection("comments");
+        List<Document> docs = new ArrayList<>();
+        bookComments.entrySet().stream()
+                .map(entry -> toDocList(db.getName(), entry))
+                .forEach(docs::addAll);
+        comments.insertMany(docs);
+    }
+
+    private Document authorDocumentWith(String id, String name, String surname, String country) {
+        return new Document()
+                .append("_id", new ObjectId(id))
+                .append("name", name)
+                .append("surname", surname)
+                .append("country", country)
+                .append("_class", AUTHOR);
+    }
+
+    private Document genreDocumentWith(String id, String name) {
+        return new Document()
+                .append("_id", new ObjectId(id))
+                .append("name", name)
+                .append("_class", GENRE);
+    }
+
+    private List<Document> toDocList(String dbName, Map.Entry<String, List<Comment>> entry) {
+        return entry.getValue()
+                .stream()
+                .map(comment -> commentDocumentWith(
+                        new DBRef(dbName, "books", entry.getKey()
+                        ),
+                        comment
+                        )
+                )
+                .collect(Collectors.toList());
+    }
+
+    private Document commentDocumentWith(DBRef bookId, Comment comment) {
+        BsonDateTime time = new BsonDateTime(
+                comment.getCreated()
+                        .toInstant(ZoneOffset.UTC)
+                        .toEpochMilli()
+        );
+        return new Document()
+                .append("_id", new ObjectId(comment.getId()))
+                .append("username", comment.getUsername())
+                .append("created", time)
+                .append("message", comment.getMessage())
+                .append("book", bookId)
+                .append("_class", COMMENT);
     }
 }

@@ -17,6 +17,9 @@ import java.util.List;
 
 @Configuration
 public class MongoBeeConfig {
+    public static final String CHANGELOG_COLLECTION_NAME = "test-changelog";
+    public static final String CHANGELOG_LOCK_COLLECTION_NAME = "test-changelog-lock";
+
     @Autowired
     private MongoClient mongo;
 
@@ -24,6 +27,8 @@ public class MongoBeeConfig {
     public Mongobee mongobee(Environment environment, MongoTemplate template) {
         Mongobee runner = new Mongobee(mongo);
         runner.setDbName("test-library");
+        runner.setChangelogCollectionName(CHANGELOG_COLLECTION_NAME);
+        runner.setLockCollectionName(CHANGELOG_LOCK_COLLECTION_NAME);
         runner.setChangeLogsScanPackage(DatabaseChangelog.class.getPackage().getName());
         runner.setSpringEnvironment(environment);
         runner.setMongoTemplate(template);

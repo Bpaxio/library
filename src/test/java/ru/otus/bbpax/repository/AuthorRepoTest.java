@@ -39,8 +39,13 @@ public class AuthorRepoTest {
 
     @BeforeEach
     public void setUp(@Autowired MongoTemplate template) throws Exception {
-        log.info("all: \ncount-{}:{};\n{};\n{};", template.findAll(Genre.class), template.findAll(Author.class), template.findAll(Book.class));
-//        log.info("all by book: \n{};", bookRepo.findAll());
+        List<Genre> allGenre = template.findAll(Genre.class);
+        List<Author> allAuthor = template.findAll(Author.class);
+        List<Book> allBook = template.findAll(Book.class);
+        log.info("all: \ncount-{}:{};\ncount-{}:{};\ncount-{}:{};",
+                allGenre.size(), allGenre,
+                allAuthor.size(), allAuthor,
+                allBook.size(), allBook);
     }
 
     @Test
@@ -54,13 +59,10 @@ public class AuthorRepoTest {
 
         repo.save(expected);
 
-
         assertEquals(initCount + 1, template.getCollection(template.getCollectionName(Author.class)).count());
 
         Author saved = template.findById(expected.getId(), Author.class);
         assertEquals(expected, saved);
-
-//        assertNull(manager.find(Author.class, 2L));
     }
 
     @Test
@@ -121,8 +123,8 @@ public class AuthorRepoTest {
         long initCount = template.getCollection(template.getCollectionName(Author.class)).count();
 
         List<Author> all = repo.findAll();
-        assertEquals(initCount, all.size());
 
+        assertEquals(initCount, all.size());
         assertEquals(template.findAll(Author.class), all);
     }
 

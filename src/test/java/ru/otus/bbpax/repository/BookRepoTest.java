@@ -1,63 +1,55 @@
 package ru.otus.bbpax.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.bbpax.entity.Author;
 import ru.otus.bbpax.entity.Book;
 import ru.otus.bbpax.entity.Genre;
 
-import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
-@RunWith(SpringRunner.class)
-@DataJpaTest
+@DataMongoTest
+@ExtendWith(SpringExtension.class)
+@TestPropertySource(value = "classpath:application-test.yml")
+@Import(value = MongoBeeConfig.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @ActiveProfiles("test")
 public class BookRepoTest {
 
     @Autowired
     private BookRepo repo;
 
-    @Autowired
-    private TestEntityManager manager;
-
-    private TypedQuery<Book> allQuery;
-    private TypedQuery<Long> countQuery;
-
     private Author author;
     private Genre genre;
 
-    @Before
-    @SuppressWarnings("JpaQlInspection")
+    @BeforeEach
     public void setUp() throws Exception {
-        allQuery = manager.getEntityManager()
-                .createQuery("select b from Book b", Book.class);
-        countQuery = manager.getEntityManager()
-                .createQuery("select count(b) from Book b", Long.class);
-
         genre = new Genre(
-                100000L,
+                "1c77bb3f57cfe05a39abc17a",
                 "Novel"
         );
 
         author = new Author(
-                100000L,
+                "1c77bb3f57cfe05a39abc17a",
                 "AuthorTest",
                 "DoeTest",
                 "CountryTest"
@@ -65,8 +57,8 @@ public class BookRepoTest {
     }
 
     @Test
-    public void testCreate() throws Exception {
-        Long initCount = countQuery.getSingleResult();
+    public void testCreate(@Autowired MongoTemplate template) throws Exception {
+        long initCount = template.getCollection(template.getCollectionName(Book.class)).count();
         Book expected = new Book(
                 "ТестИмя",
                 2019,
@@ -77,28 +69,26 @@ public class BookRepoTest {
         );
         repo.save(expected);
 
-        assertEquals(initCount + 1, allQuery.getResultList().size());
+        assertEquals(initCount + 1, template.getCollection(template.getCollectionName(Book.class)).count());
 
-        Book saved = manager.find(Book.class, 1L);
+        Book saved = template.findById(expected.getId(), Book.class);
         assertEquals(expected, saved);
-
-        assertNull(manager.find(Book.class, 2L));
     }
 
     @Test
-    public void testUpdate() throws Exception {
-        Long initCount = countQuery.getSingleResult();
+    public void testUpdate(@Autowired MongoTemplate template) throws Exception {
+        long initCount = template.getCollection(template.getCollectionName(Book.class)).count();
         Book was = new Book(
-                100002L,
-                "Novel of TestAuthor",
-                1998,
+                "1c77bb3f57cfe05a39abc17a",
+                "Novel of AuthorTest",
+                1999,
                 "testOffice",
-                BigDecimal.valueOf(899.99),
+                BigDecimal.valueOf(999.99),
                 genre,
                 author
         );
         Book is = new Book(
-                100002L,
+                "1c77bb3f57cfe05a39abc17a",
                 "ТестИмяNEW",
                 2019,
                 "ТестИздательствоNEW",
@@ -108,20 +98,20 @@ public class BookRepoTest {
         );
         repo.save(is);
 
-        Long actualCount = Integer.toUnsignedLong(allQuery.getResultList().size());
+        long actualCount = template.getCollection(template.getCollectionName(Book.class)).count();
         assertEquals(initCount, actualCount);
 
-        Book saved = manager.find(Book.class, 100002L);
-
+        Book saved = template.findById(was.getId(), Book.class);
         assertNotEquals(was, saved);
+
         testEquals(is, saved);
     }
 
     @Test
     public void testFindById() throws Exception {
         Book expected = new Book(
-                100002L,
-                "Novel of TestAuthor",
+                "3c77bb3f57cfe05a39abc17a",
+                "Again Novel of AuthorTest",
                 1998,
                 "testOffice",
                 BigDecimal.valueOf(899.99),
@@ -129,20 +119,20 @@ public class BookRepoTest {
                 author
         );
         Book notExpected = new Book(
-                2L,
-                "ТестИмя_wrong",
-                2019,
-                "ТестИздательство_wrong",
-                BigDecimal.valueOf(100499.99),
+                "4c77bb3f57cfe05a39abc17a",
+                "Science fiction of AuthorTest",
+                1997,
+                "testOffice",
+                BigDecimal.valueOf(859.99),
                 genre,
                 author
         );
         //test not found
 
-        Optional<Book> book = repo.findById(0L);
+        Optional<Book> book = repo.findById("2212c77bb3f57cfe05a39abc17a");
         assertFalse(book.isPresent());
 
-        book = repo.findById(100002L);
+        book = repo.findById("3c77bb3f57cfe05a39abc17a");
 
         assertTrue(book.isPresent());
         testEquals(expected, book.get());
@@ -150,22 +140,22 @@ public class BookRepoTest {
     }
 
     @Test
-    public void testFindAll() throws Exception {
-        Long initCount = countQuery.getSingleResult();
+    public void testFindAll(@Autowired MongoTemplate template) throws Exception {
+        long initCount = template.getCollection(template.getCollectionName(Book.class)).count();
 
         List<Book> all = repo.findAll();
-        assertEquals(initCount.intValue(), all.size());
 
-        assertEquals(allQuery.getResultList(), all);
+        assertEquals(initCount, all.size());
+        assertEquals(template.findAll(Book.class), all);
     }
 
     @Test
-    public void testDeleteById() throws Exception {
-        Long initCount = countQuery.getSingleResult();
-        Book book = manager.find(Book.class, 100003L);
+    public void testDeleteById(@Autowired MongoTemplate template) throws Exception {
+        long initCount = template.getCollection(template.getCollectionName(Book.class)).count();
+        Book book = template.findById("4c77bb3f57cfe05a39abc17a", Book.class);
         assertNotNull(book);
-        repo.deleteById(100003L);
-        assertEquals(initCount - 1, countQuery.getSingleResult().longValue());
+        repo.deleteById("4c77bb3f57cfe05a39abc17a");
+        assertEquals(initCount - 1, template.getCollection(template.getCollectionName(Book.class)).count());
     }
 
     private void testEquals(Book expected, Book actual) {

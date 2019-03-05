@@ -7,12 +7,12 @@ import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventLis
 import org.springframework.data.mongodb.core.mapping.event.AfterLoadEvent;
 import org.springframework.lang.NonNull;
 import org.springframework.util.ReflectionUtils;
-import ru.otus.bbpax.entity.Book;
+import ru.otus.bbpax.entity.ListenableEntity;
 
 import java.lang.reflect.Field;
 
 @Slf4j
-public class CascadeLoadMongoEventListener extends AbstractMongoEventListener<Book> {
+public class CascadeLoadMongoEventListener extends AbstractMongoEventListener<ListenableEntity> {
     private final MongoOperations mongoOps;
 
     public CascadeLoadMongoEventListener(MongoOperations mongoOps) {
@@ -20,7 +20,7 @@ public class CascadeLoadMongoEventListener extends AbstractMongoEventListener<Bo
     }
 
     @Override
-    public void onAfterLoad(@NonNull AfterLoadEvent<Book> event) {
+    public void onAfterLoad(@NonNull AfterLoadEvent<ListenableEntity> event) {
         super.onAfterLoad(event);
         log.info("after load I have: {} of type - {} \n document:\n{}",
                 event.getSource(),

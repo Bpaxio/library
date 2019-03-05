@@ -6,3 +6,6 @@ spring:
       database: test-library
       port:
       host:
+logging:
+  level:
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
