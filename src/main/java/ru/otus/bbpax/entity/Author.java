@@ -33,7 +33,7 @@ public class Author {
 
     private String country;
 
-    @DBRef(db = "library", lazy = true)
+    @DBRef(lazy = true)
     private List<Book> books;
 
     public Author(String name, String surname, String country) {

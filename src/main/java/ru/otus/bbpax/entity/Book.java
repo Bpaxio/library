@@ -33,13 +33,13 @@ public class Book implements ListenableEntity {
     private String publishingOffice;
     private BigDecimal price;
 
-    @DBRef(db = "library")
+    @DBRef
     private Genre genre;
 
-    @DBRef(db = "library")
+    @DBRef
     private Author author;
 
-    @DBRef(db = "library", lazy = true)
+    @DBRef(lazy = true)
     private List<Comment> comments;
 
     public Book(String name,

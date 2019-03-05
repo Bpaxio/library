@@ -92,7 +92,7 @@ public class AuthorRepoTest {
     }
 
     @Test
-    public void testFindById(@Autowired MongoTemplate template) throws Exception {
+    public void testFindById() throws Exception {
         Author expected = new Author(
                 "4c77bb3f57cfe05a39abc17a",
                 "TestName",
@@ -138,7 +138,7 @@ public class AuthorRepoTest {
     }
 
     @Test
-    public void testFindByNameAndSurname(@Autowired MongoTemplate template) throws Exception {
+    public void testFindByNameAndSurname() throws Exception {
         Author expected = new Author(
                 "4c77bb3f57cfe05a39abc17a",
                 "TestName",

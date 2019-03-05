@@ -30,7 +30,7 @@ public class Comment implements ListenableEntity {
 
     private String message;
 
-    @DBRef(db = "library")
+    @DBRef
     @CascadeLoad
     private Book book;
 

@@ -35,10 +35,6 @@ public class GenreRepoTest {
     @Autowired
     private GenreRepo repo;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-    }
-
     @Test
     public void testCreate(@Autowired MongoTemplate template) throws Exception {
         long initCount = template.getCollection(template.getCollectionName(Genre.class)).count();
@@ -71,7 +67,7 @@ public class GenreRepoTest {
     }
 
     @Test
-    public void testFindById(@Autowired MongoTemplate template) throws Exception {
+    public void testFindById() throws Exception {
         Genre expected = new Genre("2c77bb3f57cfe05a39abc17a", "Drama");
         Genre notExpected = new Genre("3c77bb3f57cfe05a39abc17a", "Science fiction");
 
@@ -108,7 +104,7 @@ public class GenreRepoTest {
     }
 
     @Test
-    public void testFindByName(@Autowired MongoTemplate template) throws Exception {
+    public void testFindByName() throws Exception {
         Genre expected = new Genre("2c77bb3f57cfe05a39abc17a", "Drama");
         Genre notExpected = new Genre("3c77bb3f57cfe05a39abc17a", "Science fiction");
 

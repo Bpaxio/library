@@ -7,12 +7,19 @@ import org.springframework.stereotype.Repository;
 import ru.otus.bbpax.entity.Comment;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CommentRepo extends MongoRepository<Comment, String> {
 
-    @Query(value = "{'id': ?1}, {$set: {'message': ?2}}")
-    void update(@Param("id") String id, @Param("message") String message);
+    default void update(String id, String message) {
+        Optional<Comment> byId = findById(id);
+        if (byId.isPresent()) {
+            Comment comment = byId.get();
+            comment.setMessage(message);
+            save(comment);
+        }
+    }
 
     List<Comment> findAllByBookId(String bookId);
 

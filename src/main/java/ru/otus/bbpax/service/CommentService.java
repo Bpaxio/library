@@ -58,4 +58,8 @@ public class CommentService {
                 .map(CommentView::fromEntity)
                 .collect(Collectors.toList());
     }
+
+    public CommentView getComment(String id) {
+        return CommentView.fromEntity(repo.findById(id).get());
+    }
 }

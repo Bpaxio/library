@@ -47,6 +47,11 @@ public class CommentController {
         service.update(id, text);
     }
 
+    @ShellMethod(key = {"comment -g", "comment --get"}, value = "Get comment by id")
+    public CommentView getComment(@ShellOption(help = "Comment's id.") String id) {
+        return service.getComment(id);
+    }
+
     @ShellMethod(key = {"comment -l -b", "comment --list -b"}, value = "Show all comments to specified book")
     public List<CommentView> getBookComments(@ShellOption(help = "Book's id.") String bookId) {
         return service.getCommentsFor(bookId);

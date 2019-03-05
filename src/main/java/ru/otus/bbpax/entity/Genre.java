@@ -29,7 +29,7 @@ public class Genre {
 
     private String name;
 
-    @DBRef(db = "library", lazy = true)
+    @DBRef(lazy = true)
     List<Book> books;
 
     public Genre(String name) {

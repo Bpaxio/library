@@ -106,15 +106,15 @@ public class CommentRepoTest {
                 "New message text",
                 book
         );
-        repo.update(is.getId(), is.getMessage());
+        repo.update(was.getId(), is.getMessage());
 
         long actualCount = template.getCollection(template.getCollectionName(Comment.class)).count();
         assertEquals(initCount, actualCount);
 
-        Comment saved = template.findById(is.getId(), Comment.class);
-        assertNotEquals(was, saved);
+        Comment saved = template.findById(was.getId(), Comment.class);
 
         testEquals(is, saved);
+        assertNotEquals(was, saved);
     }
 
     @Test
@@ -133,6 +133,7 @@ public class CommentRepoTest {
                 "testComment3",
                 book
         );
+        log.info("book: {}", book);
         //test not found
 
         Optional<Comment> comment = repo.findById("2212c77bb3f57cfe05a39abc17a");
@@ -177,6 +178,8 @@ public class CommentRepoTest {
     }
 
     private void testEquals(Comment expected, Comment actual) {
+        assertNotNull(expected);
+        assertNotNull(actual);
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getCreated(), actual.getCreated());
         assertEquals(expected.getMessage(), actual.getMessage());
