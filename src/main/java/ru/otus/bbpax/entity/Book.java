@@ -11,6 +11,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static ru.otus.bbpax.entity.EntityTypes.BOOK;
 
@@ -70,5 +72,22 @@ public class Book implements ListenableEntity {
         this.price = price;
         this.genre = genre;
         this.author = author;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{"
+                + "id='" + id + '\''
+                + ", name='" + name + '\''
+                + ", publicationDate=" + publicationDate
+                + ", publishingOffice='" + publishingOffice + '\''
+                + ", price=" + price
+                + ", genre=" + genre
+                + ", author=" + author
+                + ", comments= [" + comments.stream()
+                                        .filter(Objects::nonNull)
+                                        .map(Comment::getId)
+                                        .collect(Collectors.toList())
+                + "]}";
     }
 }

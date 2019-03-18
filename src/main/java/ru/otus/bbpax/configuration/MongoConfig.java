@@ -9,6 +9,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
+import ru.otus.bbpax.configuration.changelog.DataInitChangelog;
 import ru.otus.bbpax.configuration.converter.BigDecimalConverter;
 import ru.otus.bbpax.repository.listner.CascadeLoadMongoEventListener;
 
@@ -22,9 +23,8 @@ public class MongoConfig {
     public Mongobee mongobee(MongoClient mongo, Environment environment, MongoTemplate template) {
         Mongobee runner = new Mongobee(mongo);
         runner.setDbName("library");
-        runner.setChangeLogsScanPackage(DatabaseChangelog.class.getPackage().getName());
+        runner.setChangeLogsScanPackage(DataInitChangelog.class.getPackage().getName());
         runner.setSpringEnvironment(environment);
-        // TODO: 2019-03-02 this will fix some problems
         runner.setMongoTemplate(template);
         return runner;
     }
@@ -36,7 +36,6 @@ public class MongoConfig {
         return new MongoCustomConversions(converters);
     }
 
-    // TODO: 2019-03-01 It can be used, but not now...
     @Bean
     public CascadeLoadMongoEventListener loadListener(MongoOperations mongoOps) {
         return new CascadeLoadMongoEventListener(mongoOps);

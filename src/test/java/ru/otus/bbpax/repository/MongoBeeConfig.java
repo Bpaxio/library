@@ -9,7 +9,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
-import ru.otus.bbpax.configuration.DatabaseChangelog;
+import ru.otus.bbpax.configuration.changelog.DataInitChangelog;
 import ru.otus.bbpax.configuration.converter.BigDecimalConverter;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class MongoBeeConfig {
         runner.setDbName("test-library");
         runner.setChangelogCollectionName(CHANGELOG_COLLECTION_NAME);
         runner.setLockCollectionName(CHANGELOG_LOCK_COLLECTION_NAME);
-        runner.setChangeLogsScanPackage(DatabaseChangelog.class.getPackage().getName());
+        runner.setChangeLogsScanPackage(DataInitChangelog.class.getPackage().getName());
         runner.setSpringEnvironment(environment);
         runner.setMongoTemplate(template);
         return runner;
