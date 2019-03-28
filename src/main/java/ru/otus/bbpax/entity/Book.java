@@ -8,11 +8,11 @@ import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import ru.otus.bbpax.repository.listner.annotation.Cascade;
+import ru.otus.bbpax.repository.listner.annotation.CascadeType;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static ru.otus.bbpax.entity.EntityTypes.BOOK;
 
@@ -36,12 +36,15 @@ public class Book implements ListenableEntity {
     private BigDecimal price;
 
     @DBRef
+    @Cascade(type = CascadeType.INSERT, collection = "genres")
     private Genre genre;
 
     @DBRef
+    @Cascade(type = CascadeType.INSERT, collection = "authors")
     private Author author;
 
     @DBRef(lazy = true)
+    @Cascade(type = CascadeType.DELETE, collection = "comments")
     private List<Comment> comments;
 
     public Book(String name,
@@ -84,10 +87,6 @@ public class Book implements ListenableEntity {
                 + ", price=" + price
                 + ", genre=" + genre
                 + ", author=" + author
-                + ", comments= [" + comments.stream()
-                                        .filter(Objects::nonNull)
-                                        .map(Comment::getId)
-                                        .collect(Collectors.toList())
                 + "]}";
     }
 }

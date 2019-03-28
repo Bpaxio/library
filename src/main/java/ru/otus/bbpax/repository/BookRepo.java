@@ -10,4 +10,6 @@ import ru.otus.bbpax.entity.Book;
  */
 @Repository
 public interface BookRepo extends MongoRepository<Book, String> {
+
+    Book getBookByAuthorId(String authorId);
 }

@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import ru.otus.bbpax.configuration.changelog.DataInitChangelog;
 import ru.otus.bbpax.configuration.converter.BigDecimalConverter;
-import ru.otus.bbpax.repository.listner.CascadeLoadMongoEventListener;
+import ru.otus.bbpax.repository.listner.CascadeActionsMongoEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class MongoConfig {
     }
 
     @Bean
-    public CascadeLoadMongoEventListener loadListener(MongoOperations mongoOps) {
-        return new CascadeLoadMongoEventListener(mongoOps);
+    public CascadeActionsMongoEventListener actionsListener(MongoOperations mongoOps) {
+        return new CascadeActionsMongoEventListener(mongoOps);
     }
 }

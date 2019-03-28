@@ -7,7 +7,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import ru.otus.bbpax.repository.listner.CascadeLoad;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +15,6 @@ import static ru.otus.bbpax.entity.EntityTypes.COMMENT;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-//@ToString(exclude = "book")
 @Document(collection = "comments")
 @TypeAlias(COMMENT)
 public class Comment implements ListenableEntity {
@@ -31,7 +29,6 @@ public class Comment implements ListenableEntity {
     private String message;
 
     @DBRef
-    @CascadeLoad
     private Book book;
 
     public Comment(String username, String message, Book book) {

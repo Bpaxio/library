@@ -32,28 +32,28 @@ public class CommentDataBuilder implements DataBuilder<Comment> {
 
     @Override
     public DataBuilder<Comment> defaultData() {
-        return this.makeCommentFor(book1, new Comment(
+        return this.comment(book1, new Comment(
                 "6c77bb3f57cfe05a39abc17a",
                 "TestCommentator0",
                 LocalDateTime.parse("2019-02-27T19:15:23.356", DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                 "testComment6",
                 book1
         ))
-        .makeCommentFor(book2, new Comment(
+        .comment(book2, new Comment(
                 "1c77bb3f57cfe05a39abc17a",
                 "TestCommentator1",
                 LocalDateTime.parse("2019-02-27T14:09:23.356", DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                 "testComment1",
                 book2
         ))
-        .makeCommentFor(book2, new Comment(
+        .comment(book2, new Comment(
                 "2c77bb3f57cfe05a39abc17a",
                 "TestCommentator1",
                 LocalDateTime.parse("2019-02-27T14:09:27.356", DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                 "testComment2",
                 book2
         ))
-        .makeCommentFor(book2, new Comment(
+        .comment(book2, new Comment(
                 "3c77bb3f57cfe05a39abc17a",
                 "TestCommentator2",
                 LocalDateTime.parse("2019-02-27T14:09:23.376", DateTimeFormatter.ISO_LOCAL_DATE_TIME),
@@ -61,14 +61,14 @@ public class CommentDataBuilder implements DataBuilder<Comment> {
                 book2
 
         ))
-        .makeCommentFor(book2, new Comment(
+        .comment(book2, new Comment(
                 "4c77bb3f57cfe05a39abc17a",
                 "TestCommentator2",
                 LocalDateTime.parse("2019-02-27T14:09:29.356", DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                 "testComment4",
                 book2
         ))
-        .makeCommentFor(book2, new Comment(
+        .comment(book2, new Comment(
                 "5c77bb3f57cfe05a39abc17a",
                 "TestCommentator1",
                 LocalDateTime.parse("2019-02-27T14:15:23.356", DateTimeFormatter.ISO_LOCAL_DATE_TIME),
@@ -88,7 +88,7 @@ public class CommentDataBuilder implements DataBuilder<Comment> {
         return comments;
     }
 
-    public CommentDataBuilder makeCommentFor(Book book, Comment comment) {
+    public CommentDataBuilder comment(Book book, Comment comment) {
         if (Objects.isNull(book.getComments())) {
             book.setComments(new ArrayList<>());
         }
