@@ -5,9 +5,9 @@ import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.lang.NonNull;
 import org.springframework.util.ReflectionUtils;
-import ru.otus.bbpax.repository.listner.notnamed.CallbackEntity;
-import ru.otus.bbpax.repository.listner.notnamed.CallbackEntityBuilder;
-import ru.otus.bbpax.repository.listner.notnamed.CallbackEntityBuilderImpl;
+import ru.otus.bbpax.repository.listner.callback.CallbackEntity;
+import ru.otus.bbpax.repository.listner.callback.CallbackEntityBuilder;
+import ru.otus.bbpax.repository.listner.callback.CallbackEntityBuilderImpl;
 
 import java.lang.reflect.Field;
 

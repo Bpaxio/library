@@ -1,4 +1,4 @@
-package ru.otus.bbpax.repository.listner.notnamed;
+package ru.otus.bbpax.repository.listner.callback;
 
 import com.mongodb.DBRef;
 import lombok.extern.slf4j.Slf4j;

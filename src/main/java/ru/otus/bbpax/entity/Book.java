@@ -36,11 +36,9 @@ public class Book implements ListenableEntity {
     private BigDecimal price;
 
     @DBRef
-    @Cascade(type = CascadeType.INSERT, collection = "genres")
     private Genre genre;
 
     @DBRef
-    @Cascade(type = CascadeType.INSERT, collection = "authors")
     private Author author;
 
     @DBRef(lazy = true)

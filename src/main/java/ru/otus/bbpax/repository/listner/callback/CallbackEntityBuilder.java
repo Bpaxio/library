@@ -1,4 +1,4 @@
-package ru.otus.bbpax.repository.listner.notnamed;
+package ru.otus.bbpax.repository.listner.callback;
 
 import org.bson.Document;
 
