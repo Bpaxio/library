@@ -1,46 +1,50 @@
 package ru.otus.bbpax.rest;
 
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import ru.otus.bbpax.controller.model.AuthorView;
+import ru.otus.bbpax.service.model.AuthorView;
 import ru.otus.bbpax.service.AuthorService;
 
 import java.util.List;
 
+@RestController("/author")
 @AllArgsConstructor
 public class AuthorController {
 
     private final AuthorService service;
 
-    @PostMapping(value = "author")
+    @PostMapping
     public void createAuthor(String name,
                              String surname,
                              String country) {
         service.create(new AuthorView(null, name, surname, country));
     }
 
-    @PutMapping(value = "author")
-    public void updateAuthor(String id,
+    @PutMapping("/${id}")
+    public void updateAuthor(@PathVariable("id") String id,
                              String name,
                              String surname,
                              String country) {
         service.update(new AuthorView(id, name, surname, country));
     }
 
-    @GetMapping(value = "author")
+    @GetMapping("/${id}")
     public AuthorView getAuthor(String id) {
         return service.getAuthorById(id);
     }
 
-    @GetMapping(value = "author")
+    @GetMapping
     public List<AuthorView> getAuthors() {
         return service.getAll();
     }
 
-    @PutMapping(value = "author")
-    public void deleteAuthorById(String id) {
+    @DeleteMapping("/${id}")
+    public void deleteAuthorById(@PathVariable("id") String id) {
         service.deleteById(id);
     }
 }
