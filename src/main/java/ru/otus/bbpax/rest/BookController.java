@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
 import ru.otus.bbpax.service.BookService;
 import ru.otus.bbpax.service.model.BookView;
 
@@ -15,7 +14,7 @@ import java.math.RoundingMode;
 import java.util.List;
 
 @Slf4j
-@RestController("/book")
+// @RestController("/book")
 @AllArgsConstructor
 public class BookController {
     private final BookService service;
@@ -35,7 +34,7 @@ public class BookController {
                 publishingOffice,
                 price.setScale(2, RoundingMode.HALF_UP),
                 genre,
-                author
+                author,author
         );
 
         log.info("Registration of new book: {}", book);
@@ -57,7 +56,7 @@ public class BookController {
                 publishingOffice,
                 price.setScale(2, RoundingMode.HALF_UP),
                 genre,
-                author
+                author,author
         ));
     }
 

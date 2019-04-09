@@ -3,7 +3,7 @@ package ru.otus.bbpax.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.otus.bbpax.controller.model.AuthorView;
+import ru.otus.bbpax.service.model.AuthorView;
 import ru.otus.bbpax.entity.Author;
 import ru.otus.bbpax.repository.AuthorRepo;
 

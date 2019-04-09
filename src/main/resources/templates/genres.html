@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="#locale" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="#{header.application}">Hello Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<link rel="stylesheet" th:href="@{/css/style.css}" href="../static/css/style.css" type="text/css"/>
+<div class="h1 block">
+    <h1 th:text="#{header.intro}"></h1>
+</div>
+<div class="top-panel">
+    <div class="top-panel element">
+        <img alt="memorynotfound logo" class="logo" src="../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>
+    </div>
+
+    <div class="top-panel element">
+        <a class="button" href="/books" th:text="#{books}"></a>
+    </div>
+    <div class="top-panel element">
+        <a class="button" href="/authors" th:text="#{authors}"></a>
+    </div>
+    <div class="top-panel element">
+        <a class="button" href="/genres" th:text="#{genres}"></a>
+    </div>
+    <div class="top-panel element">
+        <a class="button" href="/comments" th:text="#{hell}"></a>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="#locale" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="#{header.application}">Hello Page</title>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+</head>
+<body>
+<link href="../static/css/style.css" rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>
+
+<div class="top-panel">
+    <div class="top-panel element">
+        <img alt="memorynotfound logo" class="logo" src="../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>
+    </div>
+
+    <div class="btn element" >
+        <a th:text="#{books}" th:href="@{/book}" href="/book"></a>
+    </div>
+
+    <div class="btn element">
+        <a class="btn" th:text="#{authors}" th:href="@{/author}" href="/book"></a>
+    </div>
+
+    <div class="btn element">
+        <a class="btn" th:text="#{genres}" th:href="@{/genre}" href="/book"></a>
+    </div>
+</div>
+
+<div class="h1 block">
+    <h1 th:text="#{header.books}"></h1>
+</div>
+
+<div class="content">
+    <table class="books">
+        <thead>
+        <tr>
+            <th th:text="#{book.name}">
+                Roman
+            </th>
+            <th th:text="#{book.genreName}">
+                Roman
+            </th>
+            <th th:text="#{book.authorFullName}">
+                Roman
+            </th>
+            <th th:text="#{book.publicationDate}">
+                Roman
+            </th>
+            <th th:text="#{book.price}">
+                Roman
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="book : ${books}">
+            <td >
+                <a th:href="@{/book/__${book.id}__}" th:text="${book.name}"></a>
+                Roman
+            </td>
+            <td th:text="${book.genreName}">
+                Roman
+            </td>
+            <td th:text="${book.authorFullName}">
+                Roman
+            </td>
+            <td th:text="${book.publicationDate}">
+                Roman
+            </td>
+            <td th:text="${book.price}">
+                Roman
+            </td>
+            <td>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

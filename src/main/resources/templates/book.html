@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="#locale" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="#{header.application}">Hello Page</title>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+</head>
+<body>
+<link href="../static/css/style.css" rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>
+<link href="../static/css/comment.css" rel="stylesheet" th:href="@{/css/comment.css}" type="text/css"/>
+
+<div class="top-panel">
+    <div class="top-panel element">
+        <img alt="memorynotfound logo" class="logo" src="../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>
+    </div>
+
+    <div class="btn element">
+        <a href="/book" th:href="@{/book}" th:text="#{back.to(#{books})}"></a>
+    </div>
+</div>
+
+<div class="h1 block">
+    <h1 th:text="${book.name}"></h1>
+</div>
+
+<div class="content">
+    <div id="badge">
+        <header class="content">
+            <div class="block" th:object="${book}">
+
+                <span>Author of the book : </span>
+                <span th:text="*{authorFullName}">AuthorTest DoeTest</span>
+            </div>
+            <div class="block">
+                <span>Book was published at : </span>
+                <span th:text="*{publicationDate}">1998</span>
+            </div>
+            <div class="block">
+                <span>Price : </span>
+                <span th:text="*{price}">899.99</span>
+            </div>
+
+            <div class="btn">
+                <a th:text="#{edit}" href="/?action=edit" methods="PUT"></a>
+            </div>
+        </header>
+
+        <section class="comment-section">
+
+            <div class="info">
+                <div class="total">
+                    <span th:text="#{comment.total}">Total Comments: </span>
+                    <span class="comments-number" th:text="${comments.size()}">2</span>
+                </div>
+                <div style="clear: both;"></div>
+            </div>
+
+
+            <div class="list">
+                <section th:each="comment: ${comments}">
+                    <div class="img">
+                        <img alt="memorynotfound logo" class="logo" src="../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>
+                    </div>
+                    <div class="comment">
+                        <div class="bot-border">
+                            <div class="header">
+                                <h3 th:text="${comment.username}">Cesar Farias</h3>
+                                <label th:text="#{comment.created}+${comment.created}"></label>
+                            </div>
+                        </div>
+                        <p th:text="${comment.message}">Damn, how awesome is Ionut's design?</p>
+                    </div>
+                </section>
+            </div>
+        </section>
+        <section class="input__area">
+            <div class="input__area btn">
+                <textarea placeholder='Enter comment...' rows='1'></textarea>
+                <button>Add Comment</button>
+            </div>
+            <div style="clear: both;"></div>
+        </section>
+
+    </div>
+</div>
+
+
+<script type="text/javascript" src="../static/js" th:src="@{/js/script.js}"></script>
+
+<!--<script>-->
+    <!--var textarea = document.querySelector('textarea');-->
+
+    <!--textarea.addEventListener('keydown', autosize);-->
+
+    <!--function autosize(){-->
+        <!--var el = this;-->
+        <!--setTimeout(function(){-->
+            <!--el.style.cssText = 'height:auto; padding:0';-->
+            <!--// for box-sizing other than "content-box" use:-->
+            <!--// el.style.cssText = '-moz-box-sizing:content-box';-->
+            <!--el.style.cssText = 'height:' + el.scrollHeight + 'px';-->
+        <!--},0);-->
+    <!--}-->
+<!--</script>-->
+</body>
+</html>

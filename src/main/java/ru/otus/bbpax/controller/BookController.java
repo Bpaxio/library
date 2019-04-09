@@ -2,75 +2,93 @@ package ru.otus.bbpax.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.shell.standard.ShellComponent;
-import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.standard.ShellOption;
-import ru.otus.bbpax.controller.model.BookView;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import ru.otus.bbpax.service.BookService;
+import ru.otus.bbpax.service.CommentService;
+import ru.otus.bbpax.service.model.BookView;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
+
+import static ru.otus.bbpax.controller.Templates.BOOK;
+import static ru.otus.bbpax.controller.Templates.BOOKS;
 
 @Slf4j
+@Controller
 @AllArgsConstructor
-@ShellComponent("book")
 public class BookController {
     private final BookService service;
+    private final CommentService commentService;
 
-    @ShellMethod(key = {"book --create", "book -c"}, value = "book creation")
-    public void createBook(@ShellOption(help = "Book's name.") String name,
-                           @ShellOption(help = "Year of Book's publication.") Integer publicationDate,
-                           @ShellOption(help = "Office or Name of company where this book was published.") String publishingOffice,
-                           @ShellOption(help = "Book's price. Scale will be rounded to the value - 2") BigDecimal price,
-                           @ShellOption(help = "Book's genre.") String genre,
-                           @ShellOption(help = "Book's author.") String author) {
-        log.info("create book: '{}' published in {} y. as {}, created by {} and costs - {}.",
-                name, publicationDate, genre, author, price);
+    @PostMapping("/book")
+    public void createBook(String name,
+                           Integer publicationDate,
+                           String publishingOffice,
+                           BigDecimal price,
+                           String genre,
+                           String authorFirstName,
+                           String authorLastname, Model model) {
+        log.info("Create book: '{}' published in {} y. as {}, created by {} and costs - {}.",
+                name, publicationDate, genre, authorFirstName + " " + authorLastname, price);
+        model.addAttribute("error", "xax");
         BookView book = new BookView(
                 name,
                 publicationDate,
                 publishingOffice,
                 price.setScale(2, RoundingMode.HALF_UP),
                 genre,
-                author
+                authorFirstName,
+                authorLastname
         );
 
-        log.info("registration of new book: {}", book);
+        book.getAuthorFullName();
+        log.info("Registration of new book: {}", book);
         service.create(book);
     }
 
-    @ShellMethod(key = {"book --update", "book -u"}, value = "update book with id")
-    public void updateBook(@ShellOption(help = "Book's id.") String id,
-                           @ShellOption(help = "Book's name.") String name,
-                           @ShellOption(help = "Year of Book's publication.") Integer publicationDate,
-                           @ShellOption(help = "Office or Name of company where this book was published.") String publishingOffice,
-                           @ShellOption(help = "Book's price. Scale will be rounded to the value - 2") BigDecimal price,
-                           @ShellOption(help = "Book's genre.") String genre,
-                           @ShellOption(help = "Book's author.") String author) {
-        service.update(new BookView(
-                id,
-                name,
-                publicationDate,
-                publishingOffice,
-                price.setScale(2, RoundingMode.HALF_UP),
-                genre,
-                author
-        ));
+    @PutMapping("/book/{id}")
+    public void updateBook(@PathVariable String id,
+                           String name,
+                           Integer publicationDate,
+                           String publishingOffice,
+                           BigDecimal price,
+                           String genre,
+                           String authorFirstName,
+                           String authorLastname, Model model) {
+
+//        service.update(new BookView(
+//                id,
+//                name,
+//                publicationDate,
+//                publishingOffice,
+//                price.setScale(2, RoundingMode.HALF_UP),
+//                genre,
+//                author
+//        ));
     }
 
-    @ShellMethod(key = {"book --get", "book -g"}, value = "Get Book with id")
-    public BookView getBook(@ShellOption(help = "Book's id.") String id) {
-        return service.getBookById(id);
+    @GetMapping(name = "/book/{id}")
+    public String getBook(@PathVariable String id, Model model) {
+//        log.info("edit: {}", model.containsAttribute("edit"));
+        model.addAttribute("book", service.getBookById(id));
+        model.addAttribute("comments", commentService.getCommentsFor(id));
+        return BOOK;
     }
 
-    @ShellMethod(key = {"book --list", "book -l"}, value = "List of all Books")
-    public List<BookView> getBooks() {
-        return service.getAll();
+    @GetMapping("/book")
+    public String getBooks(Model model) {
+        model.addAttribute("books", service.getAll());
+        return BOOKS;
     }
 
-    @ShellMethod(key = {"book --delete", "book -d"}, value = "Delete Book by id")
-    public void deleteBookById(@ShellOption(help = "Book's id.") String id) {
+    @DeleteMapping("/book/{id}")
+    public void deleteBookById(@PathVariable String id) {
         service.deleteById(id);
     }
 }

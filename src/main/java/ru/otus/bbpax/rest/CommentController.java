@@ -12,7 +12,7 @@ import ru.otus.bbpax.service.model.CommentView;
 import java.util.List;
 
 @Slf4j
-@RestController("/comment")
+// @RestController("/comment")
 public class CommentController {
 
     private final CommentService service;
