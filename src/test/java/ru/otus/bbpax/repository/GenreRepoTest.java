@@ -1,107 +1,82 @@
 package ru.otus.bbpax.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.otus.bbpax.entity.Genre;
 
-import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
-@RunWith(SpringRunner.class)
-@DataJpaTest
+@DataMongoTest
+@ExtendWith(SpringExtension.class)
+@TestPropertySource(value = "classpath:application-test.yml")
+@Import(value = MongoBeeConfig.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @ActiveProfiles("test")
 public class GenreRepoTest {
 
     @Autowired
     private GenreRepo repo;
 
-    @Autowired
-    private TestEntityManager manager;
-
-    private TypedQuery<Genre> allQuery;
-    private TypedQuery<Long> countQuery;
-
-    @Before
-    @SuppressWarnings("JpaQlInspection")
-    public void setUp() throws Exception {
-        allQuery = manager.getEntityManager()
-                .createQuery("select g from Genre g", Genre.class);
-        countQuery = manager.getEntityManager()
-                .createQuery("select count(g) from Genre g", Long.class);
-    }
-
     @Test
-    public void testCreate() throws Exception {
-        Long initCount = countQuery.getSingleResult();
+    public void testCreate(@Autowired MongoTemplate template) throws Exception {
+        long initCount = template.getCollection(template.getCollectionName(Genre.class)).count();
         Genre expected = new Genre(
                 "ТестИмя"
         );
 
         repo.save(expected);
 
+        assertEquals(initCount + 1, template.getCollection(template.getCollectionName(Genre.class)).count());
 
-        assertEquals(initCount + 1, allQuery.getResultList().size());
-
-        Genre saved = manager.find(Genre.class, 1L);
+        Genre saved = template.findById(expected.getId(), Genre.class);
         assertEquals(expected, saved);
-
-        assertNull(manager.find(Genre.class, 2L));
     }
 
     @Test
-    public void testUpdate() throws Exception {
-        Long initCount = countQuery.getSingleResult();
-        Genre was = new Genre(
-                100000L,
-                "Novel"
-        );
-        Genre is = new Genre(
-                100000L,
-                "ТестИмяNEW"
-        );
+    public void testUpdate(@Autowired MongoTemplate template) throws Exception {
+        long initCount = template.getCollection(template.getCollectionName(Genre.class)).count();
+        Genre was = new Genre("1c77bb3f57cfe05a39abc17a", "Novel");
+        Genre is = new Genre("1c77bb3f57cfe05a39abc17a", "ТестИмяNEW");
         repo.save(is);
 
-        Long actualCount = Integer.toUnsignedLong(allQuery.getResultList().size());
+        long actualCount = template.getCollection(template.getCollectionName(Genre.class)).count();
         assertEquals(initCount, actualCount);
 
-        Genre saved = manager.find(Genre.class, 100000L);
-
+        Genre saved = template.findById(was.getId(), Genre.class);
         assertNotEquals(was, saved);
+
         testEquals(is, saved);
     }
 
     @Test
     public void testFindById() throws Exception {
-        Genre expected = new Genre(
-                100001L, "Drama"
-        );
-        Genre notExpected = new Genre(
-                100002L, "Science fiction"
-        );
+        Genre expected = new Genre("2c77bb3f57cfe05a39abc17a", "Drama");
+        Genre notExpected = new Genre("3c77bb3f57cfe05a39abc17a", "Science fiction");
 
         //test not found
 
-        Optional<Genre> genre = repo.findById(0L);
+        Optional<Genre> genre = repo.findById("100500c77bb3f57cfe05a39abc17a");
         assertFalse(genre.isPresent());
 
-        genre = repo.findById(100001L);
+        genre = repo.findById("2c77bb3f57cfe05a39abc17a");
 
         assertTrue(genre.isPresent());
         testEquals(expected, genre.get());
@@ -109,32 +84,29 @@ public class GenreRepoTest {
     }
 
     @Test
-    public void testFindAll() throws Exception {
-        Long initCount = countQuery.getSingleResult();
+    public void testFindAll(@Autowired MongoTemplate template) throws Exception {
+        long initCount = template.getCollection(template.getCollectionName(Genre.class)).count();
 
         List<Genre> all = repo.findAll();
-        assertEquals(initCount.intValue(), all.size());
 
-        assertEquals(allQuery.getResultList(), all);
+        assertEquals(initCount, all.size());
+        assertEquals(template.findAll(Genre.class), all);
     }
 
     @Test
-    public void testDeleteById() throws Exception {
-        Long initCount = countQuery.getSingleResult();
-        Genre genre = manager.find(Genre.class, 100003L);
+    public void testDeleteById(@Autowired MongoTemplate template) throws Exception {
+        long initCount = template.getCollection(template.getCollectionName(Genre.class)).count();
+        Genre genre = template.findById("3c77bb3f57cfe05a39abc17a", Genre.class);
         assertNotNull(genre);
-        repo.deleteById(100003L);
-        assertEquals(initCount - 1, countQuery.getSingleResult().longValue());
+        repo.deleteById("3c77bb3f57cfe05a39abc17a");
+        assertEquals(initCount - 1, template.getCollection(template.getCollectionName(Genre.class)).count());
+
     }
 
     @Test
     public void testFindByName() throws Exception {
-        Genre expected = new Genre(
-                100001L, "Drama"
-        );
-        Genre notExpected = new Genre(
-                100002L, "Science fiction"
-        );
+        Genre expected = new Genre("2c77bb3f57cfe05a39abc17a", "Drama");
+        Genre notExpected = new Genre("3c77bb3f57cfe05a39abc17a", "Science fiction");
 
         Optional<Genre> genre = repo.findByName(expected.getName());
         assertTrue(genre.isPresent());
@@ -142,7 +114,7 @@ public class GenreRepoTest {
         assertNotEquals(notExpected, genre.get());
 
         genre = repo.findByName("Not existed");
-        Assertions.assertFalse(genre.isPresent());
+        assertFalse(genre.isPresent());
     }
 
     private void testEquals(Genre expected, Genre actual) {

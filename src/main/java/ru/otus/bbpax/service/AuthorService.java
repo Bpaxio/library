@@ -25,7 +25,7 @@ public class AuthorService {
         repo.save(author.toEntity());
     }
 
-    public AuthorView getAuthorById(Long id) {
+    public AuthorView getAuthorById(String id) {
         Optional<Author> result = repo.findById(id);
         return result.map(AuthorView::fromEntity)
                 .orElse(null);
@@ -38,7 +38,7 @@ public class AuthorService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         repo.deleteById(id);
     }
 }

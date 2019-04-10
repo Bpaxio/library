@@ -1,7 +1,7 @@
 package ru.otus.bbpax.service.error;
 
 public class NotFoundException extends RuntimeException {
-    public NotFoundException(String objectName, Long id) {
+    public NotFoundException(String objectName, String id) {
         this(objectName + "with id '" + id + "' was not found");
     }
 

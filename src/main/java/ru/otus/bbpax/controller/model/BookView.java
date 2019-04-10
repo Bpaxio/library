@@ -17,7 +17,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class BookView implements EntityView<Book> {
 
-    private Long id;
+    private String id;
     private String name;
     private Integer publicationDate;
     private String publishingOffice;

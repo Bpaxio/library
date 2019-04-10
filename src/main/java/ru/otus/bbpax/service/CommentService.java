@@ -5,11 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.bbpax.controller.model.CommentView;
+import ru.otus.bbpax.entity.Book;
 import ru.otus.bbpax.entity.Comment;
 import ru.otus.bbpax.repository.BookRepo;
 import ru.otus.bbpax.repository.CommentRepo;
+import ru.otus.bbpax.service.error.NotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -21,17 +24,21 @@ public class CommentService {
     private final BookRepo bookRepo;
 
     @Transactional
-    public void create(String username, String text, Long bookId) {
-        bookRepo.findById(bookId)
-                .ifPresent(book -> repo.save(new Comment(username, text, book)));
+    public void create(String username, String text, String bookId) {
+        Optional<Book> book = bookRepo.findById(bookId);
+        if (!book.isPresent()) {
+            throw new NotFoundException("Book", bookId);
+        }
+        repo.save(new Comment(username, text, book.get()));
     }
 
     @Transactional
-    public void update(Long id, String text) {
+    public void update(String id, String text) {
         repo.update(id, text);
     }
 
-    public List<CommentView> getCommentsFor(Long bookId) {
+    @Transactional
+    public List<CommentView> getCommentsFor(String bookId) {
         return repo.findAllByBookId(bookId)
                 .stream()
                 .map(CommentView::fromEntity)
@@ -50,5 +57,9 @@ public class CommentService {
                 .stream()
                 .map(CommentView::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    public CommentView getComment(String id) {
+        return CommentView.fromEntity(repo.findById(id).get());
     }
 }

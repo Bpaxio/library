@@ -1,60 +1,48 @@
 package ru.otus.bbpax.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import ru.otus.bbpax.repository.listner.annotation.Cascade;
+import ru.otus.bbpax.repository.listner.annotation.CascadeType;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import java.math.BigDecimal;
 import java.util.List;
+
+import static ru.otus.bbpax.entity.EntityTypes.BOOK;
 
 /**
  * @author Vlad Rakhlinskii
  * Created on 10.01.2019.
  */
-@Entity
 @Data
 @NoArgsConstructor
-public class Book {
+@AllArgsConstructor
+@Document(collection = "books")
+@TypeAlias(BOOK)
+public class Book implements ListenableEntity {
 
     @Id
-    @SequenceGenerator(name = "book_seq_gen",
-            sequenceName = "book_seq",
-            allocationSize = 1
-    )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_seq_gen")
-    private Long id;
-
-    @Column
+    @Field("_id")
+    private String id;
     private String name;
-
-    @Column
     private Integer publicationDate;
-
-    @Column
     private String publishingOffice;
-
-    @Column
     private BigDecimal price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "genre_id")
+    @DBRef
     private Genre genre;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id")
+    @DBRef
     private Author author;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "book")
+    @DBRef(lazy = true)
+    @Cascade(type = CascadeType.DELETE, collection = "comments")
     private List<Comment> comments;
 
     public Book(String name,
@@ -71,7 +59,7 @@ public class Book {
         this.author = author;
     }
 
-    public Book(Long id,
+    public Book(String id,
                 String name,
                 Integer publicationDate,
                 String publishingOffice,
@@ -85,5 +73,18 @@ public class Book {
         this.price = price;
         this.genre = genre;
         this.author = author;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{"
+                + "id='" + id + '\''
+                + ", name='" + name + '\''
+                + ", publicationDate=" + publicationDate
+                + ", publishingOffice='" + publishingOffice + '\''
+                + ", price=" + price
+                + ", genre=" + genre
+                + ", author=" + author
+                + "]}";
     }
 }

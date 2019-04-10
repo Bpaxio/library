@@ -28,7 +28,7 @@ public class BookService {
     public void create(BookView book) {
         Book bookBone = book.toEntity();
 
-        authorRepo.findByFullName(
+        authorRepo.findByNameAndSurname(
                 bookBone.getAuthor().getName(),
                 bookBone.getAuthor().getSurname()
         )
@@ -46,7 +46,7 @@ public class BookService {
     }
 
 
-    public BookView getBookById(Long id) {
+    public BookView getBookById(String id) {
         Optional<Book> result = repo.findById(id);
         return BookView.fromEntity(
                 result.orElseThrow(() -> new NotFoundException("Book", id))
@@ -61,7 +61,7 @@ public class BookService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         repo.deleteById(id);
     }
 }

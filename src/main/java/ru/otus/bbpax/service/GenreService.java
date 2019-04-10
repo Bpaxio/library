@@ -25,7 +25,7 @@ public class GenreService {
         repo.save(genre.toEntity());
     }
 
-    public GenreView getGenreById(Long id) {
+    public GenreView getGenreById(String id) {
         Optional<Genre> result = repo.findById(id);
         return result.map(GenreView::fromEntity)
                 .orElse(null);
@@ -38,7 +38,7 @@ public class GenreService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         repo.deleteById(id);
     }
 }

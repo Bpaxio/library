@@ -4,46 +4,40 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import ru.otus.bbpax.repository.listner.annotation.Cascade;
+import ru.otus.bbpax.repository.listner.annotation.CascadeType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import java.util.List;
+
+import static ru.otus.bbpax.entity.EntityTypes.AUTHOR;
 
 /**
  * @author Vlad Rakhlinskii
  * Created on 10.01.2019.
  */
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = "books")
-public class Author {
+@Document(collection = "authors")
+@TypeAlias(AUTHOR)
+public class Author implements ListenableEntity {
     @Id
-    @SequenceGenerator(name = "author_seq_gen",
-            sequenceName = "author_seq",
-            allocationSize = 1
-    )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "author_seq_gen")
-    private Long id;
+    private String id;
 
-    @Column
     private String name;
 
-    @Column
     private String surname;
 
-    @Column
     private String country;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
-    List<Book> books;
+    @DBRef(lazy = true)
+    @Cascade(collection = "books", type = CascadeType.DELETE)
+    private List<Book> books;
 
     public Author(String name, String surname, String country) {
         this.name = name;
@@ -51,7 +45,7 @@ public class Author {
         this.country = country;
     }
 
-    public Author(Long id, String name, String surname, String country) {
+    public Author(String id, String name, String surname, String country) {
         this.id = id;
         this.name = name;
         this.surname = surname;

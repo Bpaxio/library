@@ -17,11 +17,11 @@ import java.util.Objects;
 @AllArgsConstructor
 public class CommentView {
 
-    private Long id;
+    private String id;
     private String username;
     private LocalDateTime created;
     private String message;
-    private Long bookId;
+    private String bookId;
 
     public static CommentView fromEntity(Comment comment) {
         return Objects.isNull(comment)

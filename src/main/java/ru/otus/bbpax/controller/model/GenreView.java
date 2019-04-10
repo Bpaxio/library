@@ -15,7 +15,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GenreView implements EntityView<Genre> {
-    private Long id;
+    private String id;
     private String name;
 
     public static GenreView fromEntity(Genre genre) {
