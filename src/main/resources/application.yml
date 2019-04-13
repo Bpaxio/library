@@ -4,18 +4,14 @@ spring:
 
   data:
     mongodb:
-      username: librarist
-      password: 123qwe
-      database: library
       port: 27017
       host: localhost
   mvc:
     locale-resolver: accept_header #just don't forget)
     locale: ru_RU
     message-codes-resolver-format: postfix_error_code
-    static-path-pattern: static/**
 logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
 server:
-  port: 8080
+  port: 8083

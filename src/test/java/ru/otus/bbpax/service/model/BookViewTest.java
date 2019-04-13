@@ -1,4 +1,4 @@
-package ru.otus.bbpax.shell.model;
+package ru.otus.bbpax.service.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -6,18 +6,17 @@ import org.junit.jupiter.api.Test;
 import ru.otus.bbpax.entity.Author;
 import ru.otus.bbpax.entity.Book;
 import ru.otus.bbpax.entity.Genre;
-import ru.otus.bbpax.service.model.BookView;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static ru.otus.bbpax.shell.model.TestVariables.AUTHOR_NAME;
-import static ru.otus.bbpax.shell.model.TestVariables.AUTHOR_SURNAME;
-import static ru.otus.bbpax.shell.model.TestVariables.BOOK_ID;
-import static ru.otus.bbpax.shell.model.TestVariables.BOOK_NAME;
-import static ru.otus.bbpax.shell.model.TestVariables.BOOK_PRICE;
-import static ru.otus.bbpax.shell.model.TestVariables.BOOK_PUBLICATION_YEAR;
-import static ru.otus.bbpax.shell.model.TestVariables.BOOK_PUBLISHING_OFFICE;
-import static ru.otus.bbpax.shell.model.TestVariables.GENRE_NAME;
+import static ru.otus.bbpax.service.model.TestVariables.AUTHOR_NAME;
+import static ru.otus.bbpax.service.model.TestVariables.AUTHOR_SURNAME;
+import static ru.otus.bbpax.service.model.TestVariables.BOOK_ID;
+import static ru.otus.bbpax.service.model.TestVariables.BOOK_NAME;
+import static ru.otus.bbpax.service.model.TestVariables.BOOK_PRICE;
+import static ru.otus.bbpax.service.model.TestVariables.BOOK_PUBLICATION_YEAR;
+import static ru.otus.bbpax.service.model.TestVariables.BOOK_PUBLISHING_OFFICE;
+import static ru.otus.bbpax.service.model.TestVariables.GENRE_NAME;
 
 class BookViewTest {
     private BookView bookView;

@@ -54,8 +54,7 @@
         <tbody>
         <tr th:each="book : ${books}">
             <td >
-                <a th:href="@{/book/__${book.id}__}" th:text="${book.name}"></a>
-                Roman
+                <a th:href="@{/book/__${book.id}__}" th:text="${book.name}">Roman</a>
             </td>
             <td th:text="${book.genreName}">
                 Roman
@@ -68,8 +67,6 @@
             </td>
             <td th:text="${book.price}">
                 Roman
-            </td>
-            <td>
             </td>
         </tr>
         </tbody>

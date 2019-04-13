@@ -1,4 +1,4 @@
-package ru.otus.bbpax.shell.model;
+package ru.otus.bbpax.service.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

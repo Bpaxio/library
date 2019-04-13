@@ -73,7 +73,7 @@ public class BookController {
 //        ));
     }
 
-    @GetMapping(name = "/book/{id}")
+    @GetMapping("/book/{id}")
     public String getBook(@PathVariable String id, Model model) {
 //        log.info("edit: {}", model.containsAttribute("edit"));
         model.addAttribute("book", service.getBookById(id));
