@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 public class GenreService {
     private final GenreRepo repo;
 
-    public void create(GenreView genre) {
-        repo.save(genre.toEntity());
+    public Genre create(GenreView genre) {
+        return repo.save(genre.toEntity());
     }
 
     public void update(GenreView genre) {

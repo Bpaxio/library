@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="#locale" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="#{header.application}">Hello Page</title>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+</head>
+<body>
+<link href="../static/css/style.css" rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>
+
+<div class="top-panel">
+    <div class="top-panel element">
+        <img alt="memorynotfound logo" class="logo" src="../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>
+    </div>
+
+    <div class="btn element">
+        <a href="/book" th:href="@{/genre}" th:text="#{back.to(#{genres})}"></a>
+    </div>
+</div>
+
+<form th:action="@{/genre/__${genre.id}__}" method="post" th:object="${genre}">
+    <div>
+        <div class="block">
+            <span th:text="#{genre.name} + ' : '"></span>
+            <label>
+                <input type="text" th:placeholder="#{placeholder.genre.name}" th:field="*{name}"/>
+            </label>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="element btn">
+            <button type="submit" th:text="#{save}"></button>
+        </div>
+        <div class="element btn">
+            <a methods="get" th:href="@{/genre/__${genre.id}__}" th:text="#{cancel}"></a>
+        </div>
+    </div>
+
+</form>
+
+
+
+
+</body>

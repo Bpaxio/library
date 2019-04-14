@@ -3,29 +3,71 @@
 
 <head>
     <title th:text="#{header.application}">Hello Page</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
 </head>
 <body>
-<link rel="stylesheet" th:href="@{/css/style.css}" href="../static/css/style.css" type="text/css"/>
-<div class="h1 block">
-    <h1 th:text="#{header.intro}"></h1>
-</div>
+<link href="../static/css/style.css" rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>
+
 <div class="top-panel">
     <div class="top-panel element">
         <img alt="memorynotfound logo" class="logo" src="../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>
     </div>
 
-    <div class="top-panel element">
-        <a class="button" href="/books" th:text="#{books}"></a>
+    <div class="btn element">
+        <a th:text="#{books}" th:href="@{/book}" href="/book"></a>
     </div>
-    <div class="top-panel element">
-        <a class="button" href="/authors" th:text="#{authors}"></a>
+
+    <div class="btn element">
+        <a class="btn" th:text="#{authors}" th:href="@{/author}" href="/book"></a>
     </div>
-    <div class="top-panel element">
-        <a class="button" href="/genres" th:text="#{genres}"></a>
+
+    <div class="btn element">
+        <a class="btn" th:text="#{genres}" th:href="@{/genre}" href="/book"></a>
     </div>
-    <div class="top-panel element">
-        <a class="button" href="/comments" th:text="#{hell}"></a>
+</div>
+
+<div class="h1 block">
+    <h1 th:text="#{header.genres}"></h1>
+</div>
+
+<div class="content">
+    <table class="books">
+        <thead>
+        <tr>
+            <th th:text="#{genre.name}">
+                Roman
+            </th>
+            <th>
+            </th>
+            <th th:text="#{genre.getBooks}">
+                Roman
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="genre : ${genres}">
+            <td>
+                <a th:href="@{/genre/__${genre.id}__}" th:text="${genre.name}">Roman</a>
+            </td>
+            <td>
+                <div class="btn">
+                    <a th:href="@{/genre/__${genre.id}__?action=edit}" th:text="#{edit}"
+                       href="/genre?action=edit"></a>
+                    <a th:href="@{/genre/__${genre.id}__?action=delete}" th:text="#{delete}"
+                       href="/genre?action=delete"></a>
+                </div>
+            </td>
+            <td>
+                <div class="btn">
+                    <a th:href="@{/book?genre=__${genre.id}__}" th:text="#{see}"
+                       href="/book?genre=all"></a>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="btn">
+        <a th:href="@{/genre?action=create}" th:text="#{create}" href="/genre?action=create"></a>
     </div>
 </div>
 </body>

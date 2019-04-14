@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="#locale" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="#{header.application}">Hello Page</title>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+</head>
+<body>
+<link href="../static/css/style.css" rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>
+
+<form th:action="@{/genre}" method="post">
+    <div class="form">
+        <div class="block form__row">
+            <span th:text="#{genre.name} + ' : '"></span>
+            <label>
+                <input name="name" type="text" th:placeholder="#{placeholder.genre.name}"/>
+            </label>
+    </div>
+    <div class="panel">
+        <div class="element btn">
+            <button type="submit" th:text="#{save}"></button>
+        </div>
+        <div class="element btn">
+            <a methods="get" th:href="@{/genre}" th:text="#{cancel}"></a>
+        </div>
+    </div>
+
+</form>
+
+
+
+
+</body>

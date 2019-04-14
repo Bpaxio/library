@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 public class AuthorService {
     private final AuthorRepo repo;
 
-    public void create(AuthorView author) {
-        repo.save(author.toEntity());
+    public Author create(AuthorView author) {
+        return repo.save(author.toEntity());
     }
 
     public void update(AuthorView author) {

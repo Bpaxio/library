@@ -15,31 +15,26 @@
     </div>
 
     <div class="btn element">
-        <a href="/author" th:href="@{/author}" th:text="#{back.to(#{authors})}"></a>
+        <a href="/author" th:href="@{/genre}" th:text="#{back.to(#{genres})}"></a>
     </div>
 </div>
 
 <div class="h1 block">
-    <h1 th:text="${author.name}"></h1>
+    <h1 th:text="${genre.name}"></h1>
 </div>
 
 <div class="content">
     <div id="badge">
         <header class="content">
             <div class="block">
-                <span th:text="#{author.fullName} + ' : '"></span>
-                <span th:text="${author.name} + ' ' + ${author.surname}">AuthorTest DoeTest</span>
-            </div>
-            <div class="block">
-                <span th:text="#{author.motherland} + ' : '">MotherLand : </span>
-                <span th:text="${author.country}">1998</span>
+                <span th:text="#{genre.name} + ' : '"></span>
+                <span th:text="${genre.name}">Novel</span>
             </div>
 
             <div class="btn">
-                <a th:href="@{/author/__${author.id}__?action=edit}" th:text="#{edit}" href="./?action=edit"></a>
+                <a th:href="@{/genre/__${genre.id}__?action=edit}" th:text="#{edit}" href="./?action=edit"></a>
             </div>
         </header>
-
     </div>
 </div>
 

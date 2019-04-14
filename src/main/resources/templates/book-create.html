@@ -13,41 +13,41 @@
         <div class="block form__row">
             <span th:text="#{book.name} + ' : '">Book Name : </span>
             <label>
-                <input type="text" th:placeholder="#{placeholder.book.name}"/>
+                <input name="name" type="text" th:placeholder="#{placeholder.book.name}"/>
             </label>
         </div>
         <div class="block form__row">
             <span th:text="#{book.authorFirstName} + ' : '">Author's First Name : </span>
             <label>
-                <input type="text" th:placeholder="#{placeholder.author.firstname}"/>
+                <input name="authorFirstName" type="text" th:placeholder="#{placeholder.author.firstname}"/>
             </label>
         </div>
         <div class="block form__row">
             <span th:text="#{book.authorLastName} + ' : '">Author's Last Name : </span>
             <label>
-                <input type="text" th:placeholder="#{placeholder.author.lastname}"/>
+                <input name="authorLastName" type="text" th:placeholder="#{placeholder.author.lastname}"/>
             </label>
         </div>
         <div class="block form__row">
             <span th:text="#{book.publicationDate} + ' : '">Book was published at : </span>
-            <input type="text" th:placeholder="#{placeholder.book.year}" placeholder="publication year"
+            <input name="publicationDate" type="text" th:placeholder="#{placeholder.book.year}" placeholder="publication year"
             />
         </div>
         <div class="block form__row">
-            <span th:text="#{book.publishingHouse} + ' : '">Publishing House : </span>
+            <span th:text="#{book.publishingOffice} + ' : '">Publishing House : </span>
             <label>
-                <input type="text" th:placeholder="#{placeholder.book.publishing}"/>
+                <input name="publishingOffice" type="text" th:placeholder="#{placeholder.book.publishing}"/>
             </label>
         </div>
         <div class="block form__row">
             <span th:text="#{book.genreName} + ' : '">Genre : </span>
             <label>
-                <input type="text" th:placeholder="#{placeholder.book.genre}"/>
+                <input name="genreName" type="text" th:placeholder="#{placeholder.book.genre}"/>
             </label>
         </div>
         <div class="block form__row">
             <span th:text="#{book.price} + ' : '">Price : </span>
-            <input type="text" th:placeholder="#{placeholder.price}"/>
+            <input name="price" type="text" th:placeholder="#{placeholder.price}"/>
         </div>
     </div>
     <div class="panel">

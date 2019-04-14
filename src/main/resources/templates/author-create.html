@@ -13,19 +13,19 @@
         <div class="block form__row">
             <span th:text="#{author.firstName} + ' : '"></span>
             <label>
-                <input type="text" th:placeholder="#{placeholder.author.firstname}"/>
+                <input name="name" type="text" th:placeholder="#{placeholder.author.firstname}"/>
             </label>
         </div>
         <div class="block form__row">
             <span th:text="#{author.lastName} + ' : '"></span>
             <label>
-                <input type="text" th:placeholder="#{placeholder.author.lastname}"/>
+                <input name="surname" type="text" th:placeholder="#{placeholder.author.lastname}"/>
             </label>
         </div>
         <div class="block form__row">
             <span th:text="#{author.motherland} + ' : '">MotherLand : </span>
             <label>
-                <input type="text" th:placeholder="#{placeholder.country}"/>
+                <input name="country" type="text" th:placeholder="#{placeholder.country}"/>
             </label>
         </div>
     </div>

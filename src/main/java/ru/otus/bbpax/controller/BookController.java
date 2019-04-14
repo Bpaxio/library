@@ -29,26 +29,23 @@ public class BookController {
                            BigDecimal price,
                            String genreName,
                            String authorFirstName,
-                           String authorLastname, Model model) {
-        log.info("Create book: '{}' published in {} y. as {}, created by {} and costs - {}.",
-                name, publicationDate, genreName, authorFirstName + " " + authorLastname, price);
-        model.addAttribute("error", "xax");
-        BookView book = new BookView(
+                           String authorLastName, Model model) {
+        log.info("Create bookView: '{}' published in {} y. as {}, created by {} and costs - {}.",
+                name, publicationDate, genreName, authorFirstName + " " + authorLastName, price);
+        BookView bookView = new BookView(
                 name,
                 publicationDate,
                 publishingOffice,
                 price.setScale(2, RoundingMode.HALF_UP),
                 genreName,
                 authorFirstName,
-                authorLastname
+                authorLastName
         );
 
-        book.getAuthorFullName();
-        log.info("Registration of new book: {}", book);
-        model.addAttribute("book", BookView.fromEntity(service.create(book)));
-
-        // TODO: 13.04.2019 to book get byId
-        return BOOK;
+        bookView.getAuthorFullName();
+        log.info("Registration of new bookView: {}", bookView);
+        BookView book = BookView.fromEntity(service.create(bookView));
+        return "redirect:book/" + (Objects.nonNull(book) && Objects.nonNull(book.getId()) ? book.getId() : "");
     }
 
     @PostMapping("/book/{id}")

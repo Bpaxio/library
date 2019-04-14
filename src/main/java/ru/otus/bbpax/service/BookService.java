@@ -29,7 +29,7 @@ public class BookService {
         Book bookBone = book.toEntity();
 
         fillData(bookBone);
-
+        log.info("{}", bookBone);
         return repo.save(bookBone);
     }
 

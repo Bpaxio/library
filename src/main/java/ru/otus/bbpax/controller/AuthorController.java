@@ -17,21 +17,22 @@ public class AuthorController {
 
     @PostMapping("/author")
     public String createAuthor(String name,
-                             String surname,
-                             String country
+                               String surname,
+                               String country,
+                               Model model
     ) {
-        service.create(new AuthorView(null, name, surname, country));
+        model.addAttribute("author", AuthorView.fromEntity(service.create(new AuthorView(null, name, surname, country))));
         return AUTHOR;
     }
 
     @PostMapping("/author/{id}")
     public String updateAuthor(@PathVariable("id") String id,
-                             String name,
-                             String surname,
-                             String country
+                               String name,
+                               String surname,
+                               String country
     ) {
         service.update(new AuthorView(id, name, surname, country));
-        return AUTHOR;
+        return "redirect:" + id;
     }
 
     @GetMapping("/author/{id}")
