@@ -27,20 +27,22 @@
     <div id="badge">
         <header class="content">
             <div class="block">
-                <span>Author of the book : </span>
+                <span th:text="#{book.author.text} + ' : '">Author of the book : </span>
                 <span th:text="${book.authorFullName}">AuthorTest DoeTest</span>
             </div>
             <div class="block">
-                <span>Book was published at : </span>
+                <span th:text="#{book.was.published} + ' : '">Book was published at : </span>
                 <span th:text="${book.publicationDate}">1998</span>
+                <span th:text="#{in} + ' : '"> in </span>
+                <span th:text="${book.publishingOffice}">office</span>
             </div>
             <div class="block">
-                <span>Price : </span>
+                <span th:text="#{book.price} + ' : '">Price : </span>
                 <span th:text="${book.price}">899.99</span>
             </div>
 
             <div class="btn">
-                <a th:text="#{edit}" href="/?action=edit" methods="PUT"></a>
+                <a th:href="@{/book/__${book.id}__?action=edit}" th:text="#{edit}" href="./?action=edit"></a>
             </div>
         </header>
 
@@ -58,7 +60,8 @@
             <div class="list">
                 <section th:each="comment: ${comments}">
                     <div class="img">
-                        <img alt="memorynotfound logo" class="logo" src="../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>
+                        <img alt="memorynotfound logo" class="logo" src="../static/img/logo.jpg"
+                             th:src="@{/img/logo.jpg}"/>
                     </div>
                     <div class="comment">
                         <div class="bot-border">
@@ -74,8 +77,11 @@
         </section>
         <section class="input__area">
             <div class="input__area btn">
-                <textarea placeholder='Enter comment...' rows='1'></textarea>
-                <button>Add Comment</button>
+                <form th:action="@{/__${book.id}__/comment}" method="post">
+                    <textarea id="message" name="message" th:placeholder="#{comment.placeholder}"
+                              placeholder='Enter comment...' rows='1'></textarea>
+                    <button type="submit" th:text="#{comment.create}">Add Comment</button>
+                </form>
             </div>
             <div style="clear: both;"></div>
         </section>
@@ -85,21 +91,5 @@
 
 
 <script type="text/javascript" src="../static/js" th:src="@{/js/script.js}"></script>
-
-<!--<script>-->
-    <!--var textarea = document.querySelector('textarea');-->
-
-    <!--textarea.addEventListener('keydown', autosize);-->
-
-    <!--function autosize(){-->
-        <!--var el = this;-->
-        <!--setTimeout(function(){-->
-            <!--el.style.cssText = 'height:auto; padding:0';-->
-            <!--// for box-sizing other than "content-box" use:-->
-            <!--// el.style.cssText = '-moz-box-sizing:content-box';-->
-            <!--el.style.cssText = 'height:' + el.scrollHeight + 'px';-->
-        <!--},0);-->
-    <!--}-->
-<!--</script>-->
 </body>
 </html>

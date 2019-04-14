@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="#locale" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="#{header.application}">Hello Page</title>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+</head>
+<body>
+<link href="../static/css/style.css" rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>
+
+<div class="top-panel">
+    <div class="top-panel element">
+        <img alt="memorynotfound logo" class="logo" src="../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>
+    </div>
+
+    <div class="btn element">
+        <a href="/book" th:href="@{/author}" th:text="#{back.to(#{authors})}"></a>
+    </div>
+</div>
+
+<form th:action="@{/author/__${author.id}__}" method="post" th:object="${author}">
+    <div>
+        <div class="block">
+            <span th:text="#{author.firstName} + ' : '"></span>
+            <label>
+                <input type="text" th:placeholder="#{placeholder.author.firstname}" th:field="*{name}"/>
+            </label>
+        </div>
+        <div class="block">
+            <span th:text="#{author.lastName} + ' : '"></span>
+            <label>
+                <input type="text" th:placeholder="#{placeholder.author.lastname}" th:field="*{surname}"/>
+            </label>
+        </div>
+        <div class="block">
+            <span th:text="#{author.motherland} + ' : '">MotherLand : </span>
+            <label>
+                <input type="text" th:placeholder="#{placeholder.country}" th:field="*{country}"/>
+            </label>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="element btn">
+            <button type="submit" th:text="#{save}"></button>
+        </div>
+        <div class="element btn">
+            <a methods="get" th:href="@{/author/__${author.id}__}" th:text="#{cancel}"></a>
+        </div>
+    </div>
+
+</form>
+
+
+
+
+</body>

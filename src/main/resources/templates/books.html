@@ -13,7 +13,7 @@
         <img alt="memorynotfound logo" class="logo" src="../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>
     </div>
 
-    <div class="btn element" >
+    <div class="btn element">
         <a th:text="#{books}" th:href="@{/book}" href="/book"></a>
     </div>
 
@@ -37,6 +37,8 @@
             <th th:text="#{book.name}">
                 Roman
             </th>
+            <th>
+            </th>
             <th th:text="#{book.genreName}">
                 Roman
             </th>
@@ -53,8 +55,15 @@
         </thead>
         <tbody>
         <tr th:each="book : ${books}">
-            <td >
+            <td>
                 <a th:href="@{/book/__${book.id}__}" th:text="${book.name}">Roman</a>
+            </td>
+            <td>
+                <div class="btn">
+                    <a th:href="@{/book/__${book.id}__?action=edit}" th:text="#{edit}" href="/book?action=edit"></a>
+                    <a th:href="@{/book/__${book.id}__?action=delete}" th:text="#{delete}"
+                       href="/book?action=delete"></a>
+                </div>
             </td>
             <td th:text="${book.genreName}">
                 Roman
@@ -71,6 +80,9 @@
         </tr>
         </tbody>
     </table>
+    <div class="btn">
+        <a th:href="@{/book?action=create}" th:text="#{create}" href="/book?action=create"></a>
+    </div>
 </div>
 </body>
 </html>

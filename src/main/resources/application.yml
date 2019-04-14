@@ -6,6 +6,7 @@ spring:
     mongodb:
       port: 27017
       host: localhost
+      database: library
   mvc:
     locale-resolver: accept_header #just don't forget)
     locale: ru_RU

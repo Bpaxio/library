@@ -2,13 +2,12 @@ package ru.otus.bbpax.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import ru.otus.bbpax.service.AuthorService;
 import ru.otus.bbpax.service.model.AuthorView;
+
+import static ru.otus.bbpax.controller.Templates.*;
 
 @Controller
 @AllArgsConstructor
@@ -17,29 +16,52 @@ public class AuthorController {
     private final AuthorService service;
 
     @PostMapping("/author")
-    public void createAuthor(String name,
+    public String createAuthor(String name,
                              String surname,
-                             String country) {
+                             String country
+    ) {
         service.create(new AuthorView(null, name, surname, country));
+        return AUTHOR;
     }
 
-    @PutMapping("/author/{id}")
-    public void updateAuthor(@PathVariable("id") String id,
+    @PostMapping("/author/{id}")
+    public String updateAuthor(@PathVariable("id") String id,
                              String name,
                              String surname,
-                             String country) {
+                             String country
+    ) {
         service.update(new AuthorView(id, name, surname, country));
+        return AUTHOR;
     }
 
     @GetMapping("/author/{id}")
-    public AuthorView getAuthor(String id) {
-        return service.getAuthorById(id);
+    public String getAuthor(@PathVariable String id,
+                            @RequestParam(value = "action", required = false) String action,
+                            Model model
+    ) {
+        model.addAttribute("author", service.getAuthorById(id));
+        if ("edit".equals(action)) {
+            return AUTHOR_EDIT;
+        } else if ("delete".equals(action)) {
+            service.deleteById(id);
+            return getAllAuthors(model);
+        }
+        return AUTHOR;
     }
 
     @GetMapping("/author")
-    public String getAuthors() {
-//        return service.getAll();
-        return "test";
+    public String getAuthors(@RequestParam(value = "action", required = false) String action,
+                             Model model
+    ) {
+        if ("create".equals(action)) {
+            return AUTHOR_CREATE;
+        }
+        return getAllAuthors(model);
+    }
+
+    private String getAllAuthors(Model model) {
+        model.addAttribute("authors", service.getAll());
+        return AUTHORS;
     }
 
     @DeleteMapping("/author/{id}")
