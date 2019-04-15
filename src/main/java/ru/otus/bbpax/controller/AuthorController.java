@@ -35,6 +35,12 @@ public class AuthorController {
         return "redirect:" + id;
     }
 
+    @PostMapping("/author/{id}/delete")
+    public String deleteAuthorById(@PathVariable("id") String id, Model model) {
+        service.deleteById(id);
+        return getAllAuthors(model);
+    }
+
     @GetMapping("/author/{id}")
     public String getAuthor(@PathVariable String id,
                             @RequestParam(value = "action", required = false) String action,
@@ -43,9 +49,6 @@ public class AuthorController {
         model.addAttribute("author", service.getAuthorById(id));
         if ("edit".equals(action)) {
             return AUTHOR_EDIT;
-        } else if ("delete".equals(action)) {
-            service.deleteById(id);
-            return getAllAuthors(model);
         }
         return AUTHOR;
     }
@@ -63,10 +66,5 @@ public class AuthorController {
     private String getAllAuthors(Model model) {
         model.addAttribute("authors", service.getAll());
         return AUTHORS;
-    }
-
-    @DeleteMapping("/author/{id}")
-    public void deleteAuthorById(@PathVariable("id") String id) {
-        service.deleteById(id);
     }
 }

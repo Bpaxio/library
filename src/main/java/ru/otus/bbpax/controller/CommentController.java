@@ -28,7 +28,14 @@ public class CommentController {
             username = NO_NAMED;
         }
         service.create(username, message, bookId);
-        return "redirect:/book/"+bookId;
+        return "redirect:/book/" + bookId;
     }
 
+    @PostMapping("{bookId}/comment/{commentId}/delete")
+    public String deleteComment(@PathVariable("bookId") String bookId,
+                                @PathVariable("commentId") String commentId) {
+
+        service.deleteById(commentId);
+        return "redirect:/book/" + bookId;
+    }
 }

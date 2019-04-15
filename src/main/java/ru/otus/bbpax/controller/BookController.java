@@ -50,13 +50,13 @@ public class BookController {
 
     @PostMapping("/book/{id}")
     public String updateBook(@PathVariable String id,
-                           String name,
-                           Integer publicationDate,
-                           String publishingOffice,
-                           BigDecimal price,
-                           String genreName,
-                           String authorFirstName,
-                           String authorLastName) {
+                             String name,
+                             Integer publicationDate,
+                             String publishingOffice,
+                             BigDecimal price,
+                             String genreName,
+                             String authorFirstName,
+                             String authorLastName) {
 
         log.info("Update book: '{}[id={}]' published in {} y. as {}, created by {} and costs - {}.",
                 name, id, publicationDate, genreName, authorFirstName + " " + authorLastName, price);
@@ -73,14 +73,17 @@ public class BookController {
         return "redirect:" + id;
     }
 
+    @PostMapping("/book/{id}/delete")
+    public String deleteBookById(@PathVariable String id, Model model) {
+        service.deleteById(id);
+        return getAllBooks(model);
+    }
+
     @GetMapping("/book/{id}")
     public String getBook(@PathVariable String id, @RequestParam(value = "action", required = false) String action, Model model) {
         model.addAttribute("book", service.getBookById(id));
         if ("edit".equals(action)) {
             return BOOK_EDIT;
-        } else if ("delete".equals(action)) {
-            service.deleteById(id);
-            return getAllBooks(model);
         }
         model.addAttribute("comments", commentService.getCommentsFor(id));
         return BOOK;
@@ -109,10 +112,5 @@ public class BookController {
     private String getAllBooks(Model model) {
         model.addAttribute("books", service.getAll());
         return BOOKS;
-    }
-
-    @DeleteMapping("/book/{id}")
-    public void deleteBookById(@PathVariable String id) {
-        service.deleteById(id);
     }
 }

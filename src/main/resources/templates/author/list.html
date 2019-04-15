@@ -6,11 +6,11 @@
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
 </head>
 <body>
-<link href="../static/css/style.css" rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>
+<link href="../../static/css/style.css" rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>
 
 <div class="top-panel">
     <div class="top-panel element">
-        <img alt="memorynotfound logo" class="logo" src="../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>
+        <img alt="memorynotfound logo" class="logo" src="../../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>
     </div>
 
     <div class="btn element">
@@ -53,12 +53,14 @@
                 <a th:href="@{/author/__${author.id}__}" th:text="${author.name} + ' ' + ${author.surname}">Roman</a>
             </td>
             <td>
-                <div class="btn">
-                    <a th:href="@{/author/__${author.id}__?action=edit}" th:text="#{edit}"
-                       href="/author?action=edit"></a>
-                    <a th:href="@{/author/__${author.id}__?action=delete}" th:text="#{delete}"
-                       href="/author?action=delete"></a>
-                </div>
+                <form th:action="@{/author/__${author.id}__/delete}" method="post"
+                      action="/author?action=delete">
+                    <div class="btn">
+                        <a th:href="@{/author/__${author.id}__?action=edit}" th:text="#{edit}"
+                           href="/author?action=edit"></a>
+                        <button type="submit" th:text="#{delete}"></button>
+                    </div>
+                </form>
             </td>
             <td th:text="${author.country}">
                 Roman

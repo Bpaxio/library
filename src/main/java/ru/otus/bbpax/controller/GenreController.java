@@ -27,6 +27,12 @@ public class GenreController {
         return "redirect:" + id;
     }
 
+    @PostMapping("/genre/{id}/delete")
+    public String deleteGenreById(@PathVariable("id") String id, Model model) {
+        service.deleteById(id);
+        return getAllGenres(model);
+    }
+
     @GetMapping("/genre/{id}")
     public String getGenre(@PathVariable String id,
                            @RequestParam(value = "action", required = false) String action,
@@ -35,9 +41,6 @@ public class GenreController {
         model.addAttribute("genre", service.getGenreById(id));
         if ("edit".equals(action)) {
             return GENRE_EDIT;
-        } else if ("delete".equals(action)) {
-            service.deleteById(id);
-            return getAllGenres(model);
         }
         return GENRE;
     }
@@ -55,10 +58,5 @@ public class GenreController {
     private String getAllGenres(Model model) {
         model.addAttribute("genres", service.getAll());
         return GENRES;
-    }
-
-    @DeleteMapping("/genre/{id}")
-    public void deleteGenreById(@PathVariable("id") String id) {
-        service.deleteById(id);
     }
 }

@@ -6,11 +6,11 @@
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
 </head>
 <body>
-<link href="../static/css/style.css" rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>
+<link href="../../static/css/style.css" rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>
 
 <div class="top-panel">
     <div class="top-panel element">
-        <img alt="memorynotfound logo" class="logo" src="../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>
+        <img alt="memorynotfound logo" class="logo" src="../../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>
     </div>
 
     <div class="btn element">
@@ -50,12 +50,14 @@
                 <a th:href="@{/genre/__${genre.id}__}" th:text="${genre.name}">Roman</a>
             </td>
             <td>
-                <div class="btn">
-                    <a th:href="@{/genre/__${genre.id}__?action=edit}" th:text="#{edit}"
-                       href="/genre?action=edit"></a>
-                    <a th:href="@{/genre/__${genre.id}__?action=delete}" th:text="#{delete}"
-                       href="/genre?action=delete"></a>
-                </div>
+                <form th:action="@{/genre/__${genre.id}__/delete}" method="post"
+                      action="/genre?action=delete">
+                    <div class="btn">
+                        <a th:href="@{/genre/__${genre.id}__?action=edit}" th:text="#{edit}"
+                           href="/genre?action=edit"></a>
+                        <button type="submit" th:text="#{delete}"></button>
+                    </div>
+                </form>
             </td>
             <td>
                 <div class="btn">

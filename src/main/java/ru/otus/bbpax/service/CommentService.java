@@ -62,4 +62,8 @@ public class CommentService {
     public CommentView getComment(String id) {
         return CommentView.fromEntity(repo.findById(id).get());
     }
+
+    public void deleteById(String id) {
+        repo.deleteById(id);
+    }
 }
