@@ -26,7 +26,7 @@ public class CascadeActionsMongoEventListener extends AbstractMongoEventListener
     @Override
     public void onBeforeSave(@NonNull BeforeSaveEvent<Object> event) {
         super.onBeforeSave(event);
-        log.info("Before delete source: {} of class: {} \n document:\n{}",
+        log.debug("Before save source: {} of class: {} \n document:\n{}",
                 event.getSource(),
                 event.getSource().getClass(),
                 event.getDocument());

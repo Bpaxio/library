@@ -1,4 +1,4 @@
-package ru.otus.bbpax.controller.model;
+package ru.otus.bbpax.service.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,15 +24,24 @@ public class BookView implements EntityView<Book> {
     private BigDecimal price;
 
     private String genreName;
-    private String authorFullName;
+    private String authorFirstName;
+    private String authorLastName;
 
-    public BookView(String name, Integer publicationDate, String publishingOffice, BigDecimal price, String genreName, String authorFullName) {
+    public BookView(String name,
+                    Integer publicationDate,
+                    String publishingOffice,
+                    BigDecimal price,
+                    String genreName,
+                    String authorFirstName,
+                    String authorLastName
+    ) {
         this.name = name;
         this.publicationDate = publicationDate;
         this.publishingOffice = publishingOffice;
         this.price = price;
         this.genreName = genreName;
-        this.authorFullName = authorFullName;
+        this.authorFirstName = authorFirstName;
+        this.authorLastName = authorLastName;
     }
 
     public static BookView fromEntity(Book book) {
@@ -45,7 +54,8 @@ public class BookView implements EntityView<Book> {
                         book.getPublishingOffice(),
                         book.getPrice(),
                         book.getGenre().getName(),
-                        book.getAuthor().getName() + " " + book.getAuthor().getSurname()
+                        book.getAuthor().getName(),
+                        book.getAuthor().getSurname()
         );
     }
 
@@ -60,13 +70,12 @@ public class BookView implements EntityView<Book> {
                 parseAuthorView().toEntity());
     }
 
-    private AuthorView parseAuthorView() {
-        String[] split = authorFullName.split(" ");
-        // TODO: 2019-01-28 IndexOutOfBoundsException will be thrown
-        String name = split[0];
-        String surname = split[1];
+    public String getAuthorFullName() {
+        return authorFirstName + (Objects.nonNull(authorLastName) ? " " + authorLastName : "");
+    }
 
-        return new AuthorView(null, name, surname, null);
+    private AuthorView parseAuthorView() {
+        return new AuthorView(null, authorFirstName, authorLastName, null);
     }
 
     private GenreView parseGenreView() {

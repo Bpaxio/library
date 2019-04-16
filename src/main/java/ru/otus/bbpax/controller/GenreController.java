@@ -1,49 +1,62 @@
 package ru.otus.bbpax.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.shell.standard.ShellComponent;
-import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.standard.ShellOption;
-import ru.otus.bbpax.controller.model.GenreView;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import ru.otus.bbpax.service.GenreService;
+import ru.otus.bbpax.service.model.GenreView;
 
-import java.util.List;
+import static ru.otus.bbpax.controller.Templates.*;
 
-import static org.springframework.shell.standard.ShellOption.NULL;
-
-/**
- * @author Vlad Rakhlinskii
- * Created on 14.01.2019.
- */
-@ShellComponent("genre")
+@Controller
 @AllArgsConstructor
 public class GenreController {
 
     private final GenreService service;
 
-    @ShellMethod(key = {"genre --create", "genre -c"}, value = "Genre creation")
-    public void createGenre(@ShellOption(help = "Genre's name.") String name) {
-        service.create(new GenreView(null, name));
+    @PostMapping("/genre")
+    public String createGenre(String name, Model model) {
+        model.addAttribute("genre", GenreView.fromEntity(service.create(new GenreView(null, name))));
+        return GENRE;
     }
 
-    @ShellMethod(key = {"genre --update", "genre -u"}, value = "Update genre with id")
-    public void updateGenre(@ShellOption(defaultValue = NULL, help = "Genre's id.") String id,
-                             @ShellOption(help = "Genre's name.", defaultValue = NULL) String name) {
+    @PostMapping("/genre/{id}")
+    public String updateGenre(@PathVariable("id") String id, String name) {
         service.update(new GenreView(id, name));
+        return "redirect:" + id;
     }
 
-    @ShellMethod(key = {"genre --get", "genre -g"}, value = "Get Genre with id")
-    public GenreView getGenre(@ShellOption(help = "Genre's id.") String id) {
-        return service.getGenreById(id);
-    }
-
-    @ShellMethod(key = {"genre --list", "genre -l"}, value = "Show all Genres")
-    public List<GenreView> getGenres() {
-        return service.getAll();
-    }
-
-    @ShellMethod(key = {"genre --delete", "genre -d"}, value = "Delete Genre by id")
-    public void deleteGenreById(@ShellOption(help = "Genre's id.") String id) {
+    @PostMapping("/genre/{id}/delete")
+    public String deleteGenreById(@PathVariable("id") String id, Model model) {
         service.deleteById(id);
+        return getAllGenres(model);
+    }
+
+    @GetMapping("/genre/{id}")
+    public String getGenre(@PathVariable String id,
+                           @RequestParam(value = "action", required = false) String action,
+                           Model model
+    ) {
+        model.addAttribute("genre", service.getGenreById(id));
+        if ("edit".equals(action)) {
+            return GENRE_EDIT;
+        }
+        return GENRE;
+    }
+
+    @GetMapping("/genre")
+    public String getGenres(@RequestParam(value = "action", required = false) String action,
+                             Model model
+    ) {
+        if ("create".equals(action)) {
+            return GENRE_CREATE;
+        }
+        return getAllGenres(model);
+    }
+
+    private String getAllGenres(Model model) {
+        model.addAttribute("genres", service.getAll());
+        return GENRES;
     }
 }

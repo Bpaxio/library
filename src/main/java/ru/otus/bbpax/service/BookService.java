@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.bbpax.controller.model.BookView;
+import ru.otus.bbpax.service.model.BookView;
 import ru.otus.bbpax.entity.Book;
 import ru.otus.bbpax.repository.AuthorRepo;
 import ru.otus.bbpax.repository.BookRepo;
@@ -25,9 +25,22 @@ public class BookService {
     private final GenreRepo genreRepo;
 
     @Transactional
-    public void create(BookView book) {
+    public Book create(BookView book) {
         Book bookBone = book.toEntity();
 
+        fillData(bookBone);
+        log.info("{}", bookBone);
+        return repo.save(bookBone);
+    }
+
+    @Transactional
+    public void update(BookView book) {
+        Book target = book.toEntity();
+        fillData(target);
+        repo.save(target);
+    }
+
+    private void fillData(Book bookBone) {
         authorRepo.findByNameAndSurname(
                 bookBone.getAuthor().getName(),
                 bookBone.getAuthor().getSurname()
@@ -36,13 +49,6 @@ public class BookService {
 
         genreRepo.findByName(bookBone.getGenre().getName())
                 .ifPresent(bookBone::setGenre);
-
-        repo.save(bookBone);
-    }
-
-    @Transactional
-    public void update(BookView book) {
-        repo.save(book.toEntity());
     }
 
 
@@ -51,6 +57,20 @@ public class BookService {
         return BookView.fromEntity(
                 result.orElseThrow(() -> new NotFoundException("Book", id))
         );
+    }
+
+    public List<BookView> getBooksByAuthor(String authorId) {
+        return repo.getAllByAuthorId(authorId)
+                .stream()
+                .map(BookView::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    public List<BookView> getBooksByGenre(String genreId) {
+        return repo.getAllByGenreId(genreId)
+                .stream()
+                .map(BookView::fromEntity)
+                .collect(Collectors.toList());
     }
 
     public List<BookView> getAll() {

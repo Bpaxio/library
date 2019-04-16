@@ -1,49 +1,70 @@
 package ru.otus.bbpax.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.shell.standard.ShellComponent;
-import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.standard.ShellOption;
-import ru.otus.bbpax.controller.model.AuthorView;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import ru.otus.bbpax.service.AuthorService;
+import ru.otus.bbpax.service.model.AuthorView;
 
-import java.util.List;
+import static ru.otus.bbpax.controller.Templates.*;
 
-import static org.springframework.shell.standard.ShellOption.NULL;
-
+@Controller
 @AllArgsConstructor
-@ShellComponent("author")
 public class AuthorController {
 
     private final AuthorService service;
 
-    @ShellMethod(key = {"author -create", "author -c"}, value = "author creation")
-    public void createAuthor(@ShellOption(help = "Author's name.") String name,
-                             @ShellOption(help = "Author's surname.") String surname,
-                             @ShellOption(help = "Country, where the author was born.") String country) {
-        service.create(new AuthorView(null, name, surname, country));
+    @PostMapping("/author")
+    public String createAuthor(String name,
+                               String surname,
+                               String country,
+                               Model model
+    ) {
+        model.addAttribute("author", AuthorView.fromEntity(service.create(new AuthorView(null, name, surname, country))));
+        return AUTHOR;
     }
 
-    @ShellMethod(key = {"author --update", "author -u"}, value = "update author with id")
-    public void updateAuthor(@ShellOption(help = "Author's id.") String id,
-                             @ShellOption(help = "Author's name.", defaultValue = NULL) String name,
-                             @ShellOption(help = "Author's surname.", defaultValue = NULL)  String surname,
-                             @ShellOption(help = "Country, where the author was born.", defaultValue = NULL) String country) {
+    @PostMapping("/author/{id}")
+    public String updateAuthor(@PathVariable("id") String id,
+                               String name,
+                               String surname,
+                               String country
+    ) {
         service.update(new AuthorView(id, name, surname, country));
+        return "redirect:" + id;
     }
 
-    @ShellMethod(key = {"author --get", "author -g"}, value = "get Author with id")
-    public AuthorView getAuthor(@ShellOption(help = "Author's id.") String id) {
-        return service.getAuthorById(id);
-    }
-
-    @ShellMethod(key = {"author --list", "author -l"}, value = "Show all Authors")
-    public List<AuthorView> getAuthors() {
-        return service.getAll();
-    }
-
-    @ShellMethod(key = {"author --delete", "author -d"}, value = "delete Author by id")
-    public void deleteAuthorById(@ShellOption(help = "Author's id.") String id) {
+    @PostMapping("/author/{id}/delete")
+    public String deleteAuthorById(@PathVariable("id") String id, Model model) {
         service.deleteById(id);
+        return getAllAuthors(model);
+    }
+
+    @GetMapping("/author/{id}")
+    public String getAuthor(@PathVariable String id,
+                            @RequestParam(value = "action", required = false) String action,
+                            Model model
+    ) {
+        model.addAttribute("author", service.getAuthorById(id));
+        if ("edit".equals(action)) {
+            return AUTHOR_EDIT;
+        }
+        return AUTHOR;
+    }
+
+    @GetMapping("/author")
+    public String getAuthors(@RequestParam(value = "action", required = false) String action,
+                             Model model
+    ) {
+        if ("create".equals(action)) {
+            return AUTHOR_CREATE;
+        }
+        return getAllAuthors(model);
+    }
+
+    private String getAllAuthors(Model model) {
+        model.addAttribute("authors", service.getAll());
+        return AUTHORS;
     }
 }

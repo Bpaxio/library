@@ -1,4 +1,4 @@
-package ru.otus.bbpax.controller.model;
+package ru.otus.bbpax.service.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package ru.otus.bbpax.controller.model;
+package ru.otus.bbpax.service.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,18 +10,18 @@ import ru.otus.bbpax.entity.Genre;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static ru.otus.bbpax.controller.model.TestVariables.AUTHOR_NAME;
-import static ru.otus.bbpax.controller.model.TestVariables.AUTHOR_SURNAME;
-import static ru.otus.bbpax.controller.model.TestVariables.BOOK_ID;
-import static ru.otus.bbpax.controller.model.TestVariables.BOOK_NAME;
-import static ru.otus.bbpax.controller.model.TestVariables.BOOK_PRICE;
-import static ru.otus.bbpax.controller.model.TestVariables.BOOK_PUBLICATION_YEAR;
-import static ru.otus.bbpax.controller.model.TestVariables.BOOK_PUBLISHING_OFFICE;
-import static ru.otus.bbpax.controller.model.TestVariables.COMMENT_CREATED;
-import static ru.otus.bbpax.controller.model.TestVariables.COMMENT_ID;
-import static ru.otus.bbpax.controller.model.TestVariables.COMMENT_MESSAGE;
-import static ru.otus.bbpax.controller.model.TestVariables.COMMENT_USERNAME;
-import static ru.otus.bbpax.controller.model.TestVariables.GENRE_NAME;
+import static ru.otus.bbpax.service.model.TestVariables.AUTHOR_NAME;
+import static ru.otus.bbpax.service.model.TestVariables.AUTHOR_SURNAME;
+import static ru.otus.bbpax.service.model.TestVariables.BOOK_ID;
+import static ru.otus.bbpax.service.model.TestVariables.BOOK_NAME;
+import static ru.otus.bbpax.service.model.TestVariables.BOOK_PRICE;
+import static ru.otus.bbpax.service.model.TestVariables.BOOK_PUBLICATION_YEAR;
+import static ru.otus.bbpax.service.model.TestVariables.BOOK_PUBLISHING_OFFICE;
+import static ru.otus.bbpax.service.model.TestVariables.COMMENT_CREATED;
+import static ru.otus.bbpax.service.model.TestVariables.COMMENT_ID;
+import static ru.otus.bbpax.service.model.TestVariables.COMMENT_MESSAGE;
+import static ru.otus.bbpax.service.model.TestVariables.COMMENT_USERNAME;
+import static ru.otus.bbpax.service.model.TestVariables.GENRE_NAME;
 
 class CommentViewTest {
     private CommentView view;

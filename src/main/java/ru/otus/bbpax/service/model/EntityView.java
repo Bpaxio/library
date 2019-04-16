@@ -1,4 +1,4 @@
-package ru.otus.bbpax.controller.model;
+package ru.otus.bbpax.service.model;
 
 public interface EntityView<T> {
     T toEntity();

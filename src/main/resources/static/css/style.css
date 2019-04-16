@@ -1,0 +1,171 @@
+html, body {
+    height: 100%;
+}
+
+h1, h2, h3, h4, h5 {
+    text-align: center;
+}
+
+body {
+    /*padding: 0;*/
+    padding: 50px;
+    margin: 0;
+    background-color: #ffffff;
+    font-family: sans-serif;
+    font-weight: 100;
+}
+/*table css*/
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 15px;
+    text-align: center !important;
+    background-color: rgba(255, 255, 255, 0.2);
+
+}
+
+th {
+    color: #fff;
+    text-align: left;
+}
+
+td {
+    color: #2a2a2a;
+}
+
+thead th {
+    background-color: #55608f;
+}
+
+tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+tbody td {
+    position: relative;
+}
+
+tbody td:hover:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -9999px;
+    bottom: -9999px;
+    background-color: rgba(255, 255, 255, 0.2);
+    z-index: -1;
+}
+
+.logo {
+    max-height: 26px;
+    max-width: 26px;
+    width: 26px;
+    height: 26px;
+}
+
+.top-panel, panel {
+}
+
+.element {
+    padding: 20px;
+    display:inline-block;
+    size: auto;
+}
+/*Buttons*/
+button.btn,.btn button, .btn a {
+    display: inline-block;
+    border: none;
+    padding: 1rem 2rem;
+    margin: 0;
+    text-decoration: none;
+    background: #55608f;
+    background: -webkit-linear-gradient(0deg, #3d476d, #55608f);
+    background: linear-gradient(0deg, #3d476d, #55608f);
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    text-align: center;
+    transition: background 250ms ease-in-out, transform 150ms ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+.btn button:hover,
+.btn button:focus, .btn a:hover,
+.btn a:focus {
+    background: #3d476d;
+    background: -webkit-linear-gradient(0deg, #55608f, #3d476d);
+    background: linear-gradient(0deg, #55608f, #3d476d);
+}
+.btn button:focus, .btn a:focus {
+    outline: 1px solid #fff;
+    outline-offset: -4px;
+}
+.btn button:active, .btn a:active {
+    transform: scale(0.99);
+}
+
+.form__row {
+    padding: 5px;
+}
+
+.tip {
+    width: 0px;
+    height: 0px;
+    position: absolute;
+    background: transparent;
+    border: 10px solid #3d476d;
+}
+
+.body {
+    position: relative;
+    max-width: 300px;
+    height: auto;
+    margin: 20px 10px;
+    padding: 5px;
+    background: transparent;
+    /*background-color: #DADADA;*/
+    border-radius: 3px;
+    border: 5px solid #3d476d;
+}
+
+.body .message {
+    min-height: 30px;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #fff;
+}
+
+
+.tip-left {
+    top: 10px;
+    left: -25px;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-bottom-color: transparent;
+}
+
+.content {
+    align-content: center;
+    align-items: center;
+}
+
+header.content {
+    align-content: normal;
+    align-items: normal;
+}

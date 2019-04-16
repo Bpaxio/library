@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="#locale" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="#{header.application}">Hello Page</title>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+</head>
+<body>
+<link href="../../static/css/style.css" rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>
+
+<form th:action="@{/templates/book}" method="post">
+    <div class="form">
+        <div class="block form__row">
+            <span th:text="#{book.name} + ' : '">Book Name : </span>
+            <label>
+                <input name="name" type="text" th:placeholder="#{placeholder.book.name}"/>
+            </label>
+        </div>
+        <div class="block form__row">
+            <span th:text="#{book.authorFirstName} + ' : '">Author's First Name : </span>
+            <label>
+                <input name="authorFirstName" type="text" th:placeholder="#{placeholder.author.firstname}"/>
+            </label>
+        </div>
+        <div class="block form__row">
+            <span th:text="#{book.authorLastName} + ' : '">Author's Last Name : </span>
+            <label>
+                <input name="authorLastName" type="text" th:placeholder="#{placeholder.author.lastname}"/>
+            </label>
+        </div>
+        <div class="block form__row">
+            <span th:text="#{book.publicationDate} + ' : '">Book was published at : </span>
+            <input name="publicationDate" type="text" th:placeholder="#{placeholder.book.year}" placeholder="publication year"
+            />
+        </div>
+        <div class="block form__row">
+            <span th:text="#{book.publishingOffice} + ' : '">Publishing House : </span>
+            <label>
+                <input name="publishingOffice" type="text" th:placeholder="#{placeholder.book.publishing}"/>
+            </label>
+        </div>
+        <div class="block form__row">
+            <span th:text="#{book.genreName} + ' : '">Genre : </span>
+            <label>
+                <input name="genreName" type="text" th:placeholder="#{placeholder.book.genre}"/>
+            </label>
+        </div>
+        <div class="block form__row">
+            <span th:text="#{book.price} + ' : '">Price : </span>
+            <input name="price" type="text" th:placeholder="#{placeholder.price}"/>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="element btn">
+            <button type="submit" th:text="#{save}"></button>
+        </div>
+        <div class="element btn">
+            <a methods="get" th:href="@{/book}" th:text="#{cancel}"></a>
+        </div>
+    </div>
+
+</form>
+
+
+
+
+</body>

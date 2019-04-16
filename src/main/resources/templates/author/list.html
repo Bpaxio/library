@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="#locale" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="#{header.application}">Hello Page</title>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+</head>
+<body>
+<link href="../../static/css/style.css" rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>
+
+<div class="top-panel">
+    <div class="top-panel element">
+        <img alt="memorynotfound logo" class="logo" src="../../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>
+    </div>
+
+    <div class="btn element">
+        <a th:text="#{books}" th:href="@{/book}" href="/book"></a>
+    </div>
+
+    <div class="btn element">
+        <a class="btn" th:text="#{authors}" th:href="@{/author}" href="/book"></a>
+    </div>
+
+    <div class="btn element">
+        <a class="btn" th:text="#{genres}" th:href="@{/genre}" href="/book"></a>
+    </div>
+</div>
+
+<div class="h1 block">
+    <h1 th:text="#{header.authors}"></h1>
+</div>
+
+<div class="content">
+    <table class="books">
+        <thead>
+        <tr>
+            <th th:text="#{author.fullName}">
+                Roman
+            </th>
+            <th>
+            </th>
+            <th th:text="#{author.motherland}">
+                Roman
+            </th>
+            <th th:text="#{author.getBooks}">
+                Roman
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="author : ${authors}">
+            <td>
+                <a th:href="@{/author/__${author.id}__}" th:text="${author.name} + ' ' + ${author.surname}">Roman</a>
+            </td>
+            <td>
+                <form th:action="@{/author/__${author.id}__/delete}" method="post"
+                      action="/author?action=delete">
+                    <div class="btn">
+                        <a th:href="@{/author/__${author.id}__?action=edit}" th:text="#{edit}"
+                           href="/author?action=edit"></a>
+                        <button type="submit" th:text="#{delete}"></button>
+                    </div>
+                </form>
+            </td>
+            <td th:text="${author.country}">
+                Roman
+            </td>
+            <td>
+                <div class="btn">
+                    <a th:href="@{/book?author=__${author.id}__}" th:text="#{see}"
+                       href="/book?author=all"></a>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="btn">
+        <a th:href="@{/author?action=create}" th:text="#{create}" href="/author?action=create"></a>
+    </div>
+</div>
+</body>
+</html>

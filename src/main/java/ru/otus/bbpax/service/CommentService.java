@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.bbpax.controller.model.CommentView;
+import ru.otus.bbpax.service.model.CommentView;
 import ru.otus.bbpax.entity.Book;
 import ru.otus.bbpax.entity.Comment;
 import ru.otus.bbpax.repository.BookRepo;
@@ -61,5 +61,9 @@ public class CommentService {
 
     public CommentView getComment(String id) {
         return CommentView.fromEntity(repo.findById(id).get());
+    }
+
+    public void deleteById(String id) {
+        repo.deleteById(id);
     }
 }

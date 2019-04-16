@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="#locale" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="#{header.application}">Hello Page</title>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+</head>
+<body>
+<link href="../../static/css/style.css" rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>
+<link href="../../static/css/comment.css" rel="stylesheet" th:href="@{/css/comment.css}" type="text/css"/>
+
+<div class="top-panel">
+    <div class="top-panel element">
+        <img alt="memorynotfound logo" class="logo" src="../../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>
+    </div>
+
+    <div class="btn element">
+        <a href="/book" th:href="@{/book}" th:text="#{back.to(#{books})}"></a>
+    </div>
+</div>
+
+<div class="h1 block">
+    <h1 th:text="${book.name}"></h1>
+</div>
+
+<div class="content">
+    <div id="badge">
+        <header class="content">
+            <div class="block">
+                <span th:text="#{book.author.text} + ' : '">Author of the book : </span>
+                <span th:text="${book.authorFullName}">AuthorTest DoeTest</span>
+            </div>
+            <div class="block">
+                <span th:text="#{book.was.published} + ' : '">Book was published at : </span>
+                <span th:text="${book.publicationDate}">1998</span>
+                <span th:text="#{in} + ' : '"> in </span>
+                <span th:text="${book.publishingOffice}">office</span>
+            </div>
+            <div class="block">
+                <span th:text="#{book.price} + ' : '">Price : </span>
+                <span th:text="${book.price}">899.99</span>
+            </div>
+
+            <div class="btn">
+                <a th:href="@{/book/__${book.id}__?action=edit}" th:text="#{edit}" href="..?action=edit"></a>
+            </div>
+        </header>
+
+        <section class="comment-section">
+
+            <div class="info">
+                <div class="total">
+                    <span th:text="#{comment.total}">Total Comments: </span>
+                    <span class="comments-number" th:text="${comments.size()}">2</span>
+                </div>
+                <div style="clear: both;"></div>
+            </div>
+
+
+            <div class="list">
+                <section th:each="comment: ${comments}">
+                    <div class="img">
+                        <img alt="memorynotfound logo" class="logo" src="../../static/img/logo.jpg"
+                             th:src="@{/img/logo.jpg}"/>
+                        <form th:action="@{/__${book.id}__/comment/__${comment.id}__/delete}" method="post">
+                            <button class="remove-comment" type="submit" style="display: inline;">
+                                &#215;
+                            </button>
+                        </form>
+                    </div>
+                    <div class="comment">
+                        <div class="bot-border">
+                            <div class="header">
+                                <h3 th:text="${comment.username}">Man Awesome</h3>
+                                <label th:text="#{comment.created}+${comment.created}"></label>
+                            </div>
+                        </div>
+                        <p th:text="${comment.message}">Damn, how awesome is this book?</p>
+                    </div>
+                </section>
+            </div>
+        </section>
+        <section class="input__area">
+            <div class="input__area btn">
+                <form th:action="@{/__${book.id}__/comment}" method="post">
+                    <textarea id="message" name="message" th:placeholder="#{comment.placeholder}"
+                              placeholder='Enter comment...' rows='1'></textarea>
+                    <button type="submit" th:text="#{comment.create}">Add Comment</button>
+                </form>
+            </div>
+            <div style="clear: both;"></div>
+        </section>
+
+    </div>
+</div>
+
+
+<script type="text/javascript" src="../../static/js" th:src="@{/js/script.js}"></script>
+</body>
+</html>

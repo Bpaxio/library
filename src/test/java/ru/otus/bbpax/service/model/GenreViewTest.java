@@ -1,4 +1,4 @@
-package ru.otus.bbpax.controller.model;
+package ru.otus.bbpax.service.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -7,8 +7,8 @@ import ru.otus.bbpax.entity.Genre;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static ru.otus.bbpax.controller.model.TestVariables.GENRE_ID;
-import static ru.otus.bbpax.controller.model.TestVariables.GENRE_NAME;
+import static ru.otus.bbpax.service.model.TestVariables.GENRE_ID;
+import static ru.otus.bbpax.service.model.TestVariables.GENRE_NAME;
 
 class GenreViewTest {
     private GenreView view;

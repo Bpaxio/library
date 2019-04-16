@@ -1,0 +1,121 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700,600,300);
+
+#badge {
+    background-position:top;
+    background-repeat:no-repeat;
+    margin:30px auto;
+    width: 100%;
+    border-radius:4px;
+}
+header {
+    height: auto;
+    border-bottom:5px solid #f96243;
+    padding-bottom: 50px;
+}
+section.comment-section .input__area{
+    padding:20px 10px;
+}
+.info {
+    padding:0 10px 20px;
+    border-bottom:1px solid #f1f1f1;
+}
+.total span {
+    font-size:14px;
+    float:left;
+    padding-top: 20px;
+    padding-left: 10px;
+}
+span.comments-number {
+    font-size:32px;
+    font-weight:bold;
+}
+
+.input__area {
+    padding:0 10px 20px;
+}
+
+.list {
+    max-height: 700px;
+    height:200px;
+    padding:0 10px;
+    overflow:auto;
+
+}
+.list section {
+    margin-bottom: 40px;
+}
+
+img {
+    float:left;
+    width:75px;
+    height:75px;
+    border-radius:80px;
+    margin-right:15px;
+}
+
+.header {
+    margin-top:30px;
+    margin-left: 30px;
+    text-align: center;
+    width: max-content;
+}
+
+.header h3 {
+    font-size:20px;
+    margin: 20px 0 0;
+}
+.header label {
+    font-size:14px;
+    color: rgba(77, 77, 77, 0.87);
+}
+.bot-border {
+    border-radius: 5px;
+    border-bottom:2px solid #3d476d;
+    padding-bottom: 10px;
+}
+.comment p {
+    font-size:14px;
+    margin-left: 20px;
+}
+
+textarea {
+    overflow:hidden;
+    padding:10px;
+    width:80%;
+    max-width: 100%;
+    font-size:14px;
+    margin:50px auto;
+    display:block;
+    border-radius:10px;
+    border:6px solid #556677;
+}
+
+.remove-comment {
+    display: none;
+    position: relative;
+    float: right;
+    top: 0;
+    right: 5px;
+    border-radius: 10em;
+    padding: 2px 6px 3px;
+    text-decoration: none;
+    font: 700 21px/20px sans-serif;
+    background: #555;
+    border: 3px solid #fff;
+    color: #FFF;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 2px 4px rgba(0,0,0,0.3);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    -webkit-transition: background 0.5s;
+    transition: background 0.5s;
+}
+.remove-comment:hover {
+    background: #E54E4E;
+    padding: 3px 7px 5px;
+    top: -1px;
+    right: 4px;
+}
+.remove-comment:active {
+    background: #E54E4E;
+    top: 0;
+    right: 4px;
+}

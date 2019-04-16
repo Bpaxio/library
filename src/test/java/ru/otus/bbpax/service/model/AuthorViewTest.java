@@ -1,4 +1,4 @@
-package ru.otus.bbpax.controller.model;
+package ru.otus.bbpax.service.model;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -6,10 +6,10 @@ import ru.otus.bbpax.entity.Author;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static ru.otus.bbpax.controller.model.TestVariables.AUTHOR_COUNTRY;
-import static ru.otus.bbpax.controller.model.TestVariables.AUTHOR_ID;
-import static ru.otus.bbpax.controller.model.TestVariables.AUTHOR_NAME;
-import static ru.otus.bbpax.controller.model.TestVariables.AUTHOR_SURNAME;
+import static ru.otus.bbpax.service.model.TestVariables.AUTHOR_COUNTRY;
+import static ru.otus.bbpax.service.model.TestVariables.AUTHOR_ID;
+import static ru.otus.bbpax.service.model.TestVariables.AUTHOR_NAME;
+import static ru.otus.bbpax.service.model.TestVariables.AUTHOR_SURNAME;
 
 class AuthorViewTest {
     private AuthorView view = new AuthorView(AUTHOR_ID, AUTHOR_NAME, AUTHOR_SURNAME, AUTHOR_COUNTRY);

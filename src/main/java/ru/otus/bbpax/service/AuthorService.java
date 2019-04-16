@@ -3,7 +3,7 @@ package ru.otus.bbpax.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.otus.bbpax.controller.model.AuthorView;
+import ru.otus.bbpax.service.model.AuthorView;
 import ru.otus.bbpax.entity.Author;
 import ru.otus.bbpax.repository.AuthorRepo;
 
@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 public class AuthorService {
     private final AuthorRepo repo;
 
-    public void create(AuthorView author) {
-        repo.save(author.toEntity());
+    public Author create(AuthorView author) {
+        return repo.save(author.toEntity());
     }
 
     public void update(AuthorView author) {
