@@ -2,10 +2,7 @@ package ru.otus.bbpax.rest;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.otus.bbpax.service.BookService;
 import ru.otus.bbpax.service.model.BookView;
 
@@ -14,9 +11,10 @@ import java.math.RoundingMode;
 import java.util.List;
 
 @Slf4j
-// @RestController("/book")
+@RestController
+@RequestMapping("api/book")
 @AllArgsConstructor
-public class BookController {
+public class BookRestController {
     private final BookService service;
 
     @PostMapping
@@ -41,7 +39,7 @@ public class BookController {
         service.create(book);
     }
 
-    @PutMapping("/${id}")
+    @PutMapping("{id}")
     public void updateBook(String id,
                            String name,
                            Integer publicationDate,
@@ -60,7 +58,7 @@ public class BookController {
         ));
     }
 
-    @GetMapping("/${id}")
+    @GetMapping("{id}")
     public BookView getBook(String id) {
         return service.getBookById(id);
     }
@@ -70,7 +68,7 @@ public class BookController {
         return service.getAll();
     }
 
-    @DeleteMapping("/${id}")
+    @DeleteMapping("{id}")
     public void deleteBookById(String id) {
         service.deleteById(id);
     }
