@@ -12,6 +12,7 @@ import java.util.List;
  * Created on 14.01.2019.
  */
 @RestController
+@CrossOrigin
 @RequestMapping("api/genre")
 @AllArgsConstructor
 public class GenreRestController {

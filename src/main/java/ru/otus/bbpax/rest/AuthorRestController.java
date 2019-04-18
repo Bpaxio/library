@@ -8,6 +8,7 @@ import ru.otus.bbpax.service.model.AuthorDto;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("api/author")
 @AllArgsConstructor
 public class AuthorRestController {

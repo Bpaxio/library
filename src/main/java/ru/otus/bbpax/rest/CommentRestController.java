@@ -10,6 +10,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@CrossOrigin
 @RequestMapping("api/comment")
 public class CommentRestController {
 
@@ -41,7 +42,7 @@ public class CommentRestController {
 
     @GetMapping("/book/{id}")
     @ResponseBody
-    public List<CommentDto> getBookComments(@PathVariable String bookId) {
+    public List<CommentDto> getBookComments(@PathVariable("id") String bookId) {
         return service.getCommentsFor(bookId);
     }
 
