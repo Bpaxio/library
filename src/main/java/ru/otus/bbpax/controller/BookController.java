@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.bbpax.service.BookService;
 import ru.otus.bbpax.service.CommentService;
-import ru.otus.bbpax.service.model.BookView;
+import ru.otus.bbpax.service.model.BookDto;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -32,7 +32,7 @@ public class BookController {
                            String authorLastName, Model model) {
         log.info("Create bookView: '{}' published in {} y. as {}, created by {} and costs - {}.",
                 name, publicationDate, genreName, authorFirstName + " " + authorLastName, price);
-        BookView bookView = new BookView(
+        BookDto bookView = new BookDto(
                 name,
                 publicationDate,
                 publishingOffice,
@@ -44,7 +44,7 @@ public class BookController {
 
         bookView.getAuthorFullName();
         log.info("Registration of new bookView: {}", bookView);
-        BookView book = BookView.fromEntity(service.create(bookView));
+        BookDto book = BookDto.fromEntity(service.create(bookView));
         return "redirect:book/" + (Objects.nonNull(book) && Objects.nonNull(book.getId()) ? book.getId() : "");
     }
 
@@ -60,7 +60,7 @@ public class BookController {
 
         log.info("Update book: '{}[id={}]' published in {} y. as {}, created by {} and costs - {}.",
                 name, id, publicationDate, genreName, authorFirstName + " " + authorLastName, price);
-        service.update(new BookView(
+        service.update(new BookDto(
                 id,
                 name,
                 publicationDate,

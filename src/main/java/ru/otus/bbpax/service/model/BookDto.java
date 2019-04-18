@@ -15,7 +15,7 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookView implements EntityView<Book> {
+public class BookDto implements EntityDto<Book> {
 
     private String id;
     private String name;
@@ -27,13 +27,13 @@ public class BookView implements EntityView<Book> {
     private String authorFirstName;
     private String authorLastName;
 
-    public BookView(String name,
-                    Integer publicationDate,
-                    String publishingOffice,
-                    BigDecimal price,
-                    String genreName,
-                    String authorFirstName,
-                    String authorLastName
+    public BookDto(String name,
+                   Integer publicationDate,
+                   String publishingOffice,
+                   BigDecimal price,
+                   String genreName,
+                   String authorFirstName,
+                   String authorLastName
     ) {
         this.name = name;
         this.publicationDate = publicationDate;
@@ -44,10 +44,10 @@ public class BookView implements EntityView<Book> {
         this.authorLastName = authorLastName;
     }
 
-    public static BookView fromEntity(Book book) {
+    public static BookDto fromEntity(Book book) {
         return Objects.isNull(book)
                 ? null
-                : new BookView(
+                : new BookDto(
                         book.getId(),
                         book.getName(),
                         book.getPublicationDate(),
@@ -57,6 +57,11 @@ public class BookView implements EntityView<Book> {
                         book.getAuthor().getName(),
                         book.getAuthor().getSurname()
         );
+    }
+
+    public Book toNewEntity() {
+        id = null;
+        return toEntity();
     }
 
     @Override
@@ -74,11 +79,12 @@ public class BookView implements EntityView<Book> {
         return authorFirstName + (Objects.nonNull(authorLastName) ? " " + authorLastName : "");
     }
 
-    private AuthorView parseAuthorView() {
-        return new AuthorView(null, authorFirstName, authorLastName, null);
+    private AuthorDto parseAuthorView() {
+        return new AuthorDto(null, authorFirstName, authorLastName, null);
     }
 
-    private GenreView parseGenreView() {
-        return new GenreView(null, genreName);
+    private GenreDto parseGenreView() {
+        return new GenreDto(null, genreName);
     }
+
 }

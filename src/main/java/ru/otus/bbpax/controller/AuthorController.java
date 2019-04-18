@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.bbpax.service.AuthorService;
-import ru.otus.bbpax.service.model.AuthorView;
+import ru.otus.bbpax.service.model.AuthorDto;
 
 import static ru.otus.bbpax.controller.Templates.*;
 
@@ -21,7 +21,7 @@ public class AuthorController {
                                String country,
                                Model model
     ) {
-        model.addAttribute("author", AuthorView.fromEntity(service.create(new AuthorView(null, name, surname, country))));
+        model.addAttribute("author", AuthorDto.fromEntity(service.create(new AuthorDto(null, name, surname, country))));
         return AUTHOR;
     }
 
@@ -31,7 +31,7 @@ public class AuthorController {
                                String surname,
                                String country
     ) {
-        service.update(new AuthorView(id, name, surname, country));
+        service.update(new AuthorDto(id, name, surname, country));
         return "redirect:" + id;
     }
 

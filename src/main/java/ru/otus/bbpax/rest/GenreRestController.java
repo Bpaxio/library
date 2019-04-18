@@ -1,10 +1,9 @@
 package ru.otus.bbpax.rest;
 
 import lombok.AllArgsConstructor;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.bbpax.service.GenreService;
-import ru.otus.bbpax.service.model.GenreView;
+import ru.otus.bbpax.service.model.GenreDto;
 
 import java.util.List;
 
@@ -20,21 +19,23 @@ public class GenreRestController {
 
     @PostMapping
     public void createGenre(@RequestBody String name) {
-        service.create(new GenreView(null, name));
+        service.create(new GenreDto(null, name));
     }
 
     @PutMapping("{id}")
     public void updateGenre(@PathVariable String id, @RequestBody String name) {
-        service.update(new GenreView(id, name));
+        service.update(new GenreDto(id, name));
     }
 
     @GetMapping("{id}")
-    public GenreView getGenre(@PathVariable String id) {
+    @ResponseBody
+    public GenreDto getGenre(@PathVariable String id) {
         return service.getGenreById(id);
     }
 
     @GetMapping
-    public List<GenreView> getGenres() {
+    @ResponseBody
+    public List<GenreDto> getGenres() {
         return service.getAll();
     }
 

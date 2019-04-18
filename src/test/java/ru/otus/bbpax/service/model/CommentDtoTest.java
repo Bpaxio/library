@@ -23,8 +23,8 @@ import static ru.otus.bbpax.service.model.TestVariables.COMMENT_MESSAGE;
 import static ru.otus.bbpax.service.model.TestVariables.COMMENT_USERNAME;
 import static ru.otus.bbpax.service.model.TestVariables.GENRE_NAME;
 
-class CommentViewTest {
-    private CommentView view;
+class CommentDtoTest {
+    private CommentDto dto;
     private Comment entity;
 
     @BeforeEach
@@ -42,7 +42,7 @@ class CommentViewTest {
                 genre,
                 author);
 
-        view = new CommentView(
+        dto = new CommentDto(
                 COMMENT_ID,
                 COMMENT_USERNAME,
                 COMMENT_CREATED,
@@ -58,9 +58,9 @@ class CommentViewTest {
     }
 
     @Test
-    @DisplayName("создает view с теми же значениями полей, что у entity или null.")
+    @DisplayName("создает dto с теми же значениями полей, что у entity или null.")
     void fromEntity() {
-        assertEquals(view, CommentView.fromEntity(entity));
-        assertNull(BookView.fromEntity(null));
+        assertEquals(dto, CommentDto.fromEntity(entity));
+        assertNull(BookDto.fromEntity(null));
     }
 }

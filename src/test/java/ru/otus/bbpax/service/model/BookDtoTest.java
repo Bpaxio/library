@@ -18,13 +18,13 @@ import static ru.otus.bbpax.service.model.TestVariables.BOOK_PUBLICATION_YEAR;
 import static ru.otus.bbpax.service.model.TestVariables.BOOK_PUBLISHING_OFFICE;
 import static ru.otus.bbpax.service.model.TestVariables.GENRE_NAME;
 
-class BookViewTest {
-    private BookView bookView;
+class BookDtoTest {
+    private BookDto bookView;
     private Book book;
 
     @BeforeEach
     void setUp() {
-        bookView = new BookView(BOOK_ID,
+        bookView = new BookDto(BOOK_ID,
                 BOOK_NAME,
                 BOOK_PUBLICATION_YEAR,
                 BOOK_PUBLISHING_OFFICE,
@@ -48,14 +48,14 @@ class BookViewTest {
     }
 
     @Test
-    @DisplayName("создает view с теми же значениями полей, что у entity или null.")
+    @DisplayName("создает dto с теми же значениями полей, что у entity или null.")
     void fromEntity() {
-        assertEquals(bookView, BookView.fromEntity(book));
-        assertNull(BookView.fromEntity(null));
+        assertEquals(bookView, BookDto.fromEntity(book));
+        assertNull(BookDto.fromEntity(null));
     }
 
     @Test
-    @DisplayName("создает entity с теми же значениями полей, что у view.")
+    @DisplayName("создает entity с теми же значениями полей, что у dto.")
     void toEntity() {
         assertEquals(book, bookView.toEntity());
     }

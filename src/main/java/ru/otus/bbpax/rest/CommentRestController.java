@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.bbpax.service.CommentService;
-import ru.otus.bbpax.service.model.CommentView;
+import ru.otus.bbpax.service.model.CommentDto;
 
 import java.util.List;
 
@@ -34,22 +34,26 @@ public class CommentRestController {
     }
 
     @GetMapping("{id}")
-    public CommentView getComment(@PathVariable String id) {
+    @ResponseBody
+    public CommentDto getComment(@PathVariable String id) {
         return service.getComment(id);
     }
 
     @GetMapping("/book/{id}")
-    public List<CommentView> getBookComments(@PathVariable String bookId) {
+    @ResponseBody
+    public List<CommentDto> getBookComments(@PathVariable String bookId) {
         return service.getCommentsFor(bookId);
     }
 
-    @GetMapping("{username}")
-    public List<CommentView> getCommentsByUser(@PathVariable String username) {
+    @GetMapping
+    @ResponseBody
+    public List<CommentDto> getCommentsByUser(@RequestBody String username) {
         return service.getCommentsBy(username);
     }
 
     @GetMapping
-    public List<CommentView> getComments() {
+    @ResponseBody
+    public List<CommentDto> getComments() {
         return service.getAll();
     }
 }

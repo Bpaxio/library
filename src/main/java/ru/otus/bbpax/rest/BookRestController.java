@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.bbpax.service.BookService;
-import ru.otus.bbpax.service.model.BookView;
+import ru.otus.bbpax.service.model.BookDto;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -26,7 +26,7 @@ public class BookRestController {
                            String author) {
         log.info("Create book: '{}' published in {} y. as {}, created by {} and costs - {}.",
                 name, publicationDate, genre, author, price);
-        BookView book = new BookView(
+        BookDto book = new BookDto(
                 name,
                 publicationDate,
                 publishingOffice,
@@ -47,7 +47,7 @@ public class BookRestController {
                            BigDecimal price,
                            String genre,
                            String author) {
-        service.update(new BookView(
+        service.update(new BookDto(
                 id,
                 name,
                 publicationDate,
@@ -59,12 +59,14 @@ public class BookRestController {
     }
 
     @GetMapping("{id}")
-    public BookView getBook(String id) {
+    @ResponseBody
+    public BookDto getBook(String id) {
         return service.getBookById(id);
     }
 
     @GetMapping
-    public List<BookView> getBooks() {
+    @ResponseBody
+    public List<BookDto> getBooks() {
         return service.getAll();
     }
 

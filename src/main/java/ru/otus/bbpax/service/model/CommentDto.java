@@ -15,7 +15,7 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentView {
+public class CommentDto {
 
     private String id;
     private String username;
@@ -23,10 +23,10 @@ public class CommentView {
     private String message;
     private String bookId;
 
-    public static CommentView fromEntity(Comment comment) {
+    public static CommentDto fromEntity(Comment comment) {
         return Objects.isNull(comment)
                 ? null
-                : new CommentView(
+                : new CommentDto(
                         comment.getId(),
                         comment.getUsername(),
                         comment.getCreated(),
