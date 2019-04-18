@@ -11,7 +11,8 @@ import java.util.List;
  * @author Vlad Rakhlinskii
  * Created on 14.01.2019.
  */
-@RestController("api/genre")
+@RestController
+@RequestMapping("api/genre")
 @AllArgsConstructor
 public class GenreRestController {
 

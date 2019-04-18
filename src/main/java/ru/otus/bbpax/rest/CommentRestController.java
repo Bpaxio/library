@@ -47,12 +47,6 @@ public class CommentRestController {
 
     @GetMapping
     @ResponseBody
-    public List<CommentDto> getCommentsByUser(@RequestBody String username) {
-        return service.getCommentsBy(username);
-    }
-
-    @GetMapping
-    @ResponseBody
     public List<CommentDto> getComments() {
         return service.getAll();
     }
