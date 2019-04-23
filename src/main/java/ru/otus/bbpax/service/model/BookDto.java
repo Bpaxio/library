@@ -1,8 +1,13 @@
 package ru.otus.bbpax.service.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.otus.bbpax.configuration.serialization.CustomBigDecimalDeserializer;
+import ru.otus.bbpax.configuration.serialization.CustomBigDecimalSerializer;
 import ru.otus.bbpax.entity.Book;
 
 import java.math.BigDecimal;
@@ -21,6 +26,8 @@ public class BookDto implements EntityDto<Book> {
     private String name;
     private Integer publicationDate;
     private String publishingOffice;
+    @JsonSerialize(using = CustomBigDecimalSerializer.class)
+    @JsonDeserialize(using = CustomBigDecimalDeserializer.class)
     private BigDecimal price;
 
     private String genreName;
@@ -75,6 +82,7 @@ public class BookDto implements EntityDto<Book> {
                 parseAuthorView().toEntity());
     }
 
+    @JsonIgnore
     public String getAuthorFullName() {
         return authorFirstName + (Objects.nonNull(authorLastName) ? " " + authorLastName : "");
     }

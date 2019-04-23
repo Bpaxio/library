@@ -1,6 +1,7 @@
 package ru.otus.bbpax.rest;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.bbpax.service.GenreService;
 import ru.otus.bbpax.service.model.GenreDto;
@@ -17,7 +18,8 @@ import java.util.List;
 @AllArgsConstructor
 public class GenreRestController {
 
-    private final GenreService service;
+    @Autowired
+    private GenreService service;
 
     @PostMapping
     public void createGenre(@RequestBody String name) {

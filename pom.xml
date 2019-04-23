@@ -6,7 +6,7 @@
 
     <groupId>ru.otus.bbpax</groupId>
     <artifactId>library</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -52,10 +52,10 @@
             <version>0.13</version>
         </dependency>
 
-        <!--<dependency>-->;
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>spring-webmvc</artifactId>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
         
         <dependency>
             <groupId>org.projectlombok</groupId>

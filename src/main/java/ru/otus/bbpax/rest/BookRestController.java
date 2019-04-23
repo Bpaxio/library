@@ -2,13 +2,21 @@ package ru.otus.bbpax.rest;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import ru.otus.bbpax.rest.exception.WrongRequestParamsException;
 import ru.otus.bbpax.service.BookService;
 import ru.otus.bbpax.service.model.BookDto;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -19,49 +27,25 @@ public class BookRestController {
     private final BookService service;
 
     @PostMapping
-    public void createBook(String name,
-                           Integer publicationDate,
-                           String publishingOffice,
-                           BigDecimal price,
-                           String genre,
-                           String author) {
-        log.info("Create book: '{}' published in {} y. as {}, created by {} and costs - {}.",
-                name, publicationDate, genre, author, price);
-        BookDto book = new BookDto(
-                name,
-                publicationDate,
-                publishingOffice,
-                price.setScale(2, RoundingMode.HALF_UP),
-                genre,
-                author,author
-        );
+    public void createBook(@RequestBody BookDto bookDto) {
+        if (!valid(bookDto))
+            throw new WrongRequestParamsException();
 
-        log.info("Registration of new book: {}", book);
-        service.create(book);
+        log.info("Registration of new book: {}", bookDto);
+        service.create(bookDto);
     }
 
-    @PutMapping("{id}")
-    public void updateBook(String id,
-                           String name,
-                           Integer publicationDate,
-                           String publishingOffice,
-                           BigDecimal price,
-                           String genre,
-                           String author) {
-        service.update(new BookDto(
-                id,
-                name,
-                publicationDate,
-                publishingOffice,
-                price.setScale(2, RoundingMode.HALF_UP),
-                genre,
-                author,author
-        ));
+    @PutMapping
+    public void updateBook(@RequestBody BookDto bookDto) {
+        if (!valid(bookDto) || Objects.isNull(bookDto.getId()))
+            throw new WrongRequestParamsException();
+
+        service.update(bookDto);
     }
 
     @GetMapping("{id}")
     @ResponseBody
-    public BookDto getBook(String id) {
+    public BookDto getBook(@PathVariable String id) {
         return service.getBookById(id);
     }
 
@@ -72,7 +56,18 @@ public class BookRestController {
     }
 
     @DeleteMapping("{id}")
-    public void deleteBookById(String id) {
+    public void deleteBookById(@PathVariable String id) {
         service.deleteById(id);
+    }
+
+    private boolean valid(BookDto bookDto) {
+        return Objects.nonNull(bookDto)
+                && Objects.nonNull(bookDto.getName())
+                && Objects.nonNull(bookDto.getPublicationDate())
+                && Objects.nonNull(bookDto.getPublishingOffice())
+                && Objects.nonNull(bookDto.getPrice())
+                && Objects.nonNull(bookDto.getGenreName())
+                && Objects.nonNull(bookDto.getAuthorFirstName())
+                && Objects.nonNull(bookDto.getAuthorLastName());
     }
 }
