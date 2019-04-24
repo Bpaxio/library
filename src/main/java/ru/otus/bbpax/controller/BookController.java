@@ -44,7 +44,7 @@ public class BookController {
 
         bookView.getAuthorFullName();
         log.info("Registration of new bookView: {}", bookView);
-        BookDto book = BookDto.fromEntity(service.create(bookView));
+        BookDto book = service.create(bookView);
         return "redirect:book/" + (Objects.nonNull(book) && Objects.nonNull(book.getId()) ? book.getId() : "");
     }
 

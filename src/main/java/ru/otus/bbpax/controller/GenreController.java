@@ -17,7 +17,7 @@ public class GenreController {
 
     @PostMapping("/genre")
     public String createGenre(String name, Model model) {
-        model.addAttribute("genre", GenreDto.fromEntity(service.create(new GenreDto(null, name))));
+        model.addAttribute("genre", service.create(new GenreDto(null, name)));
         return GENRE;
     }
 

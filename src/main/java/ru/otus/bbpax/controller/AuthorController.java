@@ -21,7 +21,7 @@ public class AuthorController {
                                String country,
                                Model model
     ) {
-        model.addAttribute("author", AuthorDto.fromEntity(service.create(new AuthorDto(null, name, surname, country))));
+        model.addAttribute("author", service.create(new AuthorDto(null, name, surname, country)));
         return AUTHOR;
     }
 

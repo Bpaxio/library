@@ -2,6 +2,7 @@ package ru.otus.bbpax.rest;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,20 +28,20 @@ public class BookRestController {
     private final BookService service;
 
     @PostMapping
-    public void createBook(@RequestBody BookDto bookDto) {
+    public BookDto createBook(@RequestBody BookDto bookDto) {
         if (!valid(bookDto))
             throw new WrongRequestParamsException();
 
         log.info("Registration of new book: {}", bookDto);
-        service.create(bookDto);
+        return service.create(bookDto);
     }
 
     @PutMapping
-    public void updateBook(@RequestBody BookDto bookDto) {
+    public BookDto updateBook(@RequestBody BookDto bookDto) {
         if (!valid(bookDto) || Objects.isNull(bookDto.getId()))
             throw new WrongRequestParamsException();
 
-        service.update(bookDto);
+        return service.update(bookDto);
     }
 
     @GetMapping("{id}")

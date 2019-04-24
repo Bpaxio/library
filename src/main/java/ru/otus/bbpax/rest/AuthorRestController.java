@@ -18,18 +18,18 @@ public class AuthorRestController {
     private final AuthorService service;
 
     @PostMapping
-    public void createAuthor(@RequestBody AuthorDto authorDto) {
+    public AuthorDto createAuthor(@RequestBody AuthorDto authorDto) {
         if (Objects.isNull(authorDto)
                 || Objects.isNull(authorDto.getName())
                 || Objects.isNull(authorDto.getSurname())
                 || Objects.isNull(authorDto.getCountry())
         ) throw new WrongRequestParamsException();
 
-        service.create(authorDto);
+        return service.create(authorDto);
     }
 
     @PutMapping
-    public void updateAuthor(@RequestBody AuthorDto authorDto) {
+    public AuthorDto updateAuthor(@RequestBody AuthorDto authorDto) {
         if (Objects.isNull(authorDto)
                 || Objects.isNull(authorDto.getId())
                 || Objects.isNull(authorDto.getName())
@@ -37,7 +37,7 @@ public class AuthorRestController {
                 || Objects.isNull(authorDto.getCountry())
         )
             throw new WrongRequestParamsException();
-        service.update(authorDto);
+        return service.update(authorDto);
     }
 
     @GetMapping("{id}")

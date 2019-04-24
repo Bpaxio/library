@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface CommentService {
 
-    void create(String username, String text, String bookId);
+    CommentDto create(String username, String text, String bookId);
 
-    void update(String id, String text);
+    CommentDto update(String id, String text);
 
     List<CommentDto> getCommentsFor(String bookId);
 

@@ -22,13 +22,17 @@ public class AuthorServiceImpl implements AuthorService {
     @Autowired
     private AuthorRepo repo;
 
-    public Author create(AuthorDto authorDto) {
+    public AuthorDto create(AuthorDto authorDto) {
         Author author = new Author(authorDto.getName(), authorDto.getSurname(), authorDto.getCountry());
-        return repo.save(author);
+        return AuthorDto.fromEntity(
+                repo.save(author)
+        );
     }
 
-    public void update(AuthorDto authorDto) {
-        repo.save(authorDto.toEntity());
+    public AuthorDto update(AuthorDto authorDto) {
+        return AuthorDto.fromEntity(
+                repo.save(authorDto.toEntity())
+        );
     }
 
     public AuthorDto getAuthorById(String id) {

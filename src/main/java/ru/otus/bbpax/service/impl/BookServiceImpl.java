@@ -32,18 +32,22 @@ public class BookServiceImpl implements BookService {
     private GenreRepo genreRepo;
 
     @Transactional
-    public Book create(BookDto book) {
+    public BookDto create(BookDto book) {
         Book bookBone = book.toNewEntity();
         fillData(bookBone);
         log.info("{}", bookBone);
-        return repo.save(bookBone);
+        return BookDto.fromEntity(
+                repo.save(bookBone)
+        );
     }
 
     @Transactional
-    public void update(BookDto book) {
+    public BookDto update(BookDto book) {
         Book target = book.toEntity();
         fillData(target);
-        repo.save(target);
+        return BookDto.fromEntity(
+                repo.save(target)
+        );
     }
 
     private void fillData(Book bookBone) {

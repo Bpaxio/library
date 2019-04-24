@@ -18,12 +18,16 @@ import java.util.stream.Collectors;
 public class GenreServiceImpl implements GenreService {
     private final GenreRepo repo;
 
-    public Genre create(GenreDto genre) {
-        return repo.save(genre.toEntity());
+    public GenreDto create(GenreDto genre) {
+        return GenreDto.fromEntity(
+                repo.save(genre.toEntity())
+        );
     }
 
-    public void update(GenreDto genre) {
-        repo.save(genre.toEntity());
+    public GenreDto update(GenreDto genre) {
+        return GenreDto.fromEntity(
+                repo.save(genre.toEntity())
+        );
     }
 
     public GenreDto getGenreById(String id) {

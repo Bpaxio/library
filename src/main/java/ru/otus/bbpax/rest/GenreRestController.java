@@ -22,13 +22,15 @@ public class GenreRestController {
     private GenreService service;
 
     @PostMapping
-    public void createGenre(@RequestBody String name) {
-        service.create(new GenreDto(null, name));
+    @ResponseBody
+    public GenreDto createGenre(@RequestBody String name) {
+        return service.create(new GenreDto(null, name));
     }
 
     @PutMapping("{id}")
-    public void updateGenre(@PathVariable String id, @RequestBody String name) {
-        service.update(new GenreDto(id, name));
+    @ResponseBody
+    public GenreDto updateGenre(@PathVariable String id, @RequestBody String name) {
+        return service.update(new GenreDto(id, name));
     }
 
     @GetMapping("{id}")

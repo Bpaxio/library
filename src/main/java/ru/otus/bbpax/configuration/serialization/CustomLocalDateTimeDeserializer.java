@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 
 public class CustomLocalDateTimeDeserializer extends StdDeserializer<LocalDateTime> {
     private static DateTimeFormatter formatter =
-            DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH:mm:ss.SSS");
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
     public CustomLocalDateTimeDeserializer() {
         this(null);

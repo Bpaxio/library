@@ -1,15 +1,14 @@
 package ru.otus.bbpax.service;
 
-import ru.otus.bbpax.entity.Genre;
 import ru.otus.bbpax.service.model.GenreDto;
 
 import java.util.List;
 
 public interface GenreService {
 
-    Genre create(GenreDto genre);
+    GenreDto create(GenreDto genre);
 
-    void update(GenreDto genre);
+    GenreDto update(GenreDto genre);
 
     GenreDto getGenreById(String id);
 

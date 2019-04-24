@@ -24,14 +24,15 @@ public class CommentRestController {
     }
 
     @PostMapping
-    public void createComment(@RequestBody CommentDto commentDto) {
+    @ResponseBody
+    public CommentDto createComment(@RequestBody CommentDto commentDto) {
         if (Objects.isNull(commentDto)
                 || Objects.isNull(commentDto.getUsername())
                 || Objects.isNull(commentDto.getMessage())
                 || Objects.isNull(commentDto.getBookId())
         ) throw new WrongRequestParamsException();
 
-        service.create(
+        return service.create(
                 commentDto.getUsername(),
                 commentDto.getMessage(),
                 commentDto.getBookId()
@@ -39,12 +40,13 @@ public class CommentRestController {
     }
 
     @PutMapping("{id}")
-    public void editComment(@PathVariable String id,
+    @ResponseBody
+    public CommentDto editComment(@PathVariable String id,
                             @RequestBody String message) {
         if (Objects.isNull(id) || Objects.isNull(message))
             throw new WrongRequestParamsException();
 
-        service.update(id, message);
+        return service.update(id, message);
     }
 
     @GetMapping("{id}")

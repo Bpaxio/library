@@ -1,15 +1,14 @@
 package ru.otus.bbpax.service;
 
-import ru.otus.bbpax.entity.Author;
 import ru.otus.bbpax.service.model.AuthorDto;
 
 import java.util.List;
 
 public interface AuthorService {
 
-    Author create(AuthorDto authorDto);
+    AuthorDto create(AuthorDto authorDto);
 
-    void update(AuthorDto authorDto);
+    AuthorDto update(AuthorDto authorDto);
 
     AuthorDto getAuthorById(String id);
 

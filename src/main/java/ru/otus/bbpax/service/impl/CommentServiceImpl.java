@@ -30,17 +30,21 @@ public class CommentServiceImpl implements CommentService {
     private BookRepo bookRepo;
 
     @Transactional
-    public void create(String username, String text, String bookId) {
+    public CommentDto create(String username, String text, String bookId) {
         Optional<Book> book = bookRepo.findById(bookId);
         if (!book.isPresent()) {
             throw new NotFoundException("Book", bookId);
         }
-        repo.save(new Comment(username, text, book.get()));
+        return CommentDto.fromEntity(
+                repo.save(new Comment(username, text, book.get()))
+        );
     }
 
     @Transactional
-    public void update(String id, String text) {
-        repo.update(id, text);
+    public CommentDto update(String id, String text) {
+        return CommentDto.fromEntity(
+                repo.update(id, text)
+        );
     }
 
     @Transactional
