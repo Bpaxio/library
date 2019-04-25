@@ -9,7 +9,7 @@
 <link href="../../static/css/style.css" rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>
 
 <form th:action="@{/author}" method="post">
-    <div class="form" th:object="${author}">
+    <div class="form">
         <div class="block form__row">
             <span th:text="#{author.firstName} + ' : '"></span>
             <label>
