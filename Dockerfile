@@ -18,4 +18,4 @@ WORKDIR $PROJECT_DIR
 COPY --from=0 $PROJECT_DIR/target/library* $PROJECT_DIR/
 EXPOSE 8080
 
-CMD ["java", "-jar", "-Dspring.profiles.active=docker", "/opt/project/library-0.2.0-SNAPSHOT.jar"]
+CMD ["java", "-jar", "-Dspring.profiles.active=docker", "/opt/project/library-0.1.0-SNAPSHOT.jar"]
