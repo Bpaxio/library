@@ -1,0 +1,22 @@
+version: '3'
+services:
+  library:
+    image: bpaxio/library:0.2.0-SNAPSHOT
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - mongo
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 200M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "8080:8080"
+  mongo:
+    image: mongo
+    ports:
+      - '27017:27017'
