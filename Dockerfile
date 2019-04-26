@@ -7,8 +7,8 @@ ADD pom.xml $PROJECT_DIR
 ADD src/ $PROJECT_DIR/src
 WORKDIR $PROJECT_DIR
 
-RUN mvn dependency:resolve
-RUN mvn install
+RUN mvn dependency:resolve -B
+RUN mvn install -B
 
 
 FROM openjdk:8-jdk
@@ -18,4 +18,4 @@ WORKDIR $PROJECT_DIR
 COPY --from=0 $PROJECT_DIR/target/library* $PROJECT_DIR/
 EXPOSE 8080
 
-CMD ["java", "-jar", "-Dspring.profiles.active=docker", "/opt/project/library-0.1.0-SNAPSHOT.jar"]
+CMD ["java", "-jar", "-Dspring.profiles.active=docker", "/opt/project/library.jar"]
