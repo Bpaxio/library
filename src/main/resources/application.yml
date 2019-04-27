@@ -4,15 +4,8 @@ spring:
 
   data:
     mongodb:
-      port: 27017
-      host: localhost
       database: library
   mvc:
     locale-resolver: accept_header #just don't forget)
     locale: ru_RU
     message-codes-resolver-format: postfix_error_code
-logging:
-  level:
-    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
-server:
-  port: 8083

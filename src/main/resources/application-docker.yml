@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      port: 27017
+      host: mongo
+logging:
+  level:
+    org.springframework.data.mongodb.core.MongoTemplate: INFO
+server:
+  port: 8080
