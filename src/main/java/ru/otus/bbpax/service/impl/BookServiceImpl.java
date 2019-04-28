@@ -45,13 +45,10 @@ public class BookServiceImpl implements BookService {
     }
 
     private void fillData(Book bookBone) {
-        authorRepo.findByNameAndSurname(
-                bookBone.getAuthor().getName(),
-                bookBone.getAuthor().getSurname()
-        )
+        authorRepo.findById(bookBone.getAuthor().getId())
                 .ifPresent(bookBone::setAuthor);
 
-        genreRepo.findByName(bookBone.getGenre().getName())
+        genreRepo.findById(bookBone.getGenre().getId())
                 .ifPresent(bookBone::setGenre);
     }
 

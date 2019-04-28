@@ -9,6 +9,7 @@ import ru.otus.bbpax.entity.Genre;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static ru.otus.bbpax.service.model.TestVariables.AUTHOR_ID;
 import static ru.otus.bbpax.service.model.TestVariables.AUTHOR_NAME;
 import static ru.otus.bbpax.service.model.TestVariables.AUTHOR_SURNAME;
 import static ru.otus.bbpax.service.model.TestVariables.BOOK_ID;
@@ -16,22 +17,22 @@ import static ru.otus.bbpax.service.model.TestVariables.BOOK_NAME;
 import static ru.otus.bbpax.service.model.TestVariables.BOOK_PRICE;
 import static ru.otus.bbpax.service.model.TestVariables.BOOK_PUBLICATION_YEAR;
 import static ru.otus.bbpax.service.model.TestVariables.BOOK_PUBLISHING_OFFICE;
+import static ru.otus.bbpax.service.model.TestVariables.GENRE_ID;
 import static ru.otus.bbpax.service.model.TestVariables.GENRE_NAME;
 
 class BookDtoTest {
-    private BookDto bookView;
+    private BookDto bookDto;
     private Book book;
 
     @BeforeEach
     void setUp() {
-        bookView = new BookDto(BOOK_ID,
+        bookDto = new BookDto(BOOK_ID,
                 BOOK_NAME,
                 BOOK_PUBLICATION_YEAR,
                 BOOK_PUBLISHING_OFFICE,
                 BOOK_PRICE,
-                GENRE_NAME,
-                AUTHOR_NAME,
-                AUTHOR_SURNAME);
+                GENRE_ID,
+                AUTHOR_ID);
 
         Author author = new Author();
         author.setName(AUTHOR_NAME);
@@ -50,13 +51,13 @@ class BookDtoTest {
     @Test
     @DisplayName("создает dto с теми же значениями полей, что у entity или null.")
     void fromEntity() {
-        assertEquals(bookView, BookDto.fromEntity(book));
+        assertEquals(bookDto, BookDto.fromEntity(book));
         assertNull(BookDto.fromEntity(null));
     }
 
     @Test
     @DisplayName("создает entity с теми же значениями полей, что у dto.")
     void toEntity() {
-        assertEquals(book, bookView.toEntity());
+        assertEquals(book, bookDto.toEntity());
     }
 }

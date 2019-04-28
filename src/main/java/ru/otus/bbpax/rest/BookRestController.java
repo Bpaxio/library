@@ -67,8 +67,7 @@ public class BookRestController {
                 && Objects.nonNull(bookDto.getPublicationDate())
                 && Objects.nonNull(bookDto.getPublishingOffice())
                 && Objects.nonNull(bookDto.getPrice())
-                && Objects.nonNull(bookDto.getGenreName())
-                && Objects.nonNull(bookDto.getAuthorFirstName())
-                && Objects.nonNull(bookDto.getAuthorLastName());
+                && Objects.nonNull(bookDto.getGenreId())
+                && Objects.nonNull(bookDto.getAuthorId());
     }
 }

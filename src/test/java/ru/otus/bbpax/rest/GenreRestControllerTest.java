@@ -126,9 +126,8 @@ class GenreRestControllerTest {
                 2011,
                 "office",
                 BigDecimal.valueOf(500),
-                "BEst",
-                "firstName",
-                "lasName"
+                "BEstId",
+                "authorId"
         );
         when(service.getBooksById(genre.getId()))
                 .thenReturn(Collections.singletonList(book));
@@ -149,9 +148,8 @@ class GenreRestControllerTest {
                 .andExpect(jsonPath("$[0].price", is(book.getPrice().toString())))
                 .andExpect(jsonPath("$[0].publicationDate", is(book.getPublicationDate())))
                 .andExpect(jsonPath("$[0].publishingOffice", is(book.getPublishingOffice())))
-                .andExpect(jsonPath("$[0].genreName", is(book.getGenreName())))
-                .andExpect(jsonPath("$[0].authorFirstName", is(book.getAuthorFirstName())))
-                .andExpect(jsonPath("$[0].authorLastName", is(book.getAuthorLastName())));
+                .andExpect(jsonPath("$[0].genreId", is(book.getGenreId())))
+                .andExpect(jsonPath("$[0].authorId", is(book.getAuthorId())));
 
 
         verify(service, times(1)).getBooksById(genre.getId());

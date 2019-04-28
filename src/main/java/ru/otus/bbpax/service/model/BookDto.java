@@ -1,6 +1,5 @@
 package ru.otus.bbpax.service.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
@@ -30,25 +29,22 @@ public class BookDto implements EntityDto<Book> {
     @JsonDeserialize(using = CustomBigDecimalDeserializer.class)
     private BigDecimal price;
 
-    private String genreName;
-    private String authorFirstName;
-    private String authorLastName;
+    private String genreId;
+    private String authorId;
 
     public BookDto(String name,
                    Integer publicationDate,
                    String publishingOffice,
                    BigDecimal price,
-                   String genreName,
-                   String authorFirstName,
-                   String authorLastName
+                   String genreId,
+                   String authorId
     ) {
         this.name = name;
         this.publicationDate = publicationDate;
         this.publishingOffice = publishingOffice;
         this.price = price;
-        this.genreName = genreName;
-        this.authorFirstName = authorFirstName;
-        this.authorLastName = authorLastName;
+        this.genreId = genreId;
+        this.authorId = authorId;
     }
 
     public static BookDto fromEntity(Book book) {
@@ -60,9 +56,8 @@ public class BookDto implements EntityDto<Book> {
                         book.getPublicationDate(),
                         book.getPublishingOffice(),
                         book.getPrice(),
-                        book.getGenre().getName(),
-                        book.getAuthor().getName(),
-                        book.getAuthor().getSurname()
+                        book.getGenre().getId(),
+                        book.getAuthor().getId()
         );
     }
 
@@ -82,17 +77,12 @@ public class BookDto implements EntityDto<Book> {
                 parseAuthorView().toEntity());
     }
 
-    @JsonIgnore
-    public String getAuthorFullName() {
-        return authorFirstName + (Objects.nonNull(authorLastName) ? " " + authorLastName : "");
-    }
-
     private AuthorDto parseAuthorView() {
-        return new AuthorDto(null, authorFirstName, authorLastName, null);
+        return new AuthorDto(authorId, null, null, null);
     }
 
     private GenreDto parseGenreView() {
-        return new GenreDto(null, genreName);
+        return new GenreDto(genreId, null);
     }
 
 }

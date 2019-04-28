@@ -64,9 +64,8 @@ class BookRestControllerTest {
                 2019,
                 "The Test Office",
                 BigDecimal.valueOf(2000),
-                "Genre))",
-                "Author",
-                "Tester");
+                "GenreId",
+                "AuthorId");
     }
 
     @Test
@@ -151,9 +150,8 @@ class BookRestControllerTest {
                 .andExpect(jsonPath("$.price", is(book.getPrice().toString())))
                 .andExpect(jsonPath("$.publicationDate", is(book.getPublicationDate())))
                 .andExpect(jsonPath("$.publishingOffice", is(book.getPublishingOffice())))
-                .andExpect(jsonPath("$.genreName", is(book.getGenreName())))
-                .andExpect(jsonPath("$.authorFirstName", is(book.getAuthorFirstName())))
-                .andExpect(jsonPath("$.authorLastName", is(book.getAuthorLastName())))
+                .andExpect(jsonPath("$.genreId", is(book.getGenreId())))
+                .andExpect(jsonPath("$.authorId", is(book.getAuthorId())))
                 .andReturn();
 
         MvcResult mvcResult = mvc.perform(get("/api/book/" + "just_another_unreal_id")
@@ -179,9 +177,8 @@ class BookRestControllerTest {
                 .andExpect(jsonPath("$[0].price", is(book.getPrice().toString())))
                 .andExpect(jsonPath("$[0].publicationDate", is(book.getPublicationDate())))
                 .andExpect(jsonPath("$[0].publishingOffice", is(book.getPublishingOffice())))
-                .andExpect(jsonPath("$[0].genreName", is(book.getGenreName())))
-                .andExpect(jsonPath("$[0].authorFirstName", is(book.getAuthorFirstName())))
-                .andExpect(jsonPath("$[0].authorLastName", is(book.getAuthorLastName())));
+                .andExpect(jsonPath("$[0].genreId", is(book.getGenreId())))
+                .andExpect(jsonPath("$[0].authorId", is(book.getAuthorId())));
 
 
         verify(service, times(1)).getAll();
