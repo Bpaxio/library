@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.otus.bbpax.rest.exception.WrongRequestParamsException;
 import ru.otus.bbpax.service.AuthorService;
 import ru.otus.bbpax.service.model.AuthorDto;
+import ru.otus.bbpax.service.model.BookDto;
 
 import java.util.List;
 import java.util.Objects;
@@ -50,6 +51,12 @@ public class AuthorRestController {
     @ResponseBody
     public List<AuthorDto> getAuthors() {
         return service.getAll();
+    }
+
+    @GetMapping("{id}/book")
+    @ResponseBody
+    public List<BookDto> getBooks(@PathVariable String id) {
+        return service.getBooksById(id);
     }
 
     @DeleteMapping("{id}")

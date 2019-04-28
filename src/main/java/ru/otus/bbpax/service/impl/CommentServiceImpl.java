@@ -1,9 +1,7 @@
 package ru.otus.bbpax.service.impl;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.bbpax.entity.Book;
@@ -20,14 +18,11 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@NoArgsConstructor
 @AllArgsConstructor
 @Transactional(readOnly = true)
 public class CommentServiceImpl implements CommentService {
-    @Autowired
-    private CommentRepo repo;
-    @Autowired
-    private BookRepo bookRepo;
+    private final CommentRepo repo;
+    private final BookRepo bookRepo;
 
     @Transactional
     public CommentDto create(String username, String text, String bookId) {

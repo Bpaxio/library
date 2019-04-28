@@ -1,5 +1,6 @@
 package ru.otus.bbpax.service;
 
+import ru.otus.bbpax.service.model.BookDto;
 import ru.otus.bbpax.service.model.GenreDto;
 
 import java.util.List;
@@ -13,6 +14,8 @@ public interface GenreService {
     GenreDto getGenreById(String id);
 
     List<GenreDto> getAll();
+
+    List<BookDto> getBooksById(String id);
 
     void deleteById(String id);
 }

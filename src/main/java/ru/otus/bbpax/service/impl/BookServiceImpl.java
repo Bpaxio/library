@@ -1,9 +1,7 @@
 package ru.otus.bbpax.service.impl;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.bbpax.entity.Book;
@@ -19,17 +17,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
-@NoArgsConstructor
 @AllArgsConstructor
 @Service
 @Transactional(readOnly = true)
 public class BookServiceImpl implements BookService {
-    @Autowired
-    private BookRepo repo;
-    @Autowired
-    private AuthorRepo authorRepo;
-    @Autowired
-    private GenreRepo genreRepo;
+    private final BookRepo repo;
+    private final AuthorRepo authorRepo;
+    private final GenreRepo genreRepo;
 
     @Transactional
     public BookDto create(BookDto book) {

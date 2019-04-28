@@ -16,13 +16,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.otus.bbpax.service.AuthorService;
 import ru.otus.bbpax.service.model.AuthorDto;
+import ru.otus.bbpax.service.model.BookDto;
 import ru.otus.bbpax.service.model.GenreDto;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -38,9 +41,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created on 18.04.2019.
  */
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(AuthorRestController.class) // TODO: 2019-04-18 why this doesn't work?((((
+@WebMvcTest(AuthorRestController.class)
 @ActiveProfiles("test")
 class AuthorRestControllerTest {
+
     @Configuration
     @Import({ AuthorRestController.class })
     static class Config {
@@ -147,6 +151,46 @@ class AuthorRestControllerTest {
 
 
         verify(service, times(1)).getAll();
+    }
+
+    @Test
+    void getBooks() throws Exception {
+        when(service.getBooksById(anyString()))
+                .thenReturn(Collections.emptyList());
+        BookDto book = new BookDto("id",
+                "book",
+                2011,
+                "office",
+                BigDecimal.valueOf(500),
+                "BEst",
+                "firstName",
+                "lasName"
+        );
+        when(service.getBooksById(author.getId()))
+                .thenReturn(Collections.singletonList(book));
+
+
+
+        mvc.perform(get("/api/author/someId/book")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+
+        mvc.perform(get("/api/author/" + author.getId() + "/book")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", is(book.getId())))
+                .andExpect(jsonPath("$[0].name", is(book.getName())))
+                .andExpect(jsonPath("$[0].price", is(book.getPrice().toString())))
+                .andExpect(jsonPath("$[0].publicationDate", is(book.getPublicationDate())))
+                .andExpect(jsonPath("$[0].publishingOffice", is(book.getPublishingOffice())))
+                .andExpect(jsonPath("$[0].genreName", is(book.getGenreName())))
+                .andExpect(jsonPath("$[0].authorFirstName", is(book.getAuthorFirstName())))
+                .andExpect(jsonPath("$[0].authorLastName", is(book.getAuthorLastName())));
+
+
+        verify(service, times(1)).getBooksById(author.getId());
     }
 
     @Test
