@@ -15,6 +15,7 @@ import java.util.Objects;
 @CrossOrigin
 @RequestMapping("api/comment")
 public class CommentRestController {
+    private static final String NO_NAMED = "Anonymous";
 
     private final CommentService service;
 
@@ -27,13 +28,13 @@ public class CommentRestController {
     @ResponseBody
     public CommentDto createComment(@RequestBody CommentDto commentDto) {
         if (Objects.isNull(commentDto)
-                || Objects.isNull(commentDto.getUsername())
                 || Objects.isNull(commentDto.getMessage())
                 || Objects.isNull(commentDto.getBookId())
         ) throw new WrongRequestParamsException();
 
+
         return service.create(
-                commentDto.getUsername(),
+                Objects.isNull(commentDto.getUsername()) ? NO_NAMED : commentDto.getUsername(),
                 commentDto.getMessage(),
                 commentDto.getBookId()
         );
@@ -67,5 +68,11 @@ public class CommentRestController {
     @ResponseBody
     public List<CommentDto> getComments() {
         return service.getAll();
+    }
+
+    @DeleteMapping("{id}")
+    @ResponseBody
+    public void deleteComment(@PathVariable String id) {
+        service.deleteById(id);
     }
 }
