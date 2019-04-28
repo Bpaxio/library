@@ -11,9 +11,7 @@
 <div class="top-panel">
     <div class="top-panel element">
         <img alt="memorynotfound logo" class="logo" src="../../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>
-    </div>
-
-    <div class="btn element">
+    </div><div class="btn element">
         <a th:text="#{books}" th:href="@{/book}" href="/book"></a>
     </div>
 
@@ -23,6 +21,9 @@
 
     <div class="btn element">
         <a class="btn" th:text="#{genres}" th:href="@{/genre}" href="/book"></a>
+    </div>
+    <div class="btn element logout">
+        <a class="btn" th:text="#{logout}" th:href="@{/logout}" href="/logout"></a>
     </div>
 </div>
 
