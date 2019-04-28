@@ -5,6 +5,7 @@ import com.github.mongobee.changeset.ChangeSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import ru.otus.bbpax.entity.Book;
+import ru.otus.bbpax.entity.security.User;
 
 import static ru.otus.bbpax.configuration.changelog.data.ChangelogDataFactory.defaultAuthors;
 import static ru.otus.bbpax.configuration.changelog.data.ChangelogDataFactory.defaultBooks;
@@ -39,5 +40,13 @@ public class DataInitChangelog {
         // TODO: 2019-03-18 create OnUpdateRefListener + annotation and remove it
         template.save(book1);
         template.save(book2);
+    }
+
+    @ChangeSet(order = "005", id = "addUsers", author = "bpaxio")
+    public void addUsers(MongoTemplate template) {
+        User admin = new User();
+        admin.setUsername("admin");
+        admin.setPassword("passss)");
+        template.insert(admin, "users");
     }
 }
