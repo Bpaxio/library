@@ -22,8 +22,12 @@
     <div class="btn element">
         <a class="btn" th:text="#{genres}" th:href="@{/genre}" href="/book"></a>
     </div>
-    <div class="btn element logout">
-        <a class="btn" th:text="#{logout}" th:href="@{/logout}" href="/logout"></a>
+    <div class="btn element logout" th:if="${authenticated}">
+        <p class="element" th:text="${username}"></p>
+        <a class="btn" href="/logout" th:href="@{/logout}" th:text="#{logout}"></a>
+    </div>
+    <div class="btn element login" th:unless="${authenticated}">
+        <a class="btn" href="/login" th:href="@{/login}" th:text="#{login}"></a>
     </div>
 </div>
 
@@ -38,7 +42,7 @@
             <th th:text="#{book.name}">
                 Roman
             </th>
-            <th>
+            <th th:if="${#lists.contains(roles, 'ADMIN')}">
             </th>
             <th th:text="#{book.publicationDate}">
                 Roman
@@ -53,7 +57,7 @@
             <td>
                 <a th:href="@{/book/__${book.id}__}" th:text="${book.name}">Roman</a>
             </td>
-            <td>
+            <td th:if="${#lists.contains(roles, 'ADMIN')}">
                 <form th:action="@{/book/__${book.id}__/delete}" method="post">
                     <div class="btn">
                         <a th:href="@{/book/__${book.id}__?action=edit}" th:text="#{edit}"
@@ -71,7 +75,7 @@
         </tr>
         </tbody>
     </table>
-    <div class="btn">
+    <div class="btn" th:if="${#lists.contains(roles, 'ADMIN')}">
         <a th:href="@{/book?action=create}" th:text="#{create}" href="/book?action=create"></a>
     </div>
 </div>

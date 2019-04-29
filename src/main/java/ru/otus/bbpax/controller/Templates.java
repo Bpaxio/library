@@ -14,4 +14,5 @@ public class Templates {
     public final static String GENRE = "genre/single";
     public final static String GENRE_EDIT = "genre/edit";
     public final static String GENRE_CREATE = "genre/create";
+    public final static String FORBIDDEN = "accessDenied";
 }
