@@ -17,6 +17,10 @@
     <div class="btn element">
         <a href="/book" th:href="@{/book}" th:text="#{back.to(#{books})}"></a>
     </div>
+    <div class="btn element logout" th:if="${authenticated}">
+        <p class="element" th:text="${username}"></p>
+        <a class="btn" href="/logout" th:href="@{/logout}" th:text="#{logout}"></a>
+    </div>
 </div>
 
 <div class="h1 block">
@@ -41,7 +45,7 @@
                 <span th:text="${book.price}">899.99</span>
             </div>
 
-            <div class="btn">
+            <div class="btn" th:if="${#lists.contains(roles, 'ADMIN')}">
                 <a th:href="@{/book/__${book.id}__?action=edit}" th:text="#{edit}" href="..?action=edit"></a>
             </div>
         </header>

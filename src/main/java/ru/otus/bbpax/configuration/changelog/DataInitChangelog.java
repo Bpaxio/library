@@ -4,13 +4,18 @@ import com.github.mongobee.changeset.ChangeLog;
 import com.github.mongobee.changeset.ChangeSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import ru.otus.bbpax.entity.Book;
 import ru.otus.bbpax.entity.security.User;
+
+import java.util.Collections;
 
 import static ru.otus.bbpax.configuration.changelog.data.ChangelogDataFactory.defaultAuthors;
 import static ru.otus.bbpax.configuration.changelog.data.ChangelogDataFactory.defaultBooks;
 import static ru.otus.bbpax.configuration.changelog.data.ChangelogDataFactory.defaultComments;
 import static ru.otus.bbpax.configuration.changelog.data.ChangelogDataFactory.defaultGenres;
+import static ru.otus.bbpax.entity.security.Roles.ADMIN;
+import static ru.otus.bbpax.entity.security.Roles.USER;
 
 @Slf4j
 @ChangeLog
@@ -37,7 +42,6 @@ public class DataInitChangelog {
         Book book2 = template.findById("3c77bb3f57cfe05a39abc17a", Book.class);
         template.insertAll(defaultComments(book1, book2));
 
-        // TODO: 2019-03-18 create OnUpdateRefListener + annotation and remove it
         template.save(book1);
         template.save(book2);
     }
@@ -46,7 +50,14 @@ public class DataInitChangelog {
     public void addUsers(MongoTemplate template) {
         User admin = new User();
         admin.setUsername("admin");
-        admin.setPassword("passss)");
+        admin.setPassword("$2a$10$jHC1UIWnP8DHAvOBZ9SU4ujETh6Xm1yECXE6iFmZpbBnBiaR3J/J6");
+        admin.setAuthorities(Collections.singleton(new SimpleGrantedAuthority(ADMIN)));
         template.insert(admin, "users");
+
+        User user = new User();
+        user.setUsername("user");
+        user.setPassword("$2a$10$1nHcrt0Iq1BQClOdWgrF7e0.pkpmipzmyBGKZMerMMXlr0CFnfpHG");
+        user.setAuthorities(Collections.singleton(new SimpleGrantedAuthority(USER)));
+        template.insert(user, "users");
     }
 }

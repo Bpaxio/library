@@ -16,6 +16,10 @@
     <div class="btn element">
         <a href="/book" th:href="@{/book}" th:text="#{back.to(#{books})}"></a>
     </div>
+    <div class="btn element logout" th:if="${authenticated}">
+        <p class="element" th:text="${username}"></p>
+        <a class="btn" href="/logout" th:href="@{/logout}" th:text="#{logout}"></a>
+    </div>
 </div>
 
 <form th:action="@{/book/__${book.id}__}" method="post" th:object="${book}">

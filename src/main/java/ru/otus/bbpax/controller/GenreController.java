@@ -3,11 +3,21 @@ package ru.otus.bbpax.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.bbpax.service.GenreService;
 import ru.otus.bbpax.service.model.GenreDto;
 
-import static ru.otus.bbpax.controller.Templates.*;
+import java.util.Collection;
+
+import static ru.otus.bbpax.controller.SecurityUtils.getRoles;
+import static ru.otus.bbpax.controller.Templates.GENRE;
+import static ru.otus.bbpax.controller.Templates.GENRES;
+import static ru.otus.bbpax.controller.Templates.GENRE_CREATE;
+import static ru.otus.bbpax.controller.Templates.GENRE_EDIT;
+import static ru.otus.bbpax.entity.security.Roles.ADMIN;
 
 @Controller
 @AllArgsConstructor
@@ -38,8 +48,10 @@ public class GenreController {
                            @RequestParam(value = "action", required = false) String action,
                            Model model
     ) {
+        Collection<String> roles = getRoles();
         model.addAttribute("genre", service.getGenreById(id));
-        if ("edit".equals(action)) {
+        model.addAttribute("roles", roles);
+        if ("edit".equals(action) && roles.contains(ADMIN)) {
             return GENRE_EDIT;
         }
         return GENRE;
@@ -49,7 +61,9 @@ public class GenreController {
     public String getGenres(@RequestParam(value = "action", required = false) String action,
                              Model model
     ) {
-        if ("create".equals(action)) {
+        Collection<String> roles = getRoles();
+        model.addAttribute("roles", roles);
+        if ("create".equals(action) && roles.contains(ADMIN)) {
             return GENRE_CREATE;
         }
         return getAllGenres(model);

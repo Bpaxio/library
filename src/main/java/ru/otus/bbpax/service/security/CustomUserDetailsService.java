@@ -12,7 +12,6 @@ import ru.otus.bbpax.repository.security.UserRepo;
 public class CustomUserDetailsService implements UserDetailsService {
     private UserRepo repo;
 
-
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return repo.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));

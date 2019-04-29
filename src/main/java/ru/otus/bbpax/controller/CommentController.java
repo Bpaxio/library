@@ -2,10 +2,14 @@ package ru.otus.bbpax.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.otus.bbpax.service.CommentService;
+
+import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -24,8 +28,11 @@ public class CommentController {
                                 String username,
                                 String message
     ) {
+        UserDetails user = getUser();
         if (username == null || username.isEmpty()) {
-            username = NO_NAMED;
+            username = Optional
+                    .ofNullable(user.getUsername())
+                    .orElse(NO_NAMED);
         }
         service.create(username, message, bookId);
         return "redirect:/book/" + bookId;
@@ -37,5 +44,10 @@ public class CommentController {
 
         service.deleteById(commentId);
         return "redirect:/book/" + bookId;
+    }
+
+    private UserDetails getUser() {
+        return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
     }
 }

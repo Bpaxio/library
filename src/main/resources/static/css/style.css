@@ -84,6 +84,14 @@ tbody td:hover:before {
     display:inline-block;
     size: auto;
 }
+.logout {
+    float: right;
+    padding: 0;
+}
+.login {
+    float: right;
+}
+
 /*Buttons*/
 button.btn,.btn button, .btn a {
     display: inline-block;
