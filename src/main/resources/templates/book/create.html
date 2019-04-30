@@ -39,7 +39,7 @@
         </div>
         <div class="block form__row">
             <span th:text="#{book.genreName} + ' : '">Genre : </span>
-            <select name="authorId">
+            <select name="genreId">
                 <option th:each="genre : ${genres}"
                         th:value="${genre.id}"
                         th:text="${genre.name}">Genre</option>

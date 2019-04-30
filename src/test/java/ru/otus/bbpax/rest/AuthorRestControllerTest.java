@@ -1,7 +1,7 @@
 package ru.otus.bbpax.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,13 +36,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.otus.bbpax.entity.security.Roles.ADMIN;
 
 /**
  * @author Vlad Rakhlinskii
  * Created on 18.04.2019.
  */
+@Slf4j
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(AuthorRestController.class)
+@WebMvcTest(value = AuthorRestController.class, secure = false)
 @ActiveProfiles("test")
 class AuthorRestControllerTest {
 
@@ -54,15 +57,14 @@ class AuthorRestControllerTest {
     @MockBean
     private AuthorService service;
 
-    private AuthorDto author;
-
-    @BeforeEach
-    void setUp() {
-        author = new AuthorDto("2c77bb3f57cfe05a39abc17a","Name", "Surname", "Country");
+    private AuthorDto author() {
+        return new AuthorDto("2c77bb3f57cfe05a39abc17a","Name", "Surname", "Country");
     }
 
     @Test
     void createAuthor() throws Exception {
+        AuthorDto author = author();
+
         ObjectMapper mapper = new ObjectMapper();
         mvc.perform(post("/api/author/")
                 .content(mapper.writeValueAsString(author))
@@ -89,6 +91,7 @@ class AuthorRestControllerTest {
 
     @Test
     void updateAuthor() throws Exception {
+        AuthorDto author = author();
         mvc.perform(put("/api/author/" + author.getId()))
                 .andExpect(status().isMethodNotAllowed());
         mvc.perform(put("/api/author/"))
@@ -116,6 +119,7 @@ class AuthorRestControllerTest {
 
     @Test
     void getAuthor() throws Exception {
+        AuthorDto author = author();
         when(service.getAuthorById(author.getId()))
                 .thenReturn(author);
 
@@ -137,6 +141,7 @@ class AuthorRestControllerTest {
 
     @Test
     void getAuthors() throws Exception {
+        AuthorDto author = author();
         when(service.getAll())
                 .thenReturn(Collections.singletonList(author));
 
@@ -155,6 +160,7 @@ class AuthorRestControllerTest {
 
     @Test
     void getBooks() throws Exception {
+        AuthorDto author = author();
         when(service.getBooksById(anyString()))
                 .thenReturn(Collections.emptyList());
         BookDto book = new BookDto("id",
@@ -193,6 +199,7 @@ class AuthorRestControllerTest {
 
     @Test
     void deleteAuthorById() throws Exception {
+        AuthorDto author = author();
         mvc.perform(delete("/api/author/")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isMethodNotAllowed());

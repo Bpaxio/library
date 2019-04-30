@@ -51,13 +51,13 @@ public class DataInitChangelog {
         User admin = new User();
         admin.setUsername("admin");
         admin.setPassword("$2a$10$jHC1UIWnP8DHAvOBZ9SU4ujETh6Xm1yECXE6iFmZpbBnBiaR3J/J6");
-        admin.setAuthorities(Collections.singleton(new SimpleGrantedAuthority(ADMIN)));
+        admin.setAuthorities(Collections.singleton(new SimpleGrantedAuthority("ROLE_" + ADMIN)));
         template.insert(admin, "users");
 
         User user = new User();
         user.setUsername("user");
         user.setPassword("$2a$10$1nHcrt0Iq1BQClOdWgrF7e0.pkpmipzmyBGKZMerMMXlr0CFnfpHG");
-        user.setAuthorities(Collections.singleton(new SimpleGrantedAuthority(USER)));
+        user.setAuthorities(Collections.singleton(new SimpleGrantedAuthority("ROLE_" + USER)));
         template.insert(user, "users");
     }
 }

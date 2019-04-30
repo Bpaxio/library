@@ -4,9 +4,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import static ru.otus.bbpax.controller.SecurityUtils.getAuthenticated;
-import static ru.otus.bbpax.controller.SecurityUtils.getRoles;
-import static ru.otus.bbpax.controller.SecurityUtils.getUsername;
+import static ru.otus.bbpax.controller.security.SecurityUtils.getAuthenticated;
+import static ru.otus.bbpax.controller.security.SecurityUtils.getRoles;
+import static ru.otus.bbpax.controller.security.SecurityUtils.getUsername;
 
 @ControllerAdvice
 public class UserControllerAdvice {

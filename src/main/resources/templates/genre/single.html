@@ -35,7 +35,7 @@
                 <span th:text="${genre.name}">Novel</span>
             </div>
 
-            <div class="btn" th:if="${#lists.contains(roles, 'ADMIN')}">
+            <div class="btn" th:if="${#lists.contains(roles, 'ROLE_ADMIN')}">
                 <a th:href="@{/genre/__${genre.id}__?action=edit}" th:text="#{edit}" href="..?action=edit"></a>
             </div>
         </header>

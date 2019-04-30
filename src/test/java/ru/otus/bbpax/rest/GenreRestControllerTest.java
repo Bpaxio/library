@@ -1,6 +1,5 @@
 package ru.otus.bbpax.rest;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created on 18.04.2019.
  */
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(GenreRestController.class)
+@WebMvcTest(value = GenreRestController.class, secure = false)
 @ActiveProfiles("test")
 class GenreRestControllerTest {
 
@@ -52,15 +51,13 @@ class GenreRestControllerTest {
     @MockBean
     private GenreService service;
 
-    private GenreDto genre;
-
-    @BeforeEach
-    void setUp() {
-        genre = new GenreDto("2c77bb3f57cfe05a39abc17a","Novel");
+    private GenreDto genre() {
+        return new GenreDto("2c77bb3f57cfe05a39abc17a","Novel");
     }
 
     @Test
     void createGenre() throws Exception {
+        GenreDto genre = genre();
         mvc.perform(post("/api/genre/")
                 .content(genre.getName())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -72,6 +69,7 @@ class GenreRestControllerTest {
 
     @Test
     void updateGenre() throws Exception {
+        GenreDto genre = genre();
 
         mvc.perform(put("/api/genre/" + genre.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -88,6 +86,7 @@ class GenreRestControllerTest {
 
     @Test
     void getGenre() throws Exception {
+        GenreDto genre = genre();
         when(service.getGenreById(genre.getId()))
                 .thenReturn(genre);
 
@@ -102,6 +101,7 @@ class GenreRestControllerTest {
 
     @Test
     void getGenres() throws Exception {
+        GenreDto genre = genre();
         when(service.getAll())
                 .thenReturn(Collections.singletonList(genre));
 
@@ -118,6 +118,7 @@ class GenreRestControllerTest {
 
     @Test
     void getBooks() throws Exception {
+        GenreDto genre = genre();
 
         when(service.getBooksById(anyString()))
                 .thenReturn(Collections.emptyList());
@@ -157,6 +158,7 @@ class GenreRestControllerTest {
 
     @Test
     void deleteGenreById() throws Exception {
+        GenreDto genre = genre();
         mvc.perform(delete("/api/genre/")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isMethodNotAllowed());

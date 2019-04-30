@@ -4,32 +4,11 @@
 <head>
     <title th:text="#{header.application}">Hello Page</title>
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+    <div th:replace="fragments/nav-bar :: navbar-css"/>
 </head>
 <body>
-<link href="../../static/css/style.css" rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>
-
-<div class="top-panel">
-    <div class="top-panel element">
-        <img alt="memorynotfound logo" class="logo" src="../../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>
-    </div><div class="btn element">
-        <a th:text="#{books}" th:href="@{/book}" href="/book"></a>
-    </div>
-
-    <div class="btn element">
-        <a class="btn" th:text="#{authors}" th:href="@{/author}" href="/book"></a>
-    </div>
-
-    <div class="btn element">
-        <a class="btn" th:text="#{genres}" th:href="@{/genre}" href="/book"></a>
-    </div>
-    <div class="btn element logout" th:if="${authenticated}">
-        <p class="element" th:text="${username}"></p>
-        <a class="btn" href="/logout" th:href="@{/logout}" th:text="#{logout}"></a>
-    </div>
-    <div class="btn element login" th:unless="${authenticated}">
-        <a class="btn" href="/login" th:href="@{/login}" th:text="#{login}"></a>
-    </div>
-</div>
+<!--<link href="../../static/css/style.css" rel="stylesheet" th:href="@{/css/style.css}" type="text/css"/>-->
+<div th:replace="fragments/nav-bar :: navbar"/>
 
 <div class="h1 block">
     <h1 th:text="#{header.books}"></h1>
@@ -42,7 +21,7 @@
             <th th:text="#{book.name}">
                 Roman
             </th>
-            <th th:if="${#lists.contains(roles, 'ADMIN')}">
+            <th th:if="${#lists.contains(roles, 'ROLE_ADMIN')}">
             </th>
             <th th:text="#{book.publicationDate}">
                 Roman
@@ -57,7 +36,7 @@
             <td>
                 <a th:href="@{/book/__${book.id}__}" th:text="${book.name}">Roman</a>
             </td>
-            <td th:if="${#lists.contains(roles, 'ADMIN')}">
+            <td th:if="${#lists.contains(roles, 'ROLE_ADMIN')}">
                 <form th:action="@{/book/__${book.id}__/delete}" method="post">
                     <div class="btn">
                         <a th:href="@{/book/__${book.id}__?action=edit}" th:text="#{edit}"
@@ -75,7 +54,7 @@
         </tr>
         </tbody>
     </table>
-    <div class="btn" th:if="${#lists.contains(roles, 'ADMIN')}">
+    <div class="btn" th:if="${#lists.contains(roles, 'ROLE_ADMIN')}">
         <a th:href="@{/book?action=create}" th:text="#{create}" href="/book?action=create"></a>
     </div>
 </div>

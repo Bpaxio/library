@@ -18,7 +18,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
-import static ru.otus.bbpax.controller.SecurityUtils.getRoles;
 import static ru.otus.bbpax.controller.Templates.BOOK;
 import static ru.otus.bbpax.controller.Templates.BOOKS;
 import static ru.otus.bbpax.controller.Templates.BOOK_CREATE;

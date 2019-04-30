@@ -13,6 +13,7 @@ spring:
     message-codes-resolver-format: postfix_error_code
 logging:
   level:
+    org.springframework.security: DEBUG
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
 server:
   port: 8083

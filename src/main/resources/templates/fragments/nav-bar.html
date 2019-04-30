@@ -1,0 +1,31 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:fragment="navbar-css">
+        <link rel="stylesheet" th:href="@{/css/style.css}"
+              href="../../css/style.css" />
+    </div>
+</head>
+<body>
+<div th:fragment="navbar" class="top-panel">
+    <div class="top-panel element">
+        <img alt="memorynotfound logo" class="logo" src="../../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>
+    </div>
+    <div class="btn element">
+        <a th:text="#{books}" th:href="@{/book}" href="/book"></a>
+    </div>
+
+    <div class="btn element">
+        <a class="btn" th:text="#{authors}" th:href="@{/author}" href="/book"></a>
+    </div>
+
+    <div class="btn element">
+        <a class="btn" th:text="#{genres}" th:href="@{/genre}" href="/book"></a>
+    </div>
+    <div class="btn element logout" th:if="${authenticated}">
+        <p class="element" th:text="${username}"></p>
+        <a class="btn" href="/logout" th:href="@{/logout}" th:text="#{logout}"></a>
+    </div>
+</div>
+
+</body>
+</html>
