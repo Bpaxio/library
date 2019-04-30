@@ -44,7 +44,7 @@ import static ru.otus.bbpax.entity.security.Roles.ADMIN;
  */
 @Slf4j
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(value = AuthorRestController.class, secure = false)
+@WebMvcTest(value = AuthorRestController.class)
 @ActiveProfiles("test")
 class AuthorRestControllerTest {
 
@@ -62,6 +62,11 @@ class AuthorRestControllerTest {
     }
 
     @Test
+    @WithMockUser(
+            username = "admin",
+            password = "admin",
+            roles = {ADMIN}
+    )
     void createAuthor() throws Exception {
         AuthorDto author = author();
 
