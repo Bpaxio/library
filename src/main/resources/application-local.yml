@@ -5,6 +5,7 @@ spring:
       host: localhost
 logging:
   level:
+    org.springframework.security: DEBUG
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
 server:
   port: 8083

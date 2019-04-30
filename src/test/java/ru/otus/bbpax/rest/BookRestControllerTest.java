@@ -2,7 +2,6 @@ package ru.otus.bbpax.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @Slf4j
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(BookRestController.class)
+@WebMvcTest(value = BookRestController.class, secure = false)
 @ActiveProfiles("test")
 class BookRestControllerTest {
     @Configuration
@@ -54,11 +53,8 @@ class BookRestControllerTest {
     @MockBean
     private BookService service;
 
-    private BookDto book;
-
-    @BeforeEach
-    void setUp() {
-        book = new BookDto(
+    private BookDto book() {
+        return new BookDto(
                 "2c77bb3f57cfe05a39abc17a",
                 "SUPER_BOOK",
                 2019,
@@ -70,6 +66,7 @@ class BookRestControllerTest {
 
     @Test
     void createBook() throws Exception {
+        BookDto book = book();
         ObjectMapper mapper = new ObjectMapper();
         log.info(mapper.writeValueAsString(book));
         mvc.perform(post("/api/book/")
@@ -106,6 +103,7 @@ class BookRestControllerTest {
 
     @Test
     void updateBook() throws Exception {
+        BookDto book = book();
         ObjectMapper mapper = new ObjectMapper();
 
         log.info(mapper.writeValueAsString(book));
@@ -136,6 +134,7 @@ class BookRestControllerTest {
 
     @Test
     void getBook() throws Exception {
+        BookDto book = book();
         when(service.getBookById("just_another_unreal_id")).thenThrow(NotFoundException.class);
 
         when(service.getBookById(book.getId()))
@@ -165,6 +164,7 @@ class BookRestControllerTest {
 
     @Test
     void getBooks() throws Exception {
+        BookDto book = book();
         when(service.getAll())
                 .thenReturn(Collections.singletonList(book));
 
@@ -186,6 +186,7 @@ class BookRestControllerTest {
 
     @Test
     void deleteBookById() throws Exception {
+        BookDto book = book();
         mvc.perform(delete("/api/book/" + book.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

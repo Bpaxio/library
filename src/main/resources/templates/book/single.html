@@ -45,7 +45,7 @@
                 <span th:text="${book.price}">899.99</span>
             </div>
 
-            <div class="btn" th:if="${#lists.contains(roles, 'ADMIN')}">
+            <div class="btn" th:if="${#lists.contains(roles, 'ROLE_ADMIN')}">
                 <a th:href="@{/book/__${book.id}__?action=edit}" th:text="#{edit}" href="..?action=edit"></a>
             </div>
         </header>

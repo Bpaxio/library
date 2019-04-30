@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.bbpax.service.AuthorService;
 import ru.otus.bbpax.service.model.AuthorDto;
 
-import static ru.otus.bbpax.controller.SecurityUtils.getRoles;
 import static ru.otus.bbpax.controller.Templates.AUTHOR;
 import static ru.otus.bbpax.controller.Templates.AUTHORS;
 import static ru.otus.bbpax.controller.Templates.AUTHOR_CREATE;

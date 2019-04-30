@@ -12,7 +12,7 @@ import ru.otus.bbpax.service.model.GenreDto;
 
 import java.util.Collection;
 
-import static ru.otus.bbpax.controller.SecurityUtils.getRoles;
+import static ru.otus.bbpax.controller.security.SecurityUtils.getRoles;
 import static ru.otus.bbpax.controller.Templates.GENRE;
 import static ru.otus.bbpax.controller.Templates.GENRES;
 import static ru.otus.bbpax.controller.Templates.GENRE_CREATE;

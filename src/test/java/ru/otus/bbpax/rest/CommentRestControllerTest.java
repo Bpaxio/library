@@ -1,7 +1,6 @@
 package ru.otus.bbpax.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created on 18.04.2019.
  */
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(CommentRestController.class)
+@WebMvcTest(value = CommentRestController.class, secure = false)
 @ActiveProfiles("test")
 class CommentRestControllerTest {
     @Configuration
@@ -51,21 +50,19 @@ class CommentRestControllerTest {
     @MockBean
     private CommentService service;
 
-    private CommentDto comment;
-
-    @BeforeEach
-    void setUp() {
-        comment = new CommentDto(
+    private CommentDto comment() {
+        return new CommentDto(
                 "2c77bb3f57cfe05a39abc17a",
                 "Name of commentator",
                 LocalDateTime.parse("2019-04-21T16:24:03.353"),
                 "message",
                 "Book_ID"
-                );
+        );
     }
 
     @Test
     void createComment() throws Exception {
+        CommentDto comment = comment();
         ObjectMapper mapper = new ObjectMapper();
         mvc.perform(post("/api/comment/")
                 .content(mapper.writeValueAsString(comment))
@@ -93,6 +90,7 @@ class CommentRestControllerTest {
 
     @Test
     void updateComment() throws Exception {
+        CommentDto comment = comment();
         mvc.perform(put("/api/comment/"))
                 .andExpect(status().isMethodNotAllowed());
         mvc.perform(put("/api/comment/" + comment.getId()))
@@ -120,6 +118,7 @@ class CommentRestControllerTest {
 
     @Test
     void getComment() throws Exception {
+        CommentDto comment = comment();
         when(service.getComment(comment.getId()))
                 .thenReturn(comment);
 
@@ -142,6 +141,7 @@ class CommentRestControllerTest {
 
     @Test
     void getComments() throws Exception {
+        CommentDto comment = comment();
         when(service.getAll())
                 .thenReturn(Collections.singletonList(comment));
 
@@ -160,6 +160,7 @@ class CommentRestControllerTest {
 
     @Test
     void getBookComments() throws Exception {
+        CommentDto comment = comment();
         when(service.getCommentsFor(comment.getBookId()))
                 .thenReturn(Collections.singletonList(comment));
 
@@ -178,6 +179,7 @@ class CommentRestControllerTest {
 
     @Test
     void deleteCommentById() throws Exception {
+        CommentDto comment = comment();
         mvc.perform(delete("/api/comment/")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isMethodNotAllowed());
