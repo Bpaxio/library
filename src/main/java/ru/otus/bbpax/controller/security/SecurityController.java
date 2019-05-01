@@ -27,7 +27,6 @@ public class SecurityController {
     }
     @GetMapping("/welcome")
     public String welcome() {
-
         return WELCOME;
     }
 

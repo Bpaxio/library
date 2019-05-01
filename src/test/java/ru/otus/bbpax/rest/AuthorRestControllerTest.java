@@ -5,16 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import ru.otus.bbpax.configuration.SecurityConfig;
 import ru.otus.bbpax.service.AuthorService;
 import ru.otus.bbpax.service.model.AuthorDto;
 import ru.otus.bbpax.service.model.BookDto;
@@ -44,14 +47,18 @@ import static ru.otus.bbpax.entity.security.Roles.ADMIN;
  */
 @Slf4j
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(value = AuthorRestController.class)
+@WebMvcTest(AuthorRestController.class)
+@WithMockUser
 @ActiveProfiles("test")
 class AuthorRestControllerTest {
-
     @Configuration
-    @Import({ AuthorRestController.class })
+    @Import({ AuthorRestController.class, SecurityConfig.class })
     static class Config {
+        @MockBean
+        @Qualifier("customUserDetailsService")
+        public UserDetailsService userDetailsService;
     }
+
     @Autowired
     private MockMvc mvc;
     @MockBean
@@ -62,11 +69,7 @@ class AuthorRestControllerTest {
     }
 
     @Test
-    @WithMockUser(
-            username = "admin",
-            password = "admin",
-            roles = {ADMIN}
-    )
+    @WithMockUser(roles = {ADMIN})
     void createAuthor() throws Exception {
         AuthorDto author = author();
 
@@ -95,6 +98,18 @@ class AuthorRestControllerTest {
     }
 
     @Test
+    void createAuthorWithUser() throws Exception {
+        AuthorDto author = author();
+        mvc.perform(post("/api/author/")
+                .content(new ObjectMapper().writeValueAsString(author))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+
+        verify(service, times(0)).create(author);
+    }
+
+    @Test
+    @WithMockUser(roles = {ADMIN})
     void updateAuthor() throws Exception {
         AuthorDto author = author();
         mvc.perform(put("/api/author/" + author.getId()))
@@ -123,6 +138,18 @@ class AuthorRestControllerTest {
     }
 
     @Test
+    void updateAuthorWithUser() throws Exception {
+        AuthorDto author = author();
+        mvc.perform(put("/api/author/")
+                .content(new ObjectMapper().writeValueAsString(author))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+
+        verify(service, times(0)).update(author);
+    }
+
+    @Test
+    @WithMockUser(roles = {ADMIN})
     void getAuthor() throws Exception {
         AuthorDto author = author();
         when(service.getAuthorById(author.getId()))
@@ -145,6 +172,12 @@ class AuthorRestControllerTest {
     }
 
     @Test
+    void getAuthorWithUser() throws Exception {
+        getAuthor();
+    }
+
+    @Test
+    @WithMockUser(roles = {ADMIN})
     void getAuthors() throws Exception {
         AuthorDto author = author();
         when(service.getAll())
@@ -164,6 +197,12 @@ class AuthorRestControllerTest {
     }
 
     @Test
+    void getAuthorsWithUser() throws Exception {
+        getAuthors();
+    }
+
+    @Test
+    @WithMockUser(roles = {ADMIN})
     void getBooks() throws Exception {
         AuthorDto author = author();
         when(service.getBooksById(anyString()))
@@ -203,6 +242,12 @@ class AuthorRestControllerTest {
     }
 
     @Test
+    void getBooksWithUser() throws Exception {
+        getBooks();
+    }
+
+    @Test
+    @WithMockUser(roles = {ADMIN})
     void deleteAuthorById() throws Exception {
         AuthorDto author = author();
         mvc.perform(delete("/api/author/")
@@ -214,5 +259,15 @@ class AuthorRestControllerTest {
                 .andExpect(status().isOk());
 
         verify(service, times(1)).deleteById(author.getId());
+    }
+
+    @Test
+    void deleteAuthorByIdWithUser() throws Exception {
+        AuthorDto author = author();
+        mvc.perform(delete("/api/author/" + author.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+
+        verify(service, times(0)).deleteById(author.getId());
     }
 }

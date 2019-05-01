@@ -72,7 +72,7 @@ public class CommentRestController {
 
     @DeleteMapping("{id}")
     @ResponseBody
-    public void deleteComment(@PathVariable String id) {
+    public void deleteComment(@PathVariable("id") String id) {
         service.deleteById(id);
     }
 }
