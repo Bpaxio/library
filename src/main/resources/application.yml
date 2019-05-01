@@ -15,5 +15,25 @@ logging:
   level:
     org.springframework.security: DEBUG
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+  file: logging.log
 server:
   port: 8083
+request:
+  max: 100
+
+management:
+  endpoint:
+    health:
+      show-details: when_authorized
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - loggers
+          - logfile
+          - env
+          - beans
+          - metrics
+          - configprops
+          - shutdown
