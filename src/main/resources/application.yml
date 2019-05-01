@@ -9,3 +9,22 @@ spring:
     locale-resolver: accept_header #just don't forget)
     locale: ru_RU
     message-codes-resolver-format: postfix_error_code
+request:
+  max: 100
+
+management:
+  endpoint:
+    health:
+      show-details: when_authorized
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - loggers
+          - logfile
+          - env
+          - beans
+          - metrics
+          - configprops
+          - shutdown
