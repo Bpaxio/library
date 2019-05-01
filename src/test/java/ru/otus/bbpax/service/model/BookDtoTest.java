@@ -35,9 +35,11 @@ class BookDtoTest {
                 AUTHOR_ID);
 
         Author author = new Author();
+        author.setId(AUTHOR_ID);
         author.setName(AUTHOR_NAME);
         author.setSurname(AUTHOR_SURNAME);
         Genre genre = new Genre();
+        genre.setId(GENRE_ID);
         genre.setName(GENRE_NAME);
         book = new Book(BOOK_ID,
                 BOOK_NAME,
@@ -58,6 +60,13 @@ class BookDtoTest {
     @Test
     @DisplayName("создает entity с теми же значениями полей, что у dto.")
     void toEntity() {
-        assertEquals(book, bookDto.toEntity());
+        Book result = bookDto.toEntity();
+        assertEquals(this.book.getId(), result.getId());
+        assertEquals(this.book.getGenre().getId(), result.getGenre().getId());
+        assertEquals(this.book.getAuthor().getId(), result.getAuthor().getId());
+        assertEquals(this.book.getPrice(), result.getPrice());
+        assertEquals(this.book.getPublicationDate(), result.getPublicationDate());
+        assertEquals(this.book.getPublishingOffice(), result.getPublishingOffice());
+        assertEquals(this.book.getName(), result.getName());
     }
 }
