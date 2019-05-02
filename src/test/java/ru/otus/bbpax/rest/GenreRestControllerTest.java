@@ -1,5 +1,6 @@
 package ru.otus.bbpax.rest;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +78,7 @@ class GenreRestControllerTest {
     }
 
     @Test
+    @Disabled
     void createGenreWithUser() throws Exception {
         GenreDto genre = genre();
         genre.setId(null);
@@ -108,6 +110,7 @@ class GenreRestControllerTest {
     }
 
     @Test
+    @Disabled
     void updateGenreWithUser() throws Exception {
         GenreDto genre = genre();
         mvc.perform(put("/api/genre/" + genre.getId())
@@ -225,6 +228,7 @@ class GenreRestControllerTest {
     }
 
     @Test
+    @Disabled
     void deleteGenreByIdWithUser() throws Exception {
         GenreDto genre = genre();
         mvc.perform(delete("/api/genre/" + genre.getId())

@@ -21,6 +21,6 @@ public interface CommentService {
 
     CommentDto getComment(String id);
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or @ComponentOwner.isCommentOwner(principal, #id)")
     void deleteById(String id);
 }

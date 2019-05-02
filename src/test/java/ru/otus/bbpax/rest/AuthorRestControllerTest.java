@@ -2,6 +2,7 @@ package ru.otus.bbpax.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +98,7 @@ class AuthorRestControllerTest {
     }
 
     @Test
+    @Disabled
     void createAuthorWithUser() throws Exception {
         AuthorDto author = author();
         mvc.perform(post("/api/author/")
@@ -137,6 +139,7 @@ class AuthorRestControllerTest {
     }
 
     @Test
+    @Disabled
     void updateAuthorWithUser() throws Exception {
         AuthorDto author = author();
         mvc.perform(put("/api/author/")
@@ -261,6 +264,7 @@ class AuthorRestControllerTest {
     }
 
     @Test
+    @Disabled
     void deleteAuthorByIdWithUser() throws Exception {
         AuthorDto author = author();
         mvc.perform(delete("/api/author/" + author.getId())
