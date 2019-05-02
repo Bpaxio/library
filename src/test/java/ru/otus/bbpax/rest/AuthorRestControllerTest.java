@@ -17,7 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import ru.otus.bbpax.configuration.SecurityConfig;
+import ru.otus.bbpax.configuration.security.SecurityConfig;
 import ru.otus.bbpax.service.AuthorService;
 import ru.otus.bbpax.service.model.AuthorDto;
 import ru.otus.bbpax.service.model.BookDto;
@@ -39,7 +39,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.otus.bbpax.entity.security.Roles.ADMIN;
 
 /**
  * @author Vlad Rakhlinskii
@@ -69,7 +68,7 @@ class AuthorRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void createAuthor() throws Exception {
         AuthorDto author = author();
 
@@ -109,7 +108,7 @@ class AuthorRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void updateAuthor() throws Exception {
         AuthorDto author = author();
         mvc.perform(put("/api/author/" + author.getId()))
@@ -149,7 +148,7 @@ class AuthorRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void getAuthor() throws Exception {
         AuthorDto author = author();
         when(service.getAuthorById(author.getId()))
@@ -177,7 +176,7 @@ class AuthorRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void getAuthors() throws Exception {
         AuthorDto author = author();
         when(service.getAll())
@@ -202,7 +201,7 @@ class AuthorRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void getBooks() throws Exception {
         AuthorDto author = author();
         when(service.getBooksById(anyString()))
@@ -247,7 +246,7 @@ class AuthorRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void deleteAuthorById() throws Exception {
         AuthorDto author = author();
         mvc.perform(delete("/api/author/")

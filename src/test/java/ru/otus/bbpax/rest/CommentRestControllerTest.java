@@ -16,7 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import ru.otus.bbpax.configuration.SecurityConfig;
+import ru.otus.bbpax.configuration.security.SecurityConfig;
 import ru.otus.bbpax.service.CommentService;
 import ru.otus.bbpax.service.model.CommentDto;
 import ru.otus.bbpax.service.model.GenreDto;
@@ -36,7 +36,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.otus.bbpax.entity.security.Roles.ADMIN;
+import static ru.otus.bbpax.entity.security.Roles.LIAR;
+import static ru.otus.bbpax.entity.security.Roles.USER;
 
 /**
  * @author Vlad Rakhlinskii
@@ -71,7 +72,7 @@ class CommentRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void createComment() throws Exception {
         CommentDto comment = comment();
         ObjectMapper mapper = new ObjectMapper();
@@ -101,6 +102,12 @@ class CommentRestControllerTest {
 
     @Test
     void createCommentWithUser() throws Exception {
+        createComment();
+    }
+
+    @Test
+    @WithMockUser(roles = {USER, LIAR})
+    void createCommentWithLiar() throws Exception {
         CommentDto comment = comment();
 
         ObjectMapper mapper = new ObjectMapper();
@@ -114,7 +121,7 @@ class CommentRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void updateComment() throws Exception {
         CommentDto comment = comment();
         mvc.perform(put("/api/comment/"))
@@ -144,19 +151,11 @@ class CommentRestControllerTest {
 
     @Test
     void updateCommentWithUser() throws Exception {
-        CommentDto comment = comment();
-
-        mvc.perform(put("/api/comment/" + comment.getId())
-                .content(comment.getMessage())
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden());
-
-        verify(service, times(0))
-                .update(comment.getId(), comment.getMessage());
+        updateComment();
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void getComment() throws Exception {
         CommentDto comment = comment();
         when(service.getComment(comment.getId()))
@@ -185,7 +184,7 @@ class CommentRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void getComments() throws Exception {
         CommentDto comment = comment();
         when(service.getAll())
@@ -210,7 +209,7 @@ class CommentRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void getBookComments() throws Exception {
         CommentDto comment = comment();
         when(service.getCommentsFor(comment.getBookId()))
@@ -235,7 +234,7 @@ class CommentRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void deleteCommentById() throws Exception {
         CommentDto comment = comment();
         mvc.perform(delete("/api/comment/")

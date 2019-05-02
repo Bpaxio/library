@@ -17,11 +17,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import ru.otus.bbpax.configuration.SecurityConfig;
+import ru.otus.bbpax.configuration.security.SecurityConfig;
 import ru.otus.bbpax.service.BookService;
 import ru.otus.bbpax.service.error.NotFoundException;
 import ru.otus.bbpax.service.model.BookDto;
 import ru.otus.bbpax.service.model.GenreDto;
+import ru.otus.bbpax.service.security.AuthorizationSecurityComponent;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -29,6 +30,9 @@ import java.util.Collections;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -38,7 +42,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.otus.bbpax.entity.security.Roles.ADMIN;
 
 /**
  * @author Vlad Rakhlinskii
@@ -56,12 +59,15 @@ class BookRestControllerTest {
         @MockBean
         @Qualifier("customUserDetailsService")
         public UserDetailsService userDetailsService;
+
     }
 
     @Autowired
     private MockMvc mvc;
     @MockBean
     private BookService service;
+    @MockBean
+    public AuthorizationSecurityComponent component;
 
     private BookDto book() {
         return new BookDto(
@@ -75,7 +81,7 @@ class BookRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void createBook() throws Exception {
         BookDto book = book();
         ObjectMapper mapper = new ObjectMapper();
@@ -126,7 +132,30 @@ class BookRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockUser(username = "Alex")
+    void createBookWithAuthor() throws Exception {
+        BookDto book = new BookDto(
+                "2c77bb3f57cfe05a39abc17a",
+                "SUPER_BOOK",
+                2019,
+                "The Test Office",
+                BigDecimal.valueOf(2000),
+                "GenreId",
+                "REALAuthorId");
+        doReturn(true).when(component).isBookOwner(any(), eq(book));
+        ObjectMapper mapper = new ObjectMapper();
+
+        mvc.perform(post("/api/book/")
+                .content(mapper.writeValueAsString(book))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+
+        verify(service, times(1)).create(book);
+    }
+
+    @Test
+    @WithMockAdmin
     void updateBook() throws Exception {
         BookDto book = book();
         ObjectMapper mapper = new ObjectMapper();
@@ -171,7 +200,7 @@ class BookRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void getBook() throws Exception {
         BookDto book = book();
         when(service.getBookById("just_another_unreal_id")).thenThrow(NotFoundException.class);
@@ -207,7 +236,7 @@ class BookRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void getBooks() throws Exception {
         BookDto book = book();
         when(service.getAll())
@@ -235,7 +264,7 @@ class BookRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void deleteBookById() throws Exception {
         BookDto book = book();
         mvc.perform(delete("/api/book/" + book.getId())

@@ -17,12 +17,6 @@
             </label>
         </div>
         <div class="block form__row">
-            <span th:text="#{book.authorFirstName} + ' : '">Author's First Name : </span>
-            <label>
-                <input name="authorFirstName" type="text" th:placeholder="#{placeholder.author.firstname}"/>
-            </label>
-        </div>
-        <div class="block form__row">
             <span th:text="#{book.authorFullName} + ' : '">Author's Full Name : </span>
 
             <select name="authorId">
@@ -30,6 +24,11 @@
                         th:value="${author.id}"
                         th:text="${author.name + ' ' + author.surname}">Author</option>
             </select>
+        </div>
+        <div class="block">
+            <span th:text="#{book.publicationDate} + ' : '">Book was published at : </span>
+            <input type="text" th:placeholder="#{placeholder.book.year}" placeholder="publication year"
+                   name="publicationDate"/>
         </div>
         <div class="block form__row">
             <span th:text="#{book.publishingOffice} + ' : '">Publishing House : </span>

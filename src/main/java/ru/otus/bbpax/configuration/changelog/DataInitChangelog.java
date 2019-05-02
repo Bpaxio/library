@@ -9,12 +9,16 @@ import ru.otus.bbpax.entity.Book;
 import ru.otus.bbpax.entity.security.User;
 
 import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static ru.otus.bbpax.configuration.changelog.data.ChangelogDataFactory.defaultAuthors;
 import static ru.otus.bbpax.configuration.changelog.data.ChangelogDataFactory.defaultBooks;
 import static ru.otus.bbpax.configuration.changelog.data.ChangelogDataFactory.defaultComments;
 import static ru.otus.bbpax.configuration.changelog.data.ChangelogDataFactory.defaultGenres;
 import static ru.otus.bbpax.entity.security.Roles.ADMIN;
+import static ru.otus.bbpax.entity.security.Roles.AUTHOR;
+import static ru.otus.bbpax.entity.security.Roles.LIAR;
 import static ru.otus.bbpax.entity.security.Roles.USER;
 
 @Slf4j
@@ -59,5 +63,30 @@ public class DataInitChangelog {
         user.setPassword("$2a$10$1nHcrt0Iq1BQClOdWgrF7e0.pkpmipzmyBGKZMerMMXlr0CFnfpHG");
         user.setAuthorities(Collections.singleton(new SimpleGrantedAuthority("ROLE_" + USER)));
         template.insert(user, "users");
+    }
+
+    @ChangeSet(order = "006", id = "addAuthorAndLiar", author = "bpaxio")
+    public void addAuthorAndLiar(MongoTemplate template) {
+        User author = new User();
+        author.setUsername("author");
+        author.setPassword("$2a$10$CTk/dV2J5kQQPHlVu3f0weHJffAmAzqGECZVKxmUAHqmE/zwtDciG");
+        author.setAuthorities(
+                Stream.of(
+                        new SimpleGrantedAuthority("ROLE_" + AUTHOR),
+                        new SimpleGrantedAuthority("ROLE_" + USER))
+                        .collect(Collectors.toSet())
+        );
+        template.insert(author, "users");
+
+        User liar = new User();
+        liar.setUsername("liar");
+        liar.setPassword("$2a$10$udfZ8una814jhqkSmulrPuPkhv.QEjy9cmTkP062BagQ31ksoPL9q");
+        liar.setAuthorities(
+                Stream.of(
+                        new SimpleGrantedAuthority("ROLE_" + LIAR),
+                        new SimpleGrantedAuthority("ROLE_" + USER))
+                        .collect(Collectors.toSet())
+        );
+        template.insert(liar, "users");
     }
 }

@@ -1,11 +1,11 @@
-package ru.otus.bbpax.configuration;
+package ru.otus.bbpax.configuration.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,6 +19,7 @@ import static ru.otus.bbpax.entity.security.Roles.ADMIN;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static final int ENCODING_STRENGTH = 10;
 
@@ -43,9 +44,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                     .antMatchers("/", "/css/**", "/img/**", "/favicon*", "/login*").permitAll()
-                    .antMatchers(HttpMethod.POST, "/**").hasRole(ADMIN)
-                    .antMatchers(HttpMethod.PUT, "/**").hasRole(ADMIN)
-                    .antMatchers(HttpMethod.DELETE, "/**").hasRole(ADMIN)
                     .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().accessDeniedPage("/accessDenied")

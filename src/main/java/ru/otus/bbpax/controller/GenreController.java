@@ -12,12 +12,11 @@ import ru.otus.bbpax.service.model.GenreDto;
 
 import java.util.Collection;
 
-import static ru.otus.bbpax.controller.security.SecurityUtils.getRoles;
 import static ru.otus.bbpax.controller.Templates.GENRE;
 import static ru.otus.bbpax.controller.Templates.GENRES;
 import static ru.otus.bbpax.controller.Templates.GENRE_CREATE;
 import static ru.otus.bbpax.controller.Templates.GENRE_EDIT;
-import static ru.otus.bbpax.entity.security.Roles.ADMIN;
+import static ru.otus.bbpax.controller.security.SecurityUtils.getRoles;
 
 @Controller
 @AllArgsConstructor
@@ -51,7 +50,7 @@ public class GenreController {
         Collection<String> roles = getRoles();
         model.addAttribute("genre", service.getGenreById(id));
         model.addAttribute("roles", roles);
-        if ("edit".equals(action) && roles.contains(ADMIN)) {
+        if ("edit".equals(action)) {
             return GENRE_EDIT;
         }
         return GENRE;
@@ -63,7 +62,7 @@ public class GenreController {
     ) {
         Collection<String> roles = getRoles();
         model.addAttribute("roles", roles);
-        if ("create".equals(action) && roles.contains(ADMIN)) {
+        if ("create".equals(action)) {
             return GENRE_CREATE;
         }
         return getAllGenres(model);

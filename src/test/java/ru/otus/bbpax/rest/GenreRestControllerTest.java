@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import ru.otus.bbpax.configuration.SecurityConfig;
+import ru.otus.bbpax.configuration.security.SecurityConfig;
 import ru.otus.bbpax.service.GenreService;
 import ru.otus.bbpax.service.model.BookDto;
 import ru.otus.bbpax.service.model.GenreDto;
@@ -36,7 +36,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.otus.bbpax.entity.security.Roles.ADMIN;
 
 /**
  * @author Vlad Rakhlinskii
@@ -65,7 +64,7 @@ class GenreRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void createGenre() throws Exception {
         GenreDto genre = genre();
         mvc.perform(post("/api/genre/")
@@ -91,7 +90,7 @@ class GenreRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void updateGenre() throws Exception {
         GenreDto genre = genre();
 
@@ -121,7 +120,7 @@ class GenreRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void getGenre() throws Exception {
         GenreDto genre = genre();
         when(service.getGenreById(genre.getId()))
@@ -142,7 +141,7 @@ class GenreRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void getGenres() throws Exception {
         GenreDto genre = genre();
         when(service.getAll())
@@ -165,7 +164,7 @@ class GenreRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void getBooks() throws Exception {
         GenreDto genre = genre();
 
@@ -211,7 +210,7 @@ class GenreRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {ADMIN})
+    @WithMockAdmin
     void deleteGenreById() throws Exception {
         GenreDto genre = genre();
         mvc.perform(delete("/api/genre/")

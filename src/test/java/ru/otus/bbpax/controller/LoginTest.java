@@ -16,7 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.otus.bbpax.configuration.SecurityConfig;
+import ru.otus.bbpax.configuration.security.SecurityConfig;
 import ru.otus.bbpax.controller.security.SecurityController;
 import ru.otus.bbpax.entity.security.User;
 import ru.otus.bbpax.service.AuthorService;
@@ -27,10 +27,9 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.otus.bbpax.configuration.SecurityConfig.ENCODING_STRENGTH;
+import static ru.otus.bbpax.configuration.security.SecurityConfig.ENCODING_STRENGTH;
 import static ru.otus.bbpax.entity.security.Roles.ADMIN;
 
 @Slf4j
@@ -65,23 +64,29 @@ class LoginTest {
     private AuthorService service;
 
     @Test
-    void testLogin() throws Exception {
-        mvc.perform(get("/author"))
-                                .andExpect(status().isFound())
-                                .andExpect(redirectedUrl("http://localhost/login"))
-                                .andDo(print())
-                                .andReturn();
-
+    void testGetLogin() throws Exception {
         mvc.perform(get("/login"))
                         .andExpect(status().isOk()).andReturn();
+    }
 
+    @Test
+    void testLoginRedirect() throws Exception {
+        mvc.perform(get("/author"))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("http://localhost/login"))
+                .andReturn();
+
+    }
+
+    @Test
+    void testPostLogin() throws Exception {
         //Bad credentials
         mvc.perform(post("/login")
-                                .param("username","admin")
-                                .param("password","admin"))
-                        .andExpect(status().isFound())
-                        .andExpect(redirectedUrl("/login?error=true"))
-                        .andReturn();
+                    .param("username","admin")
+                    .param("password","wrongpass"))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/login?error=true"))
+                .andReturn();
 
         mvc.perform(post("/login")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -89,7 +94,6 @@ class LoginTest {
                     .param("password","pass"))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/welcome"))
-                .andDo(print())
                 .andReturn();
 
     }

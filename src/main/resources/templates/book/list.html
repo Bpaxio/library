@@ -21,7 +21,7 @@
             <th th:text="#{book.name}">
                 Roman
             </th>
-            <th th:if="${#lists.contains(roles, 'ROLE_ADMIN')}">
+            <th th:if="${#lists.contains(roles, 'ROLE_ADMIN') or #lists.contains(roles, 'ROLE_AUTHOR')}">
             </th>
             <th th:text="#{book.publicationDate}">
                 Roman
@@ -36,12 +36,12 @@
             <td>
                 <a th:href="@{/book/__${book.id}__}" th:text="${book.name}">Roman</a>
             </td>
-            <td th:if="${#lists.contains(roles, 'ROLE_ADMIN')}">
+            <td th:if="${#lists.contains(roles, 'ROLE_ADMIN') or #lists.contains(roles, 'ROLE_AUTHOR')}">
                 <form th:action="@{/book/__${book.id}__/delete}" method="post">
                     <div class="btn">
                         <a th:href="@{/book/__${book.id}__?action=edit}" th:text="#{edit}"
                            href="/book?action=edit"></a>
-                        <button type="submit" th:text="#{delete}"></button>
+                        <button type="submit" th:text="#{delete}" th:if="${#lists.contains(roles, 'ROLE_ADMIN')}"></button>
                     </div>
                 </form>
             </td>
@@ -54,7 +54,7 @@
         </tr>
         </tbody>
     </table>
-    <div class="btn" th:if="${#lists.contains(roles, 'ROLE_ADMIN')}">
+    <div class="btn" th:if="${#lists.contains(roles, 'ROLE_ADMIN') or #lists.contains(roles, 'ROLE_AUTHOR')}">
         <a th:href="@{/book?action=create}" th:text="#{create}" href="/book?action=create"></a>
     </div>
 </div>

@@ -42,7 +42,6 @@ public class CommentServiceImpl implements CommentService {
         );
     }
 
-    @Transactional
     public List<CommentDto> getCommentsFor(String bookId) {
         return repo.findAllByBookId(bookId)
                 .stream()
@@ -68,6 +67,7 @@ public class CommentServiceImpl implements CommentService {
         return CommentDto.fromEntity(repo.findById(id).get());
     }
 
+    @Transactional
     public void deleteById(String id) {
         repo.deleteById(id);
     }
