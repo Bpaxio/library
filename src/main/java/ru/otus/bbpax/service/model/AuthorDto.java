@@ -14,16 +14,16 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthorView implements EntityView<Author> {
+public class AuthorDto implements EntityDto<Author> {
     private String id;
     private String name;
     private String surname;
     private String country;
 
-    public static AuthorView fromEntity(Author author) {
+    public static AuthorDto fromEntity(Author author) {
         return Objects.isNull(author)
                 ? null
-                : new AuthorView(
+                : new AuthorDto(
                     author.getId(),
                     author.getName(),
                     author.getSurname(),

@@ -1,44 +1,21 @@
 package ru.otus.bbpax.service;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import ru.otus.bbpax.service.model.GenreView;
-import ru.otus.bbpax.entity.Genre;
-import ru.otus.bbpax.repository.GenreRepo;
+import ru.otus.bbpax.service.model.BookDto;
+import ru.otus.bbpax.service.model.GenreDto;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-@Slf4j
-@AllArgsConstructor
-@Service
-public class GenreService {
-    private final GenreRepo repo;
+public interface GenreService {
 
-    public Genre create(GenreView genre) {
-        return repo.save(genre.toEntity());
-    }
+    GenreDto create(GenreDto genre);
 
-    public void update(GenreView genre) {
-        repo.save(genre.toEntity());
-    }
+    GenreDto update(GenreDto genre);
 
-    public GenreView getGenreById(String id) {
-        Optional<Genre> result = repo.findById(id);
-        return result.map(GenreView::fromEntity)
-                .orElse(null);
-    }
+    GenreDto getGenreById(String id);
 
-    public List<GenreView> getAll() {
-        return repo.findAll()
-                .stream()
-                .map(GenreView::fromEntity)
-                .collect(Collectors.toList());
-    }
+    List<GenreDto> getAll();
 
-    public void deleteById(String id) {
-        repo.deleteById(id);
-    }
+    List<BookDto> getBooksById(String id);
+
+    void deleteById(String id);
 }

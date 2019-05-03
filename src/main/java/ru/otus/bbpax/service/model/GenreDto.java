@@ -14,14 +14,14 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GenreView implements EntityView<Genre> {
+public class GenreDto implements EntityDto<Genre> {
     private String id;
     private String name;
 
-    public static GenreView fromEntity(Genre genre) {
+    public static GenreDto fromEntity(Genre genre) {
         return Objects.isNull(genre)
                 ? null
-                : new GenreView(
+                : new GenreDto(
                         genre.getId(),
                         genre.getName()
                 );

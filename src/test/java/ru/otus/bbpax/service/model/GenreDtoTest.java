@@ -10,27 +10,27 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static ru.otus.bbpax.service.model.TestVariables.GENRE_ID;
 import static ru.otus.bbpax.service.model.TestVariables.GENRE_NAME;
 
-class GenreViewTest {
-    private GenreView view;
+class GenreDtoTest {
+    private GenreDto dto;
     private Genre entity;
 
     @BeforeEach
     void setUp() {
-        view = new GenreView(GENRE_ID, GENRE_NAME);
+        dto = new GenreDto(GENRE_ID, GENRE_NAME);
         entity = new Genre(GENRE_ID, GENRE_NAME);
     }
 
     @Test
-    @DisplayName("создает view с теми же значениями полей, что у entity или null.")
+    @DisplayName("создает dto с теми же значениями полей, что у entity или null.")
     void fromEntity() {
-        assertEquals(view, GenreView.fromEntity(entity));
+        assertEquals(dto, GenreDto.fromEntity(entity));
 
-        assertNull(GenreView.fromEntity(null));
+        assertNull(GenreDto.fromEntity(null));
     }
 
     @Test
-    @DisplayName("создает entity с теми же значениями полей, что у view.")
+    @DisplayName("создает entity с теми же значениями полей, что у dto.")
     void toEntity() {
-        assertEquals(entity, view.toEntity());
+        assertEquals(entity, dto.toEntity());
     }
 }

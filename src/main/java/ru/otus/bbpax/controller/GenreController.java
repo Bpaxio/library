@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.bbpax.service.GenreService;
-import ru.otus.bbpax.service.model.GenreView;
+import ru.otus.bbpax.service.model.GenreDto;
 
 import static ru.otus.bbpax.controller.Templates.*;
 
@@ -17,13 +17,13 @@ public class GenreController {
 
     @PostMapping("/genre")
     public String createGenre(String name, Model model) {
-        model.addAttribute("genre", GenreView.fromEntity(service.create(new GenreView(null, name))));
+        model.addAttribute("genre", service.create(new GenreDto(null, name)));
         return GENRE;
     }
 
     @PostMapping("/genre/{id}")
     public String updateGenre(@PathVariable("id") String id, String name) {
-        service.update(new GenreView(id, name));
+        service.update(new GenreDto(id, name));
         return "redirect:" + id;
     }
 

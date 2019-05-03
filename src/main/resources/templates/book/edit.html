@@ -27,16 +27,14 @@
             </label>
         </div>
         <div class="block">
-            <span th:text="#{book.authorFirstName} + ' : '">Author's First Name : </span>
-            <label>
-                <input type="text" th:placeholder="#{placeholder.author.firstname}" th:field="*{authorFirstName}"/>
-            </label>
-        </div>
-        <div class="block">
-            <span th:text="#{book.authorLastName} + ' : '">Author's Last Name : </span>
-            <label>
-                <input type="text" th:placeholder="#{placeholder.author.lastname}" th:field="*{authorLastName}"/>
-            </label>
+
+            <span th:text="#{book.authorFullName} + ' : '">Author's Full Name : </span>
+
+            <select th:field="*{authorId}">
+                <option th:each="author : ${authors}"
+                        th:value="${author.id}"
+                        th:text="${author.name + ' ' + author.surname}">Author</option>
+            </select>
         </div>
         <div class="block">
             <span th:text="#{book.publicationDate} + ' : '">Book was published at : </span>
@@ -51,9 +49,11 @@
         </div>
         <div class="block">
             <span th:text="#{book.genreName} + ' : '">Genre : </span>
-            <label>
-                <input type="text" th:placeholder="#{placeholder.book.genre}" th:field="*{genreName}"/>
-            </label>
+            <select th:field="*{genreId}">
+                <option th:each="genre : ${genres}"
+                        th:value="${genre.id}"
+                        th:text="${genre.name}">Genre</option>
+            </select>
         </div>
         <div class="block">
             <span th:text="#{book.price} + ' : '">Price : </span>

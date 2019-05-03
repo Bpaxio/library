@@ -5,9 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.otus.bbpax.service.AuthorService;
 import ru.otus.bbpax.service.BookService;
 import ru.otus.bbpax.service.CommentService;
-import ru.otus.bbpax.service.model.BookView;
+import ru.otus.bbpax.service.GenreService;
+import ru.otus.bbpax.service.model.BookDto;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -21,30 +23,28 @@ import static ru.otus.bbpax.controller.Templates.*;
 public class BookController {
     private final BookService service;
     private final CommentService commentService;
+    private final AuthorService authorService;
+    private final GenreService genreService;
 
     @PostMapping("/book")
     public String createBook(String name,
                            Integer publicationDate,
                            String publishingOffice,
                            BigDecimal price,
-                           String genreName,
-                           String authorFirstName,
-                           String authorLastName, Model model) {
-        log.info("Create bookView: '{}' published in {} y. as {}, created by {} and costs - {}.",
-                name, publicationDate, genreName, authorFirstName + " " + authorLastName, price);
-        BookView bookView = new BookView(
+                           String genreId,
+                           String authorId, Model model) {
+        log.info("Create bookDto: '{}' published in {} y. as {}, created by {} and costs - {}.",
+                name, publicationDate, genreId, authorId, price);
+        BookDto bookDto = new BookDto(
                 name,
                 publicationDate,
                 publishingOffice,
                 price.setScale(2, RoundingMode.HALF_UP),
-                genreName,
-                authorFirstName,
-                authorLastName
+                genreId,
+                authorId
         );
-
-        bookView.getAuthorFullName();
-        log.info("Registration of new bookView: {}", bookView);
-        BookView book = BookView.fromEntity(service.create(bookView));
+        log.info("Registration of new bookDto: {}", bookDto);
+        BookDto book = service.create(bookDto);
         return "redirect:book/" + (Objects.nonNull(book) && Objects.nonNull(book.getId()) ? book.getId() : "");
     }
 
@@ -54,21 +54,19 @@ public class BookController {
                              Integer publicationDate,
                              String publishingOffice,
                              BigDecimal price,
-                             String genreName,
-                             String authorFirstName,
-                             String authorLastName) {
+                             String genreId,
+                             String authorId) {
 
         log.info("Update book: '{}[id={}]' published in {} y. as {}, created by {} and costs - {}.",
-                name, id, publicationDate, genreName, authorFirstName + " " + authorLastName, price);
-        service.update(new BookView(
+                name, id, publicationDate, genreId, authorId, price);
+        service.update(new BookDto(
                 id,
                 name,
                 publicationDate,
                 publishingOffice,
                 price.setScale(2, RoundingMode.HALF_UP),
-                genreName,
-                authorFirstName,
-                authorLastName
+                genreId,
+                authorId
         ));
         return "redirect:" + id;
     }
@@ -81,10 +79,16 @@ public class BookController {
 
     @GetMapping("/book/{id}")
     public String getBook(@PathVariable String id, @RequestParam(value = "action", required = false) String action, Model model) {
-        model.addAttribute("book", service.getBookById(id));
+        BookDto book = service.getBookById(id);
+        model.addAttribute("book", book);
         if ("edit".equals(action)) {
+            model.addAttribute("authors", authorService.getAll());
+            model.addAttribute("genres", genreService.getAll());
             return BOOK_EDIT;
         }
+
+        model.addAttribute("author", authorService.getAuthorById(book.getAuthorId()));
+        model.addAttribute("genre", genreService.getGenreById(book.getGenreId()));
         model.addAttribute("comments", commentService.getCommentsFor(id));
         return BOOK;
     }
@@ -95,6 +99,8 @@ public class BookController {
                            @RequestParam(value = "genre", required = false) String genreId,
                            Model model) {
         if ("create".equals(action)) {
+            model.addAttribute("authors", authorService.getAll());
+            model.addAttribute("genres", genreService.getAll());
             return BOOK_CREATE;
         }
 

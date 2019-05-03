@@ -11,21 +11,21 @@ import static ru.otus.bbpax.service.model.TestVariables.AUTHOR_ID;
 import static ru.otus.bbpax.service.model.TestVariables.AUTHOR_NAME;
 import static ru.otus.bbpax.service.model.TestVariables.AUTHOR_SURNAME;
 
-class AuthorViewTest {
-    private AuthorView view = new AuthorView(AUTHOR_ID, AUTHOR_NAME, AUTHOR_SURNAME, AUTHOR_COUNTRY);
+class AuthorDtoTest {
+    private AuthorDto dto = new AuthorDto(AUTHOR_ID, AUTHOR_NAME, AUTHOR_SURNAME, AUTHOR_COUNTRY);
     private Author entity = new Author(AUTHOR_ID, AUTHOR_NAME, AUTHOR_SURNAME, AUTHOR_COUNTRY);
 
     @Test
-    @DisplayName("создает view с теми же значениями полей, что у entity или null.")
+    @DisplayName("создает dto с теми же значениями полей, что у entity или null.")
     void fromEntity() {
-        assertEquals(view, AuthorView.fromEntity(entity));
+        assertEquals(dto, AuthorDto.fromEntity(entity));
 
-        assertNull(AuthorView.fromEntity(null));
+        assertNull(AuthorDto.fromEntity(null));
     }
 
     @Test
-    @DisplayName("создает entity с теми же значениями полей, что у view.")
+    @DisplayName("создает entity с теми же значениями полей, что у dto.")
     void toEntity() {
-        assertEquals(entity, view.toEntity());
+        assertEquals(entity, dto.toEntity());
     }
 }

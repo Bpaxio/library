@@ -1,44 +1,21 @@
 package ru.otus.bbpax.service;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import ru.otus.bbpax.service.model.AuthorView;
-import ru.otus.bbpax.entity.Author;
-import ru.otus.bbpax.repository.AuthorRepo;
+import ru.otus.bbpax.service.model.AuthorDto;
+import ru.otus.bbpax.service.model.BookDto;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-@Slf4j
-@AllArgsConstructor
-@Service
-public class AuthorService {
-    private final AuthorRepo repo;
+public interface AuthorService {
 
-    public Author create(AuthorView author) {
-        return repo.save(author.toEntity());
-    }
+    AuthorDto create(AuthorDto authorDto);
 
-    public void update(AuthorView author) {
-        repo.save(author.toEntity());
-    }
+    AuthorDto update(AuthorDto authorDto);
 
-    public AuthorView getAuthorById(String id) {
-        Optional<Author> result = repo.findById(id);
-        return result.map(AuthorView::fromEntity)
-                .orElse(null);
-    }
+    AuthorDto getAuthorById(String id);
 
-    public List<AuthorView> getAll() {
-        return repo.findAll()
-                .stream()
-                .map(AuthorView::fromEntity)
-                .collect(Collectors.toList());
-    }
+    List<AuthorDto> getAll();
 
-    public void deleteById(String id) {
-        repo.deleteById(id);
-    }
+    List<BookDto> getBooksById(String id);
+
+    void deleteById(String id);
 }

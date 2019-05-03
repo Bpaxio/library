@@ -1,8 +1,12 @@
 package ru.otus.bbpax.service.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.otus.bbpax.configuration.serialization.CustomLocalDateTimeDeserializer;
+import ru.otus.bbpax.configuration.serialization.CustomLocalDateTimeSerializer;
 import ru.otus.bbpax.entity.Comment;
 
 import java.time.LocalDateTime;
@@ -15,18 +19,21 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentView {
+public class CommentDto {
 
     private String id;
     private String username;
+
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
     private LocalDateTime created;
     private String message;
     private String bookId;
 
-    public static CommentView fromEntity(Comment comment) {
+    public static CommentDto fromEntity(Comment comment) {
         return Objects.isNull(comment)
                 ? null
-                : new CommentView(
+                : new CommentDto(
                         comment.getId(),
                         comment.getUsername(),
                         comment.getCreated(),
