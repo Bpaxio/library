@@ -20,7 +20,6 @@ import ru.otus.bbpax.entity.Comment;
 import ru.otus.bbpax.repository.reactive.BookReactiveRepo;
 import ru.otus.bbpax.repository.reactive.CommentReactiveRepo;
 import ru.otus.bbpax.rest.exception.WrongRequestParamsException;
-import ru.otus.bbpax.service.CommentService;
 import ru.otus.bbpax.service.model.CommentDto;
 
 import java.util.Objects;
@@ -32,8 +31,6 @@ import java.util.Objects;
 @AllArgsConstructor
 public class CommentRestFluxController {
     private static final String NO_NAMED = "Anonymous";
-
-    private final CommentService service;
 
     private final CommentReactiveRepo reactiveRepo;
     private final BookReactiveRepo bookReactiveRepo;
