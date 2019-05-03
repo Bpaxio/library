@@ -2,6 +2,8 @@ package ru.otus.bbpax.controller;
 
 public class Templates {
     public final static String WELCOME = "index";
+    public final static String LOGIN = "login";
+
     public final static String BOOKS = "book/list";
     public final static String BOOK = "book/single";
     public final static String BOOK_EDIT = "book/edit";
@@ -14,4 +16,5 @@ public class Templates {
     public final static String GENRE = "genre/single";
     public final static String GENRE_EDIT = "genre/edit";
     public final static String GENRE_CREATE = "genre/create";
+    public final static String FORBIDDEN = "accessDenied";
 }

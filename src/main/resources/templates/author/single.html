@@ -35,7 +35,7 @@
                 <span th:text="${author.country}">1998</span>
             </div>
 
-            <div class="btn">
+            <div class="btn" th:if="${#lists.contains(roles, 'ROLE_ADMIN')}">
                 <a th:href="@{/author/__${author.id}__?action=edit}" th:text="#{edit}" href="..?action=edit"></a>
             </div>
         </header>

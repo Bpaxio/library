@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="#locale" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="#{header.application}">Hello Page</title>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+    <div th:replace="fragments/nav-bar :: navbar-css"/>
+</head>
+<body>
+
+<form id="form" name="form" th:action="@{/login}" method='POST'>
+    <fieldset>
+        <h1 th:text="#{header.login}">Login</h1>
+
+        <div th:if="${error}">
+            <div class="alert alert-danger">
+                <label th:if="${error}" th:text="#{login.error}"></label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="username" th:text="#{login.user}">User:</label>
+            <input type="text" name="username" id="username" class="form-control input-lg"
+                   placeholder="UserName" required="true" autofocus="true"/>
+        </div>
+        <div class="form-group">
+            <label for="password" th:text="#{login.password}">Password:</label>
+            <input type="password" name="password" id="password" class="form-control input-lg"
+                   placeholder="Password" required="true"/>
+        </div>
+        <div class="form-group">
+            <label for="rememberme" th:text="#{rememberme}"></label>
+            <input id="rememberme" type="checkbox" name="remember-me">
+        </div>
+
+        <div class="form-group">
+            <div class="element btn">
+                <button type="submit" th:text="#{login}"
+                        value="submit">
+                </button>
+                <div class="element btn">
+                    <a th:href="@{/}" th:text="#{cancel}"></a>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</form>
+</body>
+</html>

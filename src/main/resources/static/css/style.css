@@ -84,6 +84,25 @@ tbody td:hover:before {
     display:inline-block;
     size: auto;
 }
+.logout {
+    float: right;
+    padding: 0;
+}
+.login {
+    float: right;
+}
+.form-group {
+    text-align: center;
+}
+.alert, .alert-danger {
+    color: #ff0000;
+    background-color: #ffEEEE;
+    border: 3px solid #ff0000;
+    padding: 8px;
+    margin: 16px;
+    text-align: center;
+}
+
 /*Buttons*/
 button.btn,.btn button, .btn a {
     display: inline-block;

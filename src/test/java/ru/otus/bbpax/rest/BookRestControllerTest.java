@@ -2,19 +2,23 @@ package ru.otus.bbpax.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import ru.otus.bbpax.configuration.security.SecurityConfig;
 import ru.otus.bbpax.service.BookService;
 import ru.otus.bbpax.service.error.NotFoundException;
 import ru.otus.bbpax.service.model.BookDto;
@@ -43,22 +47,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(BookRestController.class)
+@WithMockUser
 @ActiveProfiles("test")
 class BookRestControllerTest {
     @Configuration
-    @Import({ BookRestController.class })
+    @Import({ BookRestController.class, SecurityConfig.class })
     static class Config {
+        @MockBean
+        @Qualifier("customUserDetailsService")
+        public UserDetailsService userDetailsService;
+
     }
+
     @Autowired
     private MockMvc mvc;
     @MockBean
     private BookService service;
 
-    private BookDto book;
-
-    @BeforeEach
-    void setUp() {
-        book = new BookDto(
+    private BookDto book() {
+        return new BookDto(
                 "2c77bb3f57cfe05a39abc17a",
                 "SUPER_BOOK",
                 2019,
@@ -69,7 +76,9 @@ class BookRestControllerTest {
     }
 
     @Test
+    @WithMockAdmin
     void createBook() throws Exception {
+        BookDto book = book();
         ObjectMapper mapper = new ObjectMapper();
         log.info(mapper.writeValueAsString(book));
         mvc.perform(post("/api/book/")
@@ -105,7 +114,23 @@ class BookRestControllerTest {
     }
 
     @Test
+    @Disabled
+    void createBookWithUser() throws Exception {
+        BookDto book = book();
+        ObjectMapper mapper = new ObjectMapper();
+        log.info(mapper.writeValueAsString(book));
+        mvc.perform(post("/api/book/")
+                .content(mapper.writeValueAsString(book))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+
+        verify(service, times(0)).create(book);
+    }
+
+    @Test
+    @WithMockAdmin
     void updateBook() throws Exception {
+        BookDto book = book();
         ObjectMapper mapper = new ObjectMapper();
 
         log.info(mapper.writeValueAsString(book));
@@ -135,7 +160,23 @@ class BookRestControllerTest {
     }
 
     @Test
+    @Disabled
+    void updateBookWithUser() throws Exception {
+        BookDto book = book();
+        ObjectMapper mapper = new ObjectMapper();
+        log.info(mapper.writeValueAsString(book));
+        mvc.perform(put("/api/book/")
+                .content(mapper.writeValueAsString(book))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+
+        verify(service, times(0)).update(book);
+    }
+
+    @Test
+    @WithMockAdmin
     void getBook() throws Exception {
+        BookDto book = book();
         when(service.getBookById("just_another_unreal_id")).thenThrow(NotFoundException.class);
 
         when(service.getBookById(book.getId()))
@@ -164,7 +205,14 @@ class BookRestControllerTest {
     }
 
     @Test
+    void getBookWithUser() throws Exception {
+        getBook();
+    }
+
+    @Test
+    @WithMockAdmin
     void getBooks() throws Exception {
+        BookDto book = book();
         when(service.getAll())
                 .thenReturn(Collections.singletonList(book));
 
@@ -185,7 +233,14 @@ class BookRestControllerTest {
     }
 
     @Test
+    void getBooksWithUser() throws Exception {
+        getBooks();
+    }
+
+    @Test
+    @WithMockAdmin
     void deleteBookById() throws Exception {
+        BookDto book = book();
         mvc.perform(delete("/api/book/" + book.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -196,4 +251,18 @@ class BookRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isMethodNotAllowed());
     }
+
+    @Test
+    @Disabled
+    void deleteBookByIdWithUser() throws Exception {
+        BookDto book = book();
+        ObjectMapper mapper = new ObjectMapper();
+        log.info(mapper.writeValueAsString(book));
+        mvc.perform(delete("/api/book/" + book.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+
+        verify(service, times(0)).deleteById(book.getId());
+    }
+
 }

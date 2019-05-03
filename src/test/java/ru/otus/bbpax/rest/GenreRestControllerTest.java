@@ -1,18 +1,22 @@
 package ru.otus.bbpax.rest;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import ru.otus.bbpax.configuration.security.SecurityConfig;
 import ru.otus.bbpax.service.GenreService;
 import ru.otus.bbpax.service.model.BookDto;
 import ru.otus.bbpax.service.model.GenreDto;
@@ -39,28 +43,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created on 18.04.2019.
  */
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(GenreRestController.class)
+@WebMvcTest(value = GenreRestController.class)
+@WithMockUser
 @ActiveProfiles("test")
 class GenreRestControllerTest {
-
     @Configuration
-    @Import({ GenreRestController.class })
+    @Import({ GenreRestController.class, SecurityConfig.class })
     static class Config {
+        @MockBean
+        @Qualifier("customUserDetailsService")
+        public UserDetailsService userDetailsService;
     }
+
     @Autowired
     private MockMvc mvc;
     @MockBean
     private GenreService service;
 
-    private GenreDto genre;
-
-    @BeforeEach
-    void setUp() {
-        genre = new GenreDto("2c77bb3f57cfe05a39abc17a","Novel");
+    private GenreDto genre() {
+        return new GenreDto("2c77bb3f57cfe05a39abc17a","Novel");
     }
 
     @Test
+    @WithMockAdmin
     void createGenre() throws Exception {
+        GenreDto genre = genre();
         mvc.perform(post("/api/genre/")
                 .content(genre.getName())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -71,7 +78,23 @@ class GenreRestControllerTest {
     }
 
     @Test
+    @Disabled
+    void createGenreWithUser() throws Exception {
+        GenreDto genre = genre();
+        genre.setId(null);
+        mvc.perform(post("/api/genre/")
+                .content(genre.getName())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+
+        verify(service, times(0))
+                .create(genre);
+    }
+
+    @Test
+    @WithMockAdmin
     void updateGenre() throws Exception {
+        GenreDto genre = genre();
 
         mvc.perform(put("/api/genre/" + genre.getId())
                 .contentType(MediaType.APPLICATION_JSON))
@@ -87,7 +110,22 @@ class GenreRestControllerTest {
     }
 
     @Test
+    @Disabled
+    void updateGenreWithUser() throws Exception {
+        GenreDto genre = genre();
+        mvc.perform(put("/api/genre/" + genre.getId())
+                .content(genre.getName())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+
+        verify(service, times(0))
+                .update(genre);
+    }
+
+    @Test
+    @WithMockAdmin
     void getGenre() throws Exception {
+        GenreDto genre = genre();
         when(service.getGenreById(genre.getId()))
                 .thenReturn(genre);
 
@@ -101,7 +139,14 @@ class GenreRestControllerTest {
     }
 
     @Test
+    void getGenreWithUser() throws Exception {
+        getGenre();
+    }
+
+    @Test
+    @WithMockAdmin
     void getGenres() throws Exception {
+        GenreDto genre = genre();
         when(service.getAll())
                 .thenReturn(Collections.singletonList(genre));
 
@@ -117,7 +162,14 @@ class GenreRestControllerTest {
     }
 
     @Test
+    void getGenresWithUser() throws Exception {
+        getGenres();
+    }
+
+    @Test
+    @WithMockAdmin
     void getBooks() throws Exception {
+        GenreDto genre = genre();
 
         when(service.getBooksById(anyString()))
                 .thenReturn(Collections.emptyList());
@@ -156,7 +208,14 @@ class GenreRestControllerTest {
     }
 
     @Test
+    void getBooksWithUser() throws Exception {
+        getBooks();
+    }
+
+    @Test
+    @WithMockAdmin
     void deleteGenreById() throws Exception {
+        GenreDto genre = genre();
         mvc.perform(delete("/api/genre/")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isMethodNotAllowed());
@@ -166,5 +225,18 @@ class GenreRestControllerTest {
                 .andExpect(status().isOk());
 
         verify(service, times(1)).deleteById(genre.getId());
+    }
+
+    @Test
+    @Disabled
+    void deleteGenreByIdWithUser() throws Exception {
+        GenreDto genre = genre();
+        mvc.perform(delete("/api/genre/" + genre.getId())
+                .content(genre.getName())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+
+        verify(service, times(0))
+                .deleteById(genre.getId());
     }
 }

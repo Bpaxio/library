@@ -4,12 +4,22 @@ import com.github.mongobee.changeset.ChangeLog;
 import com.github.mongobee.changeset.ChangeSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import ru.otus.bbpax.entity.Book;
+import ru.otus.bbpax.entity.security.User;
+
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static ru.otus.bbpax.configuration.changelog.data.ChangelogDataFactory.defaultAuthors;
 import static ru.otus.bbpax.configuration.changelog.data.ChangelogDataFactory.defaultBooks;
 import static ru.otus.bbpax.configuration.changelog.data.ChangelogDataFactory.defaultComments;
 import static ru.otus.bbpax.configuration.changelog.data.ChangelogDataFactory.defaultGenres;
+import static ru.otus.bbpax.entity.security.Roles.ADMIN;
+import static ru.otus.bbpax.entity.security.Roles.AUTHOR;
+import static ru.otus.bbpax.entity.security.Roles.LIAR;
+import static ru.otus.bbpax.entity.security.Roles.USER;
 
 @Slf4j
 @ChangeLog
@@ -36,8 +46,47 @@ public class DataInitChangelog {
         Book book2 = template.findById("3c77bb3f57cfe05a39abc17a", Book.class);
         template.insertAll(defaultComments(book1, book2));
 
-        // TODO: 2019-03-18 create OnUpdateRefListener + annotation and remove it
         template.save(book1);
         template.save(book2);
+    }
+
+    @ChangeSet(order = "005", id = "addUsers", author = "bpaxio")
+    public void addUsers(MongoTemplate template) {
+        User admin = new User();
+        admin.setUsername("admin");
+        admin.setPassword("$2a$10$jHC1UIWnP8DHAvOBZ9SU4ujETh6Xm1yECXE6iFmZpbBnBiaR3J/J6");
+        admin.setAuthorities(Collections.singleton(new SimpleGrantedAuthority("ROLE_" + ADMIN)));
+        template.insert(admin, "users");
+
+        User user = new User();
+        user.setUsername("user");
+        user.setPassword("$2a$10$1nHcrt0Iq1BQClOdWgrF7e0.pkpmipzmyBGKZMerMMXlr0CFnfpHG");
+        user.setAuthorities(Collections.singleton(new SimpleGrantedAuthority("ROLE_" + USER)));
+        template.insert(user, "users");
+    }
+
+    @ChangeSet(order = "006", id = "addAuthorAndLiar", author = "bpaxio")
+    public void addAuthorAndLiar(MongoTemplate template) {
+        User author = new User();
+        author.setUsername("author");
+        author.setPassword("$2a$10$CTk/dV2J5kQQPHlVu3f0weHJffAmAzqGECZVKxmUAHqmE/zwtDciG");
+        author.setAuthorities(
+                Stream.of(
+                        new SimpleGrantedAuthority("ROLE_" + AUTHOR),
+                        new SimpleGrantedAuthority("ROLE_" + USER))
+                        .collect(Collectors.toSet())
+        );
+        template.insert(author, "users");
+
+        User liar = new User();
+        liar.setUsername("liar");
+        liar.setPassword("$2a$10$udfZ8una814jhqkSmulrPuPkhv.QEjy9cmTkP062BagQ31ksoPL9q");
+        liar.setAuthorities(
+                Stream.of(
+                        new SimpleGrantedAuthority("ROLE_" + LIAR),
+                        new SimpleGrantedAuthority("ROLE_" + USER))
+                        .collect(Collectors.toSet())
+        );
+        template.insert(liar, "users");
     }
 }

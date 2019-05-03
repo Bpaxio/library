@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.bbpax.service.AuthorService;
 import ru.otus.bbpax.service.BookService;
 import ru.otus.bbpax.service.CommentService;
@@ -15,7 +18,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
-import static ru.otus.bbpax.controller.Templates.*;
+import static ru.otus.bbpax.controller.Templates.BOOK;
+import static ru.otus.bbpax.controller.Templates.BOOKS;
+import static ru.otus.bbpax.controller.Templates.BOOK_CREATE;
+import static ru.otus.bbpax.controller.Templates.BOOK_EDIT;
 
 @Slf4j
 @Controller
