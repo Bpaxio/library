@@ -184,6 +184,8 @@ class CommentRestControllerTest {
 
         mvc.perform(delete("/api/comment/" + comment.getId())
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isMethodNotAllowed());
+                .andExpect(status().isOk());
+
+        verify(service, times(1)).deleteById(comment.getId());
     }
 }
