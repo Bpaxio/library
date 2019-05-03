@@ -15,10 +15,10 @@ import reactor.core.publisher.Mono;
 import ru.otus.bbpax.entity.Author;
 import ru.otus.bbpax.entity.Book;
 import ru.otus.bbpax.entity.Genre;
-import ru.otus.bbpax.repository.reactive.AuthorReactiveRepo;
 import ru.otus.bbpax.repository.reactive.BookReactiveRepo;
-import ru.otus.bbpax.service.model.AuthorDto;
+import ru.otus.bbpax.repository.reactive.GenreReactiveRepo;
 import ru.otus.bbpax.service.model.BookDto;
+import ru.otus.bbpax.service.model.GenreDto;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -29,11 +29,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({SpringExtension.class})
-@WebFluxTest(AuthorRestFluxController.class)
-class AuthorRestFluxControllerTest {
+@WebFluxTest(GenreRestFluxController.class)
+class GenreRestFluxControllerTest {
 
     @Configuration
-    @Import({ AuthorRestFluxController.class })
+    @Import({ GenreRestFluxController.class })
     static class Config {
     }
 
@@ -41,18 +41,18 @@ class AuthorRestFluxControllerTest {
     private WebTestClient webTestClient;
 
     @MockBean
-    private AuthorReactiveRepo authorReactiveRepository;
+    private GenreReactiveRepo genreReactiveRepository;
     @MockBean
     private BookReactiveRepo bookReactiveRepository;
 
-    private static final String BASE_URL = "flux/author/";
+    private static final String BASE_URL = "flux/genre/";
 
-    Author author() {
-        return new Author("1", "John", "Snow", "Winterfell");
+    Genre genre() {
+        return new Genre("1", "Novel");
     }
 
-    List<Author> authors() {
-        return Collections.singletonList(author());
+    List<Genre> genres() {
+        return Collections.singletonList(genre());
     }
 
     Book book() {
@@ -62,8 +62,9 @@ class AuthorRestFluxControllerTest {
                 2019,
                 "The Test Office",
                 BigDecimal.valueOf(2000),
-                new Genre("1", "GenreId"),
+                new Genre("1", "Novel"),
                 new Author("1", "AuthorName", "Surname", "country"));
+
     }
 
     List<Book> books() {
@@ -71,89 +72,88 @@ class AuthorRestFluxControllerTest {
     }
 
     @Test
-    void getAuthorTest() {
-        when(authorReactiveRepository.findById(author().getId()))
-                .thenReturn(Mono.just(author()));
+    void getGenreTest() {
+        when(genreReactiveRepository.findById(genre().getId()))
+                .thenReturn(Mono.just(genre()));
 
-        webTestClient.get().uri(BASE_URL + author().getId())
+        webTestClient.get().uri(BASE_URL + genre().getId())
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
-                .expectBodyList(Author.class)
-                .contains(author());
-        verify(authorReactiveRepository, times(1))
-                .findById(author().getId());
+                .expectBodyList(Genre.class)
+                .contains(genre());
+        verify(genreReactiveRepository, times(1)).findById(genre().getId());
     }
 
     @Test
-    void getAuthorsTest() {
-        when(authorReactiveRepository.findAll())
-                .thenReturn(Flux.fromStream(authors().stream()));
+    void getGenresTest() {
+        when(genreReactiveRepository.findAll())
+                .thenReturn(Flux.fromStream(genres().stream()));
 
         webTestClient.get().uri(BASE_URL)
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
-                .expectBodyList(Author.class)
-                .contains(author());
-        verify(authorReactiveRepository).findAll();
+                .expectBodyList(Genre.class)
+                .contains(genre());
+        verify(genreReactiveRepository).findAll();
     }
 
     @Test
-    void getBooksByAuthorTest() {
-        when(bookReactiveRepository.findAllByAuthorId(author().getId()))
+    void getBooksByGenreTest() {
+        when(bookReactiveRepository.findAllByGenreId(genre().getId()))
                 .thenReturn(Flux.fromStream(books().stream()));
 
-        webTestClient.get().uri(BASE_URL + author().getId() + "/book/")
+        webTestClient.get().uri(BASE_URL + genre().getId() + "/book")
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
                 .expectBodyList(BookDto.class)
                 .contains(BookDto.fromEntity(book()));
-        verify(bookReactiveRepository).findAllByAuthorId(author().getId());
+        verify(bookReactiveRepository).findAllByGenreId(genre().getId());
     }
 
     @Test
-    void createAuthorTest() {
-        Author newAuthor = new Author("Another", "Man", "Russia");
-        when(authorReactiveRepository.save(newAuthor)).thenReturn(Mono.just(newAuthor));
+    void createGenreTest() {
+        Genre newGenre = new Genre("Roman");
+        when(genreReactiveRepository.save(newGenre)).thenReturn(Mono.just(newGenre));
+
         webTestClient.post().uri(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(newAuthor), Author.class)
+                .body(Mono.just(newGenre.getName()), String.class)
                 .exchange()
                 .expectStatus().isOk();
 
-        verify(authorReactiveRepository).save(newAuthor);
+        verify(genreReactiveRepository).save(newGenre);
     }
 
     @Test
-    void updateAuthorTest() {
-        Author newAuthor = new Author("1", "Some", "One", "Russia");
-        when(authorReactiveRepository.save(newAuthor)).thenReturn(Mono.just(newAuthor));
+    void updateGenreTest() {
+        Genre newGenre = new Genre("1", "Biopic");
+        when(genreReactiveRepository.save(newGenre)).thenReturn(Mono.just(newGenre));
 
         webTestClient.put().uri(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(AuthorDto.fromEntity(newAuthor)), AuthorDto.class)
+                .body(Mono.just(GenreDto.fromEntity(newGenre)), GenreDto.class)
                 .exchange()
                 .expectStatus().isOk();
 
-        verify(authorReactiveRepository).save(newAuthor);
+        verify(genreReactiveRepository).save(newGenre);
     }
 
     @Test
-    void deleteAuthorTest() {
-        when(authorReactiveRepository.deleteById(author().getId()))
+    void deleteGenreTest() {
+        when(genreReactiveRepository.deleteById(genre().getId()))
                 .thenReturn(Mono.empty());
 
-        webTestClient.delete().uri(BASE_URL + author().getId())
-                .accept(MediaType.APPLICATION_JSON_UTF8)
+        webTestClient.delete().uri(BASE_URL + genre().getId())
                 .exchange()
                 .expectStatus().isNoContent();
 
-        verify(authorReactiveRepository).deleteById(author().getId());
+        verify(genreReactiveRepository).deleteById(genre().getId());
     }
 }

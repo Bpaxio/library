@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import ru.otus.bbpax.entity.Book;
 import ru.otus.bbpax.repository.reactive.AuthorReactiveRepo;
 import ru.otus.bbpax.repository.reactive.BookReactiveRepo;
 import ru.otus.bbpax.rest.exception.WrongRequestParamsException;
 import ru.otus.bbpax.service.model.AuthorDto;
+import ru.otus.bbpax.service.model.BookDto;
 
 import java.util.Objects;
 
@@ -69,8 +69,9 @@ public class AuthorRestFluxController {
 
     @GetMapping("{id}/book")
     @ResponseBody
-    public Flux<Book> getBooks(@PathVariable String id) {
-        return bookReactiveRepo.findAllByAuthorId(id);
+    public Flux<BookDto> getBooks(@PathVariable String id) {
+        return bookReactiveRepo.findAllByAuthorId(id)
+                .map(BookDto::fromEntity);
     }
 
     @DeleteMapping("{id}")
