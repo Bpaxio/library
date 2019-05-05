@@ -87,6 +87,12 @@
         <section class="input__area">
             <div class="input__area btn">
                 <form th:action="@{/__${book.id}__/comment}" method="post">
+                    <div th:if="${punish}">
+                        <div class="alert alert-danger">
+                            <label th:text="#{comment.liar}"></label>
+                        </div>
+                    </div>
+                    <input class="comment__name_input" id="username" name="username" th:placeholder="#{login.user}">
                     <textarea id="message" name="message" th:placeholder="#{comment.placeholder}"
                               placeholder='Enter comment...' rows='1'></textarea>
                     <button type="submit" th:text="#{comment.create}">Add Comment</button>

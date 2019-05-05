@@ -84,7 +84,10 @@ public class BookController {
     }
 
     @GetMapping("/book/{id}")
-    public String getBook(@PathVariable String id, @RequestParam(value = "action", required = false) String action, Model model) {
+    public String getBook(@PathVariable String id,
+                          @RequestParam(value = "action", required = false) String action,
+                          @RequestParam(value = "punish", required = false, defaultValue = "false") boolean punish,
+                          Model model) {
         BookDto book = service.getBookById(id);
         model.addAttribute("book", book);
         if ("edit".equals(action)) {
@@ -92,7 +95,7 @@ public class BookController {
             model.addAttribute("genres", genreService.getAll());
             return BOOK_EDIT;
         }
-
+        model.addAttribute("punish", punish);
         model.addAttribute("author", authorService.getAuthorById(book.getAuthorId()));
         model.addAttribute("genre", genreService.getGenreById(book.getGenreId()));
         model.addAttribute("comments", commentService.getCommentsFor(id));

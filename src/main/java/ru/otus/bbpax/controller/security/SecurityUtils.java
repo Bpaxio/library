@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.otus.bbpax.entity.security.User;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +12,14 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class SecurityUtils {
+
+    public static User getUserDetails() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof User) {
+            return (User) principal;
+        }
+        throw new IllegalStateException("principal is not ready. It's not a User instance");
+    }
 
     public static Collection<String> getRoles() {
         try {
